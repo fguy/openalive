@@ -1,0 +1,26 @@
+application: openalive
+version: 1
+runtime: python
+api_version: 1
+
+builtins:
+- datastore_admin: on
+- remote_api: on
+- appstats: on
+- deferred: on
+- admin_redirect: on 
+
+handlers:
+- url: /remote_api
+  script: $PYTHON_LIB/google/appengine/ext/remote_api/handler.py
+  login: admin
+  
+- url: /static
+  static_dir: src/static
+
+- url: /favicon.ico
+  static_files: src/static/favicon.ico
+  upload: src/static/favicon.ico
+    
+- url: /.*
+  script: bootstrap.py

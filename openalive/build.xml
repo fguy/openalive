@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Base idea from http://www.ibm.com/developerworks/library/os-ecant/ -->
+<project name="openalive" basedir=".">
+	<description>${ant.project.name} build file</description>
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="antlib/ant-contrib-1.0b3.jar" />
+		</classpath>
+	</taskdef>
+
+	<typedef resource="pyAntTasks.properties">
+		<classpath>
+			<pathelement location="antlib/pyAntTasks-1.3.3.jar" />
+		</classpath>
+	</typedef>
+
+	<property name="src.dir" location="src" />
+	<property name="pydoc.dir" value="pydoc" />
+
+	<target name="init">
+		<tstamp />
+		<xmlproperty file=".pydevproject" />
+		<property name="appengine.dir" location="${pydev_project.pydev_variables_property.value}" />
+		<propertyregex property="tmp.pythonpath" input="${pydev_project.pydev_pathproperty.path}" regexp="," replace=":" />
+		<propertyregex property="pythonpath" input="${tmp.pythonpath}" regexp="..GOOGLE_APP_ENGINE." replace="${appengine.dir}" />
+		<propertyregex property="pythonpath" input="${pythonpath}" regexp="\/${ant.project.name}\/" replace="" override="true" />
+		<property name="django-admin" location="${appengine.dir}/lib/django_1_3/django/bin/django-admin.py" />
+	</target>
+
+	<target name="i18n" depends="init">
+		<py-run script="${django-admin}" pythonpath="${pythonpath}" dir="${src.dir}" failonerror="no">
+			<arg value="makemessages" />
+			<arg value="-a" />
+		</py-run>
+		<py-run script="${django-admin}" pythonpath="${pythonpath}" dir="${src.dir}" failonerror="no">
+			<arg value="makemessages" />
+			<arg value="-d" />
+			<arg value="djangojs" />
+			<arg value="-a" />
+		</py-run>
+		<py-run script="${src.dir}/bin/auto_translate.py" pythonpath="${pythonpath}" dir="${src.dir}" />
+	</target>
+
+	<target name="i18n_compile" depends="init">
+		<py-run script="${django-admin}" pythonpath="${pythonpath}" dir="${src.dir}">
+			<arg value="compilemessages" />
+		</py-run>
+	</target>
+
+	<target name="i18n_clean">
+		<delete>
+			<fileset dir="${src.dir}/conf/locale" includes="**/*/LC_MESSAGES/*" />
+		</delete>
+	</target>
+
+</project>
