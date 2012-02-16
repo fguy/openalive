@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- Base idea from http://www.ibm.com/developerworks/library/os-ecant/ -->
-<project name="openalive" basedir=".">
+<project name="openalive" basedir="." default="run">
 	<description>${ant.project.name} build file</description>
 
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
@@ -15,7 +15,10 @@
 		</classpath>
 	</typedef>
 
-	<property name="src.dir" location="src" />
+	<property file="build.properties" />
+
+	<property name="src.dir" location="." />
+	<property name="test.dir" location="test" />
 	<property name="pydoc.dir" value="pydoc" />
 
 	<target name="init">
@@ -24,8 +27,36 @@
 		<property name="appengine.dir" location="${pydev_project.pydev_variables_property.value}" />
 		<propertyregex property="tmp.pythonpath" input="${pydev_project.pydev_pathproperty.path}" regexp="," replace=":" />
 		<propertyregex property="pythonpath" input="${tmp.pythonpath}" regexp="..GOOGLE_APP_ENGINE." replace="${appengine.dir}" />
-		<propertyregex property="pythonpath" input="${pythonpath}" regexp="\/${ant.project.name}\/" replace="" override="true" />
+		<propertyregex property="pythonpath" input="${pythonpath}" regexp="\/${ant.project.name}" replace="${src.dir}" override="true" />
 		<property name="django-admin" location="${appengine.dir}/lib/django_1_3/django/bin/django-admin.py" />
+	</target>
+
+	<target name="run" depends="init">
+		<py-run script="${appengine.dir}/dev_appserver.py" pythonpath="${pythonpath}" optimize="0">
+			<arg value="${src.dir}" />
+			<arg value="--port=${port}" />
+			<arg value="--debug" />
+			<arg value="--disable_static_caching" />
+		</py-run>
+	</target>
+
+	<target name="deploy" depends="init">
+		<py-run script="${appengine.dir}/appcfg.py">
+			<arg value="update" />
+			<arg value="${src.dir}" />
+		</py-run>
+	</target>
+
+	<target name="compile" depends="init">
+		<py-compile dir="${src.dir}" pythonpath="${pythonpath}" optimize="0" />
+	</target>
+
+	<target name="tests" depends="init">
+		<py-test pythonpath="${pythonpath}:${test.dir}" dir=".">
+			<fileset dir="${test.dir}">
+				<include name="**/*_test.py" />
+			</fileset>
+		</py-test>
 	</target>
 
 	<target name="i18n" depends="init">

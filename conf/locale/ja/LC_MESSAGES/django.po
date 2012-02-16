@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-10 14:53-0800\n"
+"POT-Creation-Date: 2012-02-15 17:30-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,28 +19,26 @@ msgstr ""
 
 #: conf/__init__.py:5
 msgid "Do not specify."
-msgstr "No se especifica."
+msgstr "指定しないでください。"
 
 #: conf/__init__.py:7
 msgid "Korean"
-msgstr "Coreano"
+msgstr "韓国語"
 
-#: templates/index.html:8
+#: templates/index.html:78
 msgid "Welcome."
-msgstr "Bienvenido."
+msgstr "ようこそ。"
 
-#: templates/index.html:11
+#: templates/_snippets/nav.html:19
 msgid "Login"
-msgstr "Iniciar sesión"
+msgstr "ログイン"
 
-#: templates/index.html:13
+#: templates/_snippets/nav.html:21
 msgid "Logout"
-msgstr "Cerrar sesión"
+msgstr "ログアウト"
 
-#: templates/index.html:17
-msgid "Create New Quiz"
-msgstr "Crear New Quiz"
+#~ msgid "Create New Quiz"
+#~ msgstr "新しいクイズを作成します。"
 
-#: templates/index.html:18
-msgid "My Page"
-msgstr "Mi página"
+#~ msgid "My Page"
+#~ msgstr "マイページ"
