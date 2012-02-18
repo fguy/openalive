@@ -145,6 +145,11 @@
 .defaultSkin span.mce_removeformat {background-position:-580px 0}
 .defaultSkin span.mce_newdocument {background-position:-520px 0}
 .defaultSkin span.mce_image {background-position:-380px 0}
+.defaultSkin span.mce_video {
+    background-image: url(data:image/gif;base64,R0lGODlhFAAUAMQQAPgkJ////wAAAPYoKvUzM//9/fYkJvYxMwYGBvQvMfUyMvUhI/Y7PfUxM/UmKPQcHv///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABAALAAAAAAUABQAAAVsICSOZGmOApSerOq2Z7oK8xuLtdzWrs7yutUNh8DRYMjSAMBsOp2G0YAQqAKWjwBg8QSIplSmwQDQMhnOL8GhbZetVbM67K6nIVOFvW724gkNe2WDTWoHbXCJcn9djYVfjl0JJQUFJJYimCQhADs=);
+    background-position: center;
+    background-repeat: no-repeat;
+}
 .defaultSkin span.mce_help {background-position:-340px 0}
 .defaultSkin span.mce_code {background-position:-260px 0}
 .defaultSkin span.mce_hr {background-position:-360px 0}
