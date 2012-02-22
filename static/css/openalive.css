@@ -1,0 +1,65 @@
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+
+.sidebar-nav {
+	padding: 9px 0;
+}
+
+#sidebar .nav li {
+	display: block;
+}
+
+#post-article {
+	z-index: 6000;
+	background-color: transparent;
+	position: fixed;
+	vertical-align: baseline;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	overflow: auto;
+	margin: 0;
+	width: 100%;
+	max-height: none;
+	border: 0
+}
+
+#post-article #post-dialog-wrapper {
+	top: 0px;
+	height: auto;
+	visibility: visible;
+	display: block;
+	position: relative;
+	width: 930px;
+	z-index: 6000;
+	margin: 20px auto auto auto;
+	background-color: #FFF;
+	padding: 0
+}
+
+#post-article #post-dialog {
+	
+}
+
+#post-article .input-xlarge {
+	width: 785px
+}
+
+#post-article .controls {
+	margin-left: 100px
+}
+
+#post-article .control-label {
+	width: 80px
+}
+
+#sidebar .nav-header a {
+	color: #999
+}
+
+.navbar .btn-toolbar {
+	margin: 0
+}

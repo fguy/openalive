@@ -84,7 +84,7 @@ class Js(Action):
                             raise TypeError, k
             csrc.sort()
             for k, v in pdict.items():
-                    src.append("catalog['%s'] = [%s];\n" % (javascript_quote(k), ','.join(["''"]*(v + 1))))
+                    src.append("catalog['%s'] = [%s];\n" % (javascript_quote(k), ','.join(["''"] * (v + 1))))
             src.extend(csrc)
             src.append(LibFoot)
             src.append(InterPolate)

@@ -1,19 +1,22 @@
 import os
-import sys
-import logging
-import action
-from pytz.gae import pytz
 
-import django.utils.simplejson as simplejson
-
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp import template
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 from django.conf import settings
 from django.utils import translation
-
-from pytz import country_timezones
+from google.appengine.ext import webapp
+from google.appengine.ext.webapp import template
 from lib import get_geoipcode
+from lib.json import encode
+from pytz import country_timezones
+from pytz.gae import pytz
+from google.appengine.ext import db
+
+import action
+import logging
+import re
+import sys
+import urllib2
 
 ACTION_PACKAGE = 'action'
 TEMPLATES_PATH = os.path.abspath('%s/../templates' % os.path.dirname(os.path.realpath(__file__)))
@@ -23,6 +26,8 @@ LANG_COOKIE_NAME = 'django_language'
 TIMEZONE_COOKIE_NAME = 'django_tz'
 
 class Controller(webapp.RequestHandler):
+    
+        url_mapping = []
         
         def __init__(self):
                 self.__lang_map = {}
@@ -36,43 +41,45 @@ class Controller(webapp.RequestHandler):
                 self.response = response
                 self.request = request
                 
-                '''supports 2 depth path'''
-                path = request.path[1:].split('/')
-                action_module = path[0]
+                action_module = None
+                action_class = None
                 
-                if not action_module :
-                        action_module = 'index'
-                
-                param = {}
-                path_len = len(path)
-                if path_len > 1:
+                if Controller.url_mapping:
+                    for regex, action_location in Controller.url_mapping:
+                        m = re.match(regex, unicode(urllib2.unquote(request.path)))
+                        if m:
+                            action_module, action_class = action_location
+                            self._current_request_args = m.groups()
+                            break
+                        
+                if not action_module and not action_class: 
+                    '''supports 2 depth path'''
+                    path = request.path[1:].split('/')
+                    action_module = path[0]
+                    
+                    if not action_module :
+                        action_module = 'index'     
+                    
+                    _current_request_args = {}
+                    path_len = len(path)
+                    if path_len > 1:
                         action_class = path[1].capitalize()
-                        i = 2
-                        while i < path_len :
-                                val = None
-                                key = path[i]
-                                if i + 1 < path_len:
-                                        val = path[i + 1]
-                                param[key] = val
-                                i += 2
-                else:
+                        _current_request_args = path[2:]
+                    else:
                         action_class = 'Index'
-                del path
-                                        
+                    del path
+                
                 logging.debug('Current action module : %s, class : %s' % (action_module, action_class))         
                 self._import_action(request, response, action_module, action_class)
-                
-                if self.__action:
-                        logging.debug('Action params : %s' % param)
-                        self.__action._set_params(param)
         
-        def _execute(self, method_name, *args):         
+        def _execute(self, method_name, *args):
                 if not self.response:
                         logging.debug('response is None')
                         return
                 
                 self._set_language(self.request)
                 self._set_timezone(self.request)
+                self.__action.is_ajax = self.request.headers.has_key('X-Requested-With') and self.request.headers['X-Requested-With'] == 'XMLHttpRequest'
                                 
                 if not self.__action:
                         logging.debug('Action is missing')
@@ -86,16 +93,19 @@ class Controller(webapp.RequestHandler):
                         
                         if method:
                                 getattr(self.__action, 'before')()
-                                result = method(*args)
+                                result = method(*(self._current_request_args if hasattr(self, '_current_request_args') else args))
                                 getattr(self.__action, 'after')()
                                 if not self.__action._has_error() :
                                         self.__action.lang = self.request.lang
                                         self.__action.timezone = self.request.timezone
                                         
-                                        if result is Action.Result.JSON:
+                                        if (result is Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
+                                                del self.__action.is_ajax
+                                                del self.__action.lang
+                                                del self.__action.timezone                                            
                                                 context = self.__action._get_context()
                                                 logging.debug('Context data for JSON Serialize : %s' % context)
-                                                self.response.out.write(simplejson.dumps(context))
+                                                self.response.out.write(encode(context))
                                         elif result is not None:
                                                 template_path = self._find_template(result)
                                                 if template_path:
@@ -107,18 +117,17 @@ class Controller(webapp.RequestHandler):
                                 self.error(405)
         
         def _find_template(self, result_name):
-                result = TEMPLATES_PATH + os.path.sep + self.__action.__module__.replace('%s.' % ACTION_PACKAGE, '')
-                action_class = self.__action.__class__.__name__
-                if action_class is not 'Index':
-                        result += os.path.sep + action_class.lower()
-                        
-                if result_name is not '':
-                        result += os.path.sep + result_name 
-                        
-                result += TEMPLATES_SUFFIX
-                
-                logging.debug('Template path : %s' % result)
-                return result
+            if result_name.startswith('/'):
+                return '%s%s' % (TEMPLATES_PATH, result_name)
+            result = [TEMPLATES_PATH, self.__action.__module__.replace('%s.' % ACTION_PACKAGE, '')]
+            action_class = self.__action.__class__.__name__
+            if action_class is not 'Index':
+                result.append(action_class.lower())
+                    
+            if result_name is not '':
+                result.append(result_name) 
+
+            return '%s%s' % (os.path.sep.join(result), TEMPLATES_SUFFIX)
 
         def _import_action(self, request, response, action_name, action_class='Index'):
                 module_name = '%s.%s' % (ACTION_PACKAGE, action_name)
@@ -242,7 +251,7 @@ class Action(object):
                         return  object.__delattr__(self, attr)
                 
         def _is_context_key(self, attr):
-                return attr not in ['request','response'] and not attr.startswith('_')
+                return attr not in ['request', 'response'] and not attr.startswith('_')
                         
         def get_param(self, key):
                 if self.has_param(key):

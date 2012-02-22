@@ -7,20 +7,28 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">Project name</a>
+          <a class="brand" href="#!/" class="home-link">{% trans 'Open Alive' %}</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
+              <li class="active"><a href="#!/" class="home-link">Home</a></li>
               <li><a href="#about">About</a></li>
               <li><a href="#contact">Contact</a></li>
             </ul>
-            <p class="navbar-text pull-right">
+		    <div class="btn-toolbar pull-right">
 				{% ifequal user None %}
-				<a href="{{login_url}}">{% trans 'Login' %}</a>
-				{% else %}
-				Logged in as <a href="/my">{{ user }}</a> <a href="{{logout_url}}">{% trans 'Logout' %}</a>
-				{% endifequal %}            
-            </p>
+                    <a class="btn btn-primary" href="{{login_url}}">{% trans 'Login' %}</a>
+                {% else %}
+					<div class="btn-group">
+					    <a class="btn btn-primary"><i class="icon-user icon-white"></i> {{ user }}</a>
+					    <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+						<ul class="dropdown-menu">
+						    <li><a href="/my">Edit</a></li>
+						    <li class="divider"></li>
+						    <li><a  href="{{logout_url}}">{% trans 'Logout' %}</a></li>
+						</ul>
+				    </div>
+				{% endifequal %}
+			</div>
           </div><!--/.nav-collapse -->
         </div>
       </div>

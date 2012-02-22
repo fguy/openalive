@@ -1,32 +1,31 @@
 {% load i18n %}<!DOCTYPE html>
-<html id="home" lang="en">
+<html lang="en">
 <head>
 {% include '_snippets/header.html' %}
 </head>
 <body>
 {% include '_snippets/nav.html' %}
-
-    <div class="container-fluid">
+    <div id="container" class="container-fluid">
       <div class="row-fluid">
         <div class="span3">
-          <div class="well sidebar-nav">
+		<ul class="breadcrumb">
+		  <li>
+		    <a href="#!/" class="home-link">{% trans 'Home' %}</a> <span class="divider"{% if not current_category %} style="display:none"{% endif %}>/</span>
+		  </li>
+		  {% for item in current_category.path %}
+		  <li{% if forloop.last %} class="active"{% endif %}>
+		    <a href="#!/{{ item }}">{% trans item %}</a> {% if not forloop.last %}<span class="divider">/</span>{% endif %}
+		  </li>
+		  {% endfor %}
+		</ul> 
+          <div id="sidebar" class="well sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header">Sidebar</li>
-              <li class="active"><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
+              {% for item in category_list %}
+              <li{% ifequal item.category current_category.category %} class="active"{% endifequal %}><a href="#!/{{ item.category }}">{% trans item.category %}</a></li>
+                {% for child in item.children %}
+                    <li><a href="#!/{{ child.category }}" class="children"><i class="icon-chevron-right"></i> {% trans child.category %}</a></li>
+                {% endfor %}
+              {% endfor %}  
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
@@ -70,12 +69,57 @@
               <p><a class="btn" href="#">View details &raquo;</a></p>
             </div><!--/span-->
           </div><!--/row-->
+
+          
         </div><!--/span-->
       </div><!--/row-->
 
       <hr>
-
-<h1>{% trans 'Welcome.' %}</h1>
+<div id="post-article" class="modal hide">
+    <div id="post-dialog-wrapper" class="well">
+	        <div class="modal-header">
+              <a class="close" data-dismiss="modal" >&times;</a>
+              <h3>{% trans 'Post an Article' %}</h3>
+              <div>{% trans 'Location' %}: <span id="current-path"></span></div>
+            </div>
+            <div class="modal-body">
+				<form class="form-horizontal">
+				  <fieldset>
+				    <div class="control-group">
+				      <label class="control-label" for="title">{% trans 'Title' %}</label>
+				      <div class="controls">
+				        <input type="text" class="input-xlarge" id="title">
+				      </div>
+				    </div>
+				    <div class="control-group">
+	                  <label class="control-label" for="body">{% trans 'Body' %}</label>
+	                  <div class="controls">
+	                    <textarea class="input-xlarge" id="body"></textarea>
+	                  </div>
+	                </div>
+                    <div class="control-group">
+                      <label class="control-label" for="tags">{% trans 'Tags' %}</label>
+                      <div class="controls">
+                        <input type="text" class="input-xlarge" id="tags">
+                        <p class="help-block">{% trans 'Hit ENTER to add tag. Please do not tag different variations of the same name.' %}</p>
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="tags">{% trans 'Captcha' %}</label>
+                      <div class="controls">
+                        <div id="article-captcha"></div>
+                      </div>
+                    </div>                           
+				  </fieldset>
+				</form>            
+            </div>
+            <div class="modal-footer">
+				<a href="#" class="btn btn-primary"><i class="icon-ok icon-white"></i> {% trans 'POST' %}</a>
+				<a href="#" class="btn" data-dismiss="modal" ><i class="icon-remove"></i> {% trans 'Cancel' %}</a>
+            </div>
+    </div>
+</div>      
+<a id="btn-post-article" href="#post-article" class="btn btn-primary btn-large">New Post</a>
 
 {% include '_snippets/footer.html' %}
 {% include '_snippets/scripts.html' %}
