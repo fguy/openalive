@@ -58,13 +58,13 @@ class Controller(webapp.RequestHandler):
                     action_module = path[0]
                     
                     if not action_module :
-                        action_module = 'index'     
+                        action_module = 'index'
                     
-                    _current_request_args = {}
+                    self._current_request_args = {}
                     path_len = len(path)
                     if path_len > 1:
-                        action_class = path[1].capitalize()
-                        _current_request_args = path[2:]
+                        action_class = ''.join([x.title() for x in path[1].split('-')])
+                        self._current_request_args = [unicode(urllib2.unquote(item)) for item in path[2:]]
                     else:
                         action_class = 'Index'
                     del path
@@ -79,12 +79,12 @@ class Controller(webapp.RequestHandler):
                 
                 self._set_language(self.request)
                 self._set_timezone(self.request)
-                self.__action.is_ajax = self.request.headers.has_key('X-Requested-With') and self.request.headers['X-Requested-With'] == 'XMLHttpRequest'
                                 
                 if not self.__action:
                         logging.debug('Action is missing')
                         self.error(404)
                 else:
+                        self.__action.is_ajax = self.request.headers.has_key('X-Requested-With') and self.request.headers['X-Requested-With'] == 'XMLHttpRequest'
                         method = None
                         try:
                                 method = getattr(self.__action, method_name)

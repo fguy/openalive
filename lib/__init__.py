@@ -20,6 +20,11 @@ def get_geoipcode(ipaddr):
                 memcache.set(memcache_key, geoipcode)
         return geoipcode
     
+_first_cap_re = re.compile('(.)([A-Z][a-z]+)')
+_all_cap_re = re.compile('([a-z0-9])([A-Z])')
+def to_camelcase(value):
+    return _all_cap_re.sub(r'\1_\2', _first_cap_re.sub(r'\1_\2', value)).lower()    
+    
 _slugify_strip_re = re.compile(r'[^\w\s-]')
 _slugify_hyphenate_re = re.compile(r'[-\s]+')
 def slugify(value):
