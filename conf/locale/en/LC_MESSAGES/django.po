@@ -2,20 +2,20 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-15 17:30-0800\n"
+"POT-Creation-Date: 2012-02-23 21:01-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: conf/__init__.py:5
 msgid "Do not specify."
@@ -25,20 +25,74 @@ msgstr "Do not specify."
 msgid "Korean"
 msgstr "Korean"
 
-#: templates/index.html:78
-msgid "Welcome."
-msgstr "Welcome."
+#: templates/index.html:13 templates/_snippets/nav.html:13
+msgid "Home"
+msgstr "Home"
 
-#: templates/_snippets/nav.html:19
+#: templates/index.html:48
+msgid "Loading..."
+msgstr "Loading..."
+
+#: templates/index.html:53
+msgid "Post an Article"
+msgstr "Post an Article"
+
+#: templates/index.html:54
+msgid "Location"
+msgstr "Location"
+
+#: templates/index.html:60
+msgid "Title"
+msgstr "Title"
+
+#: templates/index.html:66
+msgid "Body"
+msgstr "Body"
+
+#: templates/index.html:72 templates/_snippets/nav.html:14
+msgid "Tags"
+msgstr "Tags"
+
+#: templates/index.html:75
+msgid ""
+"Hit ENTER to add tag. Please do not tag different variations of the same "
+"name."
+msgstr ""
+"Hit ENTER to add tag. Please do not tag different variations of the same "
+"name."
+
+#: templates/index.html:79
+msgid "Captcha"
+msgstr "Captcha"
+
+#: templates/index.html:88
+msgid "POST"
+msgstr "POST"
+
+#: templates/index.html:89
+msgid "Cancel"
+msgstr "Cancel"
+
+#: templates/_snippets/nav.html:10
+msgid "Open Alive"
+msgstr "Open Alive"
+
+#: templates/_snippets/nav.html:15
+msgid "Images"
+msgstr "Images"
+
+#: templates/_snippets/nav.html:16
+msgid "Videos"
+msgstr "Videos"
+
+#: templates/_snippets/nav.html:17
+msgid "About"
+msgstr "About"
+
+#: templates/_snippets/nav.html:21
 msgid "Login"
 msgstr "Login"
 
-#: templates/_snippets/nav.html:21
+#: templates/_snippets/nav.html:29
 msgid "Logout"
 msgstr "Logout"
-
-#~ msgid "Create New Quiz"
-#~ msgstr "Create New Quiz"
-
-#~ msgid "My Page"
-#~ msgstr "My Page"

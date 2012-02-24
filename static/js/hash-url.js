@@ -16,13 +16,10 @@ $(function() {
     }
 		if (hash.match(/^!/)) {
 			var tokens = hash.substring(2, idx > -1 ? idx : hash.length).split("/");
-			var callback;
-			if(tokens.length > 1 && tokens[1]) {
-				callback = function() {
-					Article.show(tokens[1]);
-				}
-			}
-			Category.select(tokens[0], callback);
+			var callback = tokens.length > 1 && tokens[1] ? function() {
+				models.Article.show(tokens[1]);
+			} : models.Article.hide;
+			models.Category.select(tokens[0], callback);
 		}
 		switch (hash.substring(1)) {
 

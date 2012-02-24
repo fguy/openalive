@@ -1,17 +1,14 @@
 import os
-
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 from django.conf import settings
 from django.utils import translation
-from google.appengine.ext import webapp
+from google.appengine.ext import db, webapp
 from google.appengine.ext.webapp import template
 from lib import get_geoipcode
 from lib.json import encode
 from pytz import country_timezones
 from pytz.gae import pytz
-from google.appengine.ext import db
-
 import action
 import logging
 import re
@@ -95,24 +92,24 @@ class Controller(webapp.RequestHandler):
                                 getattr(self.__action, 'before')()
                                 result = method(*(self._current_request_args if hasattr(self, '_current_request_args') else args))
                                 getattr(self.__action, 'after')()
-                                if not self.__action._has_error() :
-                                        self.__action.lang = self.request.lang
-                                        self.__action.timezone = self.request.timezone
-                                        
-                                        if (result is Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
-                                                del self.__action.is_ajax
-                                                del self.__action.lang
-                                                del self.__action.timezone                                            
-                                                context = self.__action._get_context()
-                                                logging.debug('Context data for JSON Serialize : %s' % context)
-                                                self.response.out.write(encode(context))
-                                        elif result is not None:
-                                                template_path = self._find_template(result)
-                                                if template_path:
-                                                        self.response.out.write(template.render(template_path, self.__action._get_context()))
-                                                logging.debug('Current result : %s' % result)
-                                        else:
-                                                logging.debug('Has no result.')
+
+                                self.__action.lang = self.request.lang
+                                self.__action.timezone = self.request.timezone
+                                
+                                if (result is Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
+                                        del self.__action.is_ajax
+                                        del self.__action.lang
+                                        del self.__action.timezone                                            
+                                        context = self.__action._get_context()
+                                        logging.debug('Context data for JSON Serialize : %s' % context)
+                                        self.response.out.write(encode(context))
+                                elif result is not None:
+                                        template_path = self._find_template(result)
+                                        if template_path:
+                                                self.response.out.write(template.render(template_path, self.__action._get_context()))
+                                        logging.debug('Current result : %s' % result)
+                                else:
+                                        logging.debug('Has no result.')
                         else:
                                 self.error(405)
         
@@ -222,9 +219,7 @@ class Action(object):
                 self.request = request
                 self.response = response
                 
-                self.__params = {}
                 self.__context = {}
-                self.__has_error = False
                 
         def __setattr__(self, attr, value, DEFAULT=[]):
                 if self._is_context_key(attr) :
@@ -252,18 +247,6 @@ class Action(object):
                 
         def _is_context_key(self, attr):
                 return attr not in ['request', 'response'] and not attr.startswith('_')
-                        
-        def get_param(self, key):
-                if self.has_param(key):
-                        return self.__params[key]
-                return None
-        
-        def has_param(self, key):
-                return self.__params.has_key(key)
-
-        def _set_params(self, params={}):
-                self.__params = params
-                self.__context.update(params)
                 
         def set_context(self, context):
                 self.__context = context                
@@ -272,20 +255,7 @@ class Action(object):
                 self.__context = {}
                                 
         def _get_context(self):
-                return self.__context           
-        
-        def error(self, code):
-                """Clears the response output stream and sets the given HTTP error code.
-
-                Args:
-                        code: the HTTP status error code (e.g., 501)
-                """
-                self.response.set_status(code)
-                self.response.clear()
-                self.__has_error = True
-                
-        def _has_error(self):
-                return self.__has_error
+                return self.__context 
                 
         class Result(object):
                 DEFAULT = ''

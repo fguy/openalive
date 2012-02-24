@@ -1,6 +1,6 @@
 $(function() {
   var button = $("#btn-post-article");
-  var div = $(button.attr("href"));
+  var div = $("#post-article");
   var initialized = false;
 
   var init = function() {
@@ -31,7 +31,7 @@ $(function() {
 	  $("#tags_tagsinput", div).length == 0 && $("#tags", div).tagsInput({
 	    width : $(".input-xlarge", div).width(),
 	    height : "66px",
-	    defaultText : _("Add a tag"),
+	    defaultText : gettext("Add a tag"),
 	    interactive : true,
 	    removeWithBackspace : true,
 	    maxChars : 255
@@ -52,11 +52,11 @@ $(function() {
   }
   button.click(function() {
   	initialized || init();
-    if (!Category.getCurrent()) {
-      $().toastmessage("showWarningToast", _("No category selected."))
+    if (!models.Category.getCurrent()) {
+      $().toastmessage("showWarningToast", gettext("No category selected."));
       return false;
     }
-    $("#current-path", div).text(Category.getCurrentPath());
+    $("#current-path", div).text(models.Category.getCurrentPath());
     div.modal();
     return false;
   });

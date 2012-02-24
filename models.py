@@ -16,7 +16,7 @@ xg_on = db.create_transaction_options(xg=True)
 class User(db.Model):
     user = db.UserProperty(required=True)
     nickname = db.StringProperty()
-    joined = db.DateTimeProperty(auto_now=True)
+    joined = db.DateTimeProperty(auto_now_add=True)
     article_count = db.IntegerProperty(default=0)
     comment_count = db.IntegerProperty(default=0)
     locale = db.StringProperty()
@@ -63,7 +63,7 @@ class User(db.Model):
 class UserNicknameHistory(db.Model):
     user = db.ReferenceProperty(reference_class=User, required=True)
     nickname = db.StringProperty()
-    changed = db.DateTimeProperty(auto_now=True)
+    changed = db.DateTimeProperty(auto_now_add=True)
 
 TAG_NORMALIZE_PATTERN = re.compile(u'[\W]+', re.UNICODE)
 class Tag(db.Model):
@@ -96,7 +96,7 @@ class AbstractArticle(db.Model):
     author = db.ReferenceProperty(reference_class=User, required=True)
     body = db.TextProperty(required=True)
     geo_pt = db.GeoPtProperty()
-    created = db.DateTimeProperty(auto_now=True)
+    created = db.DateTimeProperty(auto_now_add=True)
     comment_count = db.IntegerProperty(default=0)
     like_count = db.IntegerProperty(default=0)
     hate_count = db.IntegerProperty(default=0)
@@ -129,7 +129,7 @@ class Category(db.Model):
     article_count = db.IntegerProperty(default=0)
     starred_count = db.IntegerProperty(default=0)
     path = db.StringListProperty()
-    created = db.DateTimeProperty(auto_now=True)
+    created = db.DateTimeProperty(auto_now_add=True)
     is_active = db.BooleanProperty(default=True)
     
     def put(self):
@@ -151,7 +151,7 @@ class Category(db.Model):
         if children or self.article_count > 0 or self.starred_count > 0:
             [db.run_in_transaction_options(xg_on, item.delete) for item in children]
             self.is_active = False
-            self.put()
+            db.run_in_transaction_options(xg_on, self.put)
         else:
             super(Category, self).delete()
             
@@ -211,10 +211,10 @@ class Article(AbstractArticle):
     tags = db.ListProperty(db.Key)
     
     def delete(self):
-        super(Article, self).delete()
+        db.run_in_transaction_options(xg_on, super(Article, self).delete)
         db.run_in_transaction_options(xg_on, self.author.decrease_article_count)
         for item in self.category.get_path():
-            db.run_in_transaction_options(xg_on, item.decrease_artcile_count)            
+            db.run_in_transaction_options(xg_on, item.decrease_article_count)            
         return self
     
     def save(self):
@@ -226,7 +226,7 @@ class Article(AbstractArticle):
             previous_body = Article.get_by_id(self.key().id()).body
             if previous_body != self.body:
                 diff = DIFFER.make_table(previous_body, self.body)
-        super(Article, self).put()
+        db.run_in_transaction_options(xg_on, super(Article, self).put)
         if is_insert:
             db.run_in_transaction_options(xg_on, self.author.increase_article_count)
             for item in self.category.get_path():
@@ -234,7 +234,7 @@ class Article(AbstractArticle):
         else:
             db.run_in_transaction_options(xg_on, ArticleHistory(article=self, updater=User.get_current(), diff=diff).put)
         return self
-    
+        
     @classmethod
     def get_list(cls, category, limit=20, offset=0, orderby='created'):
         q = Category.all()
@@ -262,8 +262,8 @@ class Comment(AbstractArticle):
     sort_key = db.StringProperty(required=False) # to sort comments
     
     def delete(self):
-        super(Comment, self).delete()
-        db.run_in_transaction_options(xg_on, self.article.decrease_comment_count);
+        db.run_in_transaction_options(xg_on, super(Comment, self).delete)
+        db.run_in_transaction_options(xg_on, self.article.decrease_comment_count)
     
     def save(self):
         self.body = bleach.linkify(bleach.clean(self.body), parse_email=True)
@@ -273,7 +273,7 @@ class Comment(AbstractArticle):
         super(Comment, self).put()
         if is_insert:
             self.sort_key = '%s%s' % (self.parent_comment.sort_key, self.key().name()) if self.parent_comment else '%s' % self.key().name()
-            super(Comment, self).put()
+            db.run_in_transaction_options(xg_on, super(Comment, self).put)
             db.run_in_transaction_options(xg_on, self.article.increase_comment_count);
     
     @classmethod
@@ -286,17 +286,21 @@ class Comment(AbstractArticle):
 class Reputation(db.Model):
     article = db.ReferenceProperty(reference_class=Article, required=True)
     user = db.ReferenceProperty(reference_class=User, required=True)
-    created = db.DateTimeProperty(auto_now=True)
+    created = db.DateTimeProperty(auto_now_add=True)
     reputation = db.StringProperty(required=True, choices=['like', 'hate'])
     
     def put(self):
-        self.article.save()
+        if self.user.user == self.article.author.user:
+            raise ValueError(_('Can not give a reputation to your\'s.'))
+        if Reputation.gql('WHERE article = :1 AND user = :2 AND reputation = :3', self.article, self.user, self.reputation).get():
+            raise ValueError(_('You already gave a %s.' % self.reputation))
+        db.run_in_transaction_options(xg_on, super(Reputation, self).put)
         db.run_in_transaction_options(xg_on, getattr(self.article, 'increase_' + self.reputation + '_count'))
         
     def delete(self):
-        self.article.save()
+        db.run_in_transaction_options(xg_on, super(Reputation, self).delete)
         db.run_in_transaction_options(xg_on, getattr(self.article, 'decrease_' + self.reputation + '_count'))
-    
+
     @classmethod
     def exists(cls, article_id):
         return Reputation.all().gql('WHERE article=:article AND user=:user', article=Article.get_by_id(article_id), user=users.get_current_user()).get() is not None
@@ -304,16 +308,16 @@ class Reputation(db.Model):
 class StarredCategory(db.Model):
     category = db.ReferenceProperty(reference_class=Category, required=True)
     user = db.ReferenceProperty(reference_class=User, required=True)
-    created = db.DateTimeProperty(auto_now=True)
+    created = db.DateTimeProperty(auto_now_add=True)
     
-    def put(self, **kwargs):
+    def put(self):
         is_insert = not self.is_saved()
-        super(StarredCategory, self).put(**kwargs)
+        db.run_in_transaction_options(xg_on, super(StarredCategory, self).put)
         if is_insert:
             db.run_in_transaction_options(xg_on, self.category.increase_starred_count)
 
-    def delete(self, **kwargs):
-        super(StarredCategory, self).delete(**kwargs)
+    def delete(self):
+        db.run_in_transaction_options(xg_on, super(StarredCategory, self).delete)
         db.run_in_transaction_options(xg_on, self.category.decrease_starred_count)
                       
     @classmethod
@@ -333,7 +337,7 @@ class ArticleHistory(db.Model):
     article = db.ReferenceProperty(reference_class=Article, required=True)
     updater = db.UserProperty(required=True, auto_current_user=True)
     diff = db.TextProperty()
-    updated = db.DateTimeProperty(auto_now=True)
+    updated = db.DateTimeProperty(auto_now_add=True)
     
 class Subscription(db.Model):
     user = db.ReferenceProperty(reference_class=User, required=True)

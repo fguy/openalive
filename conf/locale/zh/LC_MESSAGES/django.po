@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-15 17:30-0800\n"
+"POT-Creation-Date: 2012-02-23 21:02-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,20 +25,72 @@ msgstr "不指定。"
 msgid "Korean"
 msgstr "韩国"
 
-#: templates/index.html:78
-msgid "Welcome."
-msgstr "欢迎。"
+#: templates/index.html:13 templates/_snippets/nav.html:13
+msgid "Home"
+msgstr "家"
 
-#: templates/_snippets/nav.html:19
+#: templates/index.html:48
+msgid "Loading..."
+msgstr "载入中..."
+
+#: templates/index.html:53
+msgid "Post an Article"
+msgstr "发表文章"
+
+#: templates/index.html:54
+msgid "Location"
+msgstr "位置"
+
+#: templates/index.html:60
+msgid "Title"
+msgstr "标题"
+
+#: templates/index.html:66
+msgid "Body"
+msgstr "身体"
+
+#: templates/index.html:72 templates/_snippets/nav.html:14
+msgid "Tags"
+msgstr "标签"
+
+#: templates/index.html:75
+msgid ""
+"Hit ENTER to add tag. Please do not tag different variations of the same "
+"name."
+msgstr "敲击回车键添加标签。请不要标记相同名称的不同变化。"
+
+#: templates/index.html:79
+msgid "Captcha"
+msgstr "验证码"
+
+#: templates/index.html:88
+msgid "POST"
+msgstr "热门"
+
+#: templates/index.html:89
+msgid "Cancel"
+msgstr "取消"
+
+#: templates/_snippets/nav.html:10
+msgid "Open Alive"
+msgstr "打开活"
+
+#: templates/_snippets/nav.html:15
+msgid "Images"
+msgstr "图片"
+
+#: templates/_snippets/nav.html:16
+msgid "Videos"
+msgstr "视频"
+
+#: templates/_snippets/nav.html:17
+msgid "About"
+msgstr "关于"
+
+#: templates/_snippets/nav.html:21
 msgid "Login"
 msgstr "登录"
 
-#: templates/_snippets/nav.html:21
+#: templates/_snippets/nav.html:29
 msgid "Logout"
 msgstr "登出"
-
-#~ msgid "Create New Quiz"
-#~ msgstr "创建新的测验"
-
-#~ msgid "My Page"
-#~ msgstr "我的页面"

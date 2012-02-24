@@ -15,14 +15,14 @@ function prettyDate(time){
 		return;
 			
 	return day_diff == 0 && (
-			diff < 60 && "just now" ||
-			diff < 120 && "1 minute ago" ||
-			diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
-			diff < 7200 && "1 hour ago" ||
-			diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
-		day_diff == 1 && "Yesterday" ||
-		day_diff < 7 && day_diff + " days ago" ||
-		day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
+			diff < 60 && gettext("just now") ||
+			diff < 120 && gettext("1 minute ago") ||
+			diff < 3600 && Math.floor( diff / 60 ) + gettext(" minutes ago") ||
+			diff < 7200 && gettext("1 hour ago") ||
+			diff < 86400 && Math.floor( diff / 3600 ) + gettext(" hours ago")) ||
+		day_diff == 1 && gettext("Yesterday") ||
+		day_diff < 7 && day_diff + gettext(" days ago") ||
+		day_diff < 31 && Math.ceil( day_diff / 7 ) + gettext(" weeks ago");
 }
 
 // If jQuery is included in the page, adds a jQuery plugin to handle it as well

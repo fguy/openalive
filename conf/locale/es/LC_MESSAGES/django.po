@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-15 17:30-0800\n"
+"POT-Creation-Date: 2012-02-23 21:01-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,20 +25,74 @@ msgstr "No se especifica."
 msgid "Korean"
 msgstr "Coreano"
 
-#: templates/index.html:78
-msgid "Welcome."
-msgstr "Bienvenido."
+#: templates/index.html:13 templates/_snippets/nav.html:13
+msgid "Home"
+msgstr "Casa"
 
-#: templates/_snippets/nav.html:19
+#: templates/index.html:48
+msgid "Loading..."
+msgstr "Cargando ..."
+
+#: templates/index.html:53
+msgid "Post an Article"
+msgstr "Publicar un artículo"
+
+#: templates/index.html:54
+msgid "Location"
+msgstr "Ubicación"
+
+#: templates/index.html:60
+msgid "Title"
+msgstr "Título"
+
+#: templates/index.html:66
+msgid "Body"
+msgstr "Cuerpo"
+
+#: templates/index.html:72 templates/_snippets/nav.html:14
+msgid "Tags"
+msgstr "Etiquetas"
+
+#: templates/index.html:75
+msgid ""
+"Hit ENTER to add tag. Please do not tag different variations of the same "
+"name."
+msgstr ""
+"Pulsa ENTER para añadir la etiqueta. Por favor, no etiquetar diferentes "
+"variaciones del mismo nombre."
+
+#: templates/index.html:79
+msgid "Captcha"
+msgstr "Captcha"
+
+#: templates/index.html:88
+msgid "POST"
+msgstr "POST"
+
+#: templates/index.html:89
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: templates/_snippets/nav.html:10
+msgid "Open Alive"
+msgstr "Abra Alive"
+
+#: templates/_snippets/nav.html:15
+msgid "Images"
+msgstr "Imágenes"
+
+#: templates/_snippets/nav.html:16
+msgid "Videos"
+msgstr "Videos"
+
+#: templates/_snippets/nav.html:17
+msgid "About"
+msgstr "Sobre"
+
+#: templates/_snippets/nav.html:21
 msgid "Login"
 msgstr "Iniciar sesión"
 
-#: templates/_snippets/nav.html:21
+#: templates/_snippets/nav.html:29
 msgid "Logout"
 msgstr "Cerrar sesión"
-
-#~ msgid "Create New Quiz"
-#~ msgstr "Crear New Quiz"
-
-#~ msgid "My Page"
-#~ msgstr "Mi página"

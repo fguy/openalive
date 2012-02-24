@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-10 14:53-0800\n"
+"POT-Creation-Date: 2012-02-23 21:02-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
-#: static/js/client.js:1
-msgid "test"
-msgstr "test"
+#: static/js/editor.js:32
+msgid "Add a tag"
+msgstr "Aggiungi un tag"
+
+#: static/js/editor.js:54
+msgid "No category selected."
+msgstr "Nessuna categoria selezionata."
+
+#: static/js/jquery.pagination.js:17
+msgid "Prev"
+msgstr "Prev"
+
+#: static/js/jquery.pagination.js:18
+msgid "Next"
+msgstr "Prossimo"
+
+#: static/js/pretty.js:19
+msgid " minutes ago"
+msgstr "minuti fa"
+
+#: static/js/pretty.js:20
+msgid "1 hour ago"
+msgstr "1 ora fa"
+
+#: static/js/pretty.js:24
+msgid " weeks ago"
+msgstr "settimane fa"

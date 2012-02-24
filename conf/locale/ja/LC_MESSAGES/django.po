@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-15 17:30-0800\n"
+"POT-Creation-Date: 2012-02-23 21:02-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,20 +25,72 @@ msgstr "指定しないでください。"
 msgid "Korean"
 msgstr "韓国語"
 
-#: templates/index.html:78
-msgid "Welcome."
-msgstr "ようこそ。"
+#: templates/index.html:13 templates/_snippets/nav.html:13
+msgid "Home"
+msgstr "ホーム"
 
-#: templates/_snippets/nav.html:19
+#: templates/index.html:48
+msgid "Loading..."
+msgstr "読み込み中..."
+
+#: templates/index.html:53
+msgid "Post an Article"
+msgstr "記事を投稿する"
+
+#: templates/index.html:54
+msgid "Location"
+msgstr "場所"
+
+#: templates/index.html:60
+msgid "Title"
+msgstr "タイトル"
+
+#: templates/index.html:66
+msgid "Body"
+msgstr "ボディ"
+
+#: templates/index.html:72 templates/_snippets/nav.html:14
+msgid "Tags"
+msgstr "タグ"
+
+#: templates/index.html:75
+msgid ""
+"Hit ENTER to add tag. Please do not tag different variations of the same "
+"name."
+msgstr "タグを追加するには、Enterキーを押す。同じ名前のさまざまなバリエーションをタグ付けしないでください。"
+
+#: templates/index.html:79
+msgid "Captcha"
+msgstr "キャプチャ"
+
+#: templates/index.html:88
+msgid "POST"
+msgstr "POST"
+
+#: templates/index.html:89
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: templates/_snippets/nav.html:10
+msgid "Open Alive"
+msgstr "アライブ開く"
+
+#: templates/_snippets/nav.html:15
+msgid "Images"
+msgstr "イメージズ"
+
+#: templates/_snippets/nav.html:16
+msgid "Videos"
+msgstr "ビデオ"
+
+#: templates/_snippets/nav.html:17
+msgid "About"
+msgstr "約"
+
+#: templates/_snippets/nav.html:21
 msgid "Login"
 msgstr "ログイン"
 
-#: templates/_snippets/nav.html:21
+#: templates/_snippets/nav.html:29
 msgid "Logout"
 msgstr "ログアウト"
-
-#~ msgid "Create New Quiz"
-#~ msgstr "新しいクイズを作成します。"
-
-#~ msgid "My Page"
-#~ msgstr "マイページ"

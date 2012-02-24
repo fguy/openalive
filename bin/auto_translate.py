@@ -7,9 +7,10 @@ PO_FILES = ['django.po', 'djangojs.po']
 
 if __name__ == '__main__':
     for lang in os.listdir(os.path.join(DIR_PATH, 'conf', 'locale')):
-        if not lang.startswith('.'):
+        if lang != 'en' and not lang.startswith('.'):
             print 'Starting translation from language "%s"' % lang
             for f in PO_FILES:
+                print os.path.join(DIR_PATH, 'conf', 'locale', lang, 'LC_MESSAGES', f)
                 po = polib.pofile(os.path.join(DIR_PATH, 'conf', 'locale', lang, 'LC_MESSAGES', f))
                 po.metadata['Content-Type'] = 'text/plain; charset=utf-8'
                 for entry in po.untranslated_entries():

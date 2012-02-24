@@ -89,7 +89,7 @@ class Js(Action):
             src.append(LibFoot)
             src.append(InterPolate)
             
-            src.append("\n_ = gettext");
+            #src.append("\n_ = gettext");
             
             src = ''.join(src)
             memcache.set(cache_key, src)

@@ -63,12 +63,14 @@
 		<py-run script="${django-admin}" pythonpath="${pythonpath}" dir="${src.dir}" failonerror="no">
 			<arg value="makemessages" />
 			<arg value="-a" />
+			<arg value="--ignore=lib/*"/>
 		</py-run>
 		<py-run script="${django-admin}" pythonpath="${pythonpath}" dir="${src.dir}" failonerror="no">
 			<arg value="makemessages" />
 			<arg value="-d" />
 			<arg value="djangojs" />
 			<arg value="-a" />
+			<arg value="--ignore=lib/*"/>
 		</py-run>
 		<py-run script="${src.dir}/bin/auto_translate.py" pythonpath="${pythonpath}" dir="${src.dir}" />
 	</target>

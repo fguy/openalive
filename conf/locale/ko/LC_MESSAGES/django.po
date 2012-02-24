@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-15 17:30-0800\n"
+"POT-Creation-Date: 2012-02-23 21:02-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,20 +25,72 @@ msgstr "지정하지 마십시오."
 msgid "Korean"
 msgstr "한국의"
 
-#: templates/index.html:78
-msgid "Welcome."
-msgstr "환영합니다."
+#: templates/index.html:13 templates/_snippets/nav.html:13
+msgid "Home"
+msgstr "홈"
 
-#: templates/_snippets/nav.html:19
+#: templates/index.html:48
+msgid "Loading..."
+msgstr "로드 중 ..."
+
+#: templates/index.html:53
+msgid "Post an Article"
+msgstr "기사 올리기"
+
+#: templates/index.html:54
+msgid "Location"
+msgstr "위치"
+
+#: templates/index.html:60
+msgid "Title"
+msgstr "제목"
+
+#: templates/index.html:66
+msgid "Body"
+msgstr "몸"
+
+#: templates/index.html:72 templates/_snippets/nav.html:14
+msgid "Tags"
+msgstr "태그"
+
+#: templates/index.html:75
+msgid ""
+"Hit ENTER to add tag. Please do not tag different variations of the same "
+"name."
+msgstr "태그를 추가하려면 Enter를 누르십시오. 같은 이름의 여러 유사 콘텐츠에 태그를 추가하지 마십시오."
+
+#: templates/index.html:79
+msgid "Captcha"
+msgstr "보안 문자"
+
+#: templates/index.html:88
+msgid "POST"
+msgstr "게시"
+
+#: templates/index.html:89
+msgid "Cancel"
+msgstr "취소"
+
+#: templates/_snippets/nav.html:10
+msgid "Open Alive"
+msgstr "살아 열기"
+
+#: templates/_snippets/nav.html:15
+msgid "Images"
+msgstr "이미지"
+
+#: templates/_snippets/nav.html:16
+msgid "Videos"
+msgstr "동영상"
+
+#: templates/_snippets/nav.html:17
+msgid "About"
+msgstr "약"
+
+#: templates/_snippets/nav.html:21
 msgid "Login"
 msgstr "로그인"
 
-#: templates/_snippets/nav.html:21
+#: templates/_snippets/nav.html:29
 msgid "Logout"
 msgstr "로그아웃"
-
-#~ msgid "Create New Quiz"
-#~ msgstr "새로운 퀴즈 만들기"
-
-#~ msgid "My Page"
-#~ msgstr "마이 페이지"

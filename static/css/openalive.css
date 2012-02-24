@@ -91,21 +91,21 @@ body {
 	text-align: center;
 	font-weight: bold;
 	position: fixed;
-	top:0;
-	left:50%;
+	top: 0;
+	left: 50%;
 	width: 140px;
 	margin-left: -70px;
 	z-index: 6000;
-	background-color:#F9EDBE;
+	background-color: #F9EDBE;
 	border-color: #F0C36D;
 	border-style: solid;
 	border-width: 0 2px 2px 2px;
 	border-radius: 2px;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
-	-moz-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-	-webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-	box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+	-moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 	-webkit-border-top-left-radius: 0;
@@ -113,4 +113,34 @@ body {
 	-moz-border-top-left-radius: 0;
 	-moz-border-top-right-radius: 0;
 	padding: 2px 0;
+}
+
+#starred {
+	padding: 5px 0 10px 0;
+	line-height: 1.8
+}
+
+#starred .category-link {
+	color: white;
+	text-decoration: none;
+	white-space: nowrap
+}
+
+#article-btns {
+	margin-bottom:16px;	
+	clear: both;
+	float: left;
+	width: 100%;
+}
+
+#btn-group-misc-article {
+	float: left;
+}
+
+#btn-group-edit-article {
+	float: right;
+	text-align: right;
+}
+.btn-read {
+	display: none
 }
