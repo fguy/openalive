@@ -5,13 +5,12 @@ from models import Category
 import wsgiref.handlers
 import admin
 
-Controller.url_mapping = (
+def main():
+    Controller.url_mapping = (
                               (ur'^/(%s)$' % '|'.join(Category.get_all_categories()), ('service', 'Category')),
                               (r'^/([0-9]+)$', ('service', 'Article')),
                               (r'^/user/([0-9]+)$', ('user', 'Index')),
-                            )
-
-def main():
+                            )    
     application = webapp.WSGIApplication([
                                           (r'^(/admin)(.*)$', appengine_admin.Admin),
                                           ('/.*', Controller)],

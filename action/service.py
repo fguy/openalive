@@ -36,4 +36,18 @@ class Category(Action):
             current_category = models.Category.get_by_name(category) 
         self.category_list = models.Category.get_list(current_category)
         self.current_category = current_category     
-        return Action.Result.DEFAULT   
+        return Action.Result.DEFAULT
+    
+class StarredCategory(Action):
+    def get(self):
+        self.starred_category_list = models.StarredCategory.get_list()
+        return Action.Result.DEFAULT
+    
+    @login_required
+    def post(self, category):
+        models.StarredCategory.star(models.Category.get_by_name(category))
+        return Action.Result.DEFAULT
+    
+    def delete(self, category):
+        models.StarredCategory.unstar(models.Category.get_by_name(category))
+        return Action.Result.DEFAULT

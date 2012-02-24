@@ -11,6 +11,8 @@ import difflib
 DEFAULT_FETCH_COUNT = 1000 
 DIFFER = difflib.HtmlDiff()
 
+xg_on = db.create_transaction_options(xg=True)
+
 class User(db.Model):
     user = db.UserProperty(required=True)
     nickname = db.StringProperty()
@@ -37,6 +39,26 @@ class User(db.Model):
             result = User(user=user, nickname=user.nickname())
             result.put()
         return result
+    
+    def increase_article_count(self):
+        self.article_count += 1
+        self.put()
+
+    def decrease_article_count(self):
+        if self.article_count == 0:
+            raise db.Rollback()
+        self.article_count -= 1
+        self.put()
+        
+    def increase_comment_count(self):
+        self.comment_count += 1
+        self.put()
+
+    def decrease_comment_count(self):
+        if self.comment_count == 0:
+            raise db.Rollback()
+        self.comment_count -= 1
+        self.put()            
     
 class UserNicknameHistory(db.Model):
     user = db.ReferenceProperty(reference_class=User, required=True)
@@ -80,6 +102,26 @@ class AbstractArticle(db.Model):
     hate_count = db.IntegerProperty(default=0)
     last_updated = db.DateTimeProperty()
     
+    def increase_like_count(self):
+        self.like_count += 1
+        self.put()
+
+    def decrease_like_count(self):
+        if self.like_count == 0:
+            raise db.Rollback()        
+        self.like_count -= 1
+        self.put()
+
+    def increase_hate_count(self):
+        self.hate_count += 1
+        self.put()
+
+    def decrease_hate_count(self):
+        if self.hate_count == 0:
+            raise db.Rollback()                
+        self.hate_count -= 1
+        self.put()            
+    
 class Category(db.Model):
     category = db.CategoryProperty(required=True)
     parent_category = db.SelfReferenceProperty(required=False, default=None)
@@ -107,7 +149,7 @@ class Category(db.Model):
     def delete(self):
         children = Category.all().filter('parent_category =', self).fetch(DEFAULT_FETCH_COUNT)
         if children or self.article_count > 0 or self.starred_count > 0:
-            [item.delete() for item in children]
+            [db.run_in_transaction_options(xg_on, item.delete) for item in children]
             self.is_active = False
             self.put()
         else:
@@ -134,6 +176,26 @@ class Category(db.Model):
     def get_all_categories(cls):
         return [item.category for item in Category.all().fetch(DEFAULT_FETCH_COUNT)]
     
+    def increase_article_count(self):
+        self.article_count += 1
+        self.put()
+
+    def decrease_article_count(self):
+        if self.article_count == 0:
+            raise db.Rollback()                
+        self.article_count -= 1
+        self.put()
+        
+    def increase_starred_count(self):
+        self.starred_count += 1
+        self.put()
+
+    def decrease_starred_count(self):
+        if self.starred_count == 0:
+            raise db.Rollback()
+        self.starred_count -= 1
+        self.put()        
+    
     def __unicode__(self):
         return ' > '.join(self.path)
     
@@ -141,7 +203,7 @@ class Category(db.Model):
         result = {'category':self.category, 'description': self.description, 'path': self.path, 'id': self.key().id(), 'article_count': self.article_count, 'starrd_count': self.starred_count, 'created': self.created}
         if hasattr(self, 'children'):
             result['children'] = self.children
-        return result    
+        return result
 
 class Article(AbstractArticle):
     category = db.ReferenceProperty(reference_class=Category, required=True)
@@ -150,9 +212,9 @@ class Article(AbstractArticle):
     
     def delete(self):
         super(Article, self).delete()
+        db.run_in_transaction_options(xg_on, self.author.decrease_article_count)
         for item in self.category.get_path():
-            item.article_count -= 1
-            item.put()        
+            db.run_in_transaction_options(xg_on, item.decrease_artcile_count)            
         return self
     
     def save(self):
@@ -166,13 +228,11 @@ class Article(AbstractArticle):
                 diff = DIFFER.make_table(previous_body, self.body)
         super(Article, self).put()
         if is_insert:
-            self.author.article_count += 1
-            self.author.put()
+            db.run_in_transaction_options(xg_on, self.author.increase_article_count)
             for item in self.category.get_path():
-                item.article_count += 1
-                item.put()
+                db.run_in_transaction_options(xg_on, item.increase_article_count)
         else:
-            ArticleHistory(article=self, updater=User.get_current(), diff=diff).put()
+            db.run_in_transaction_options(xg_on, ArticleHistory(article=self, updater=User.get_current(), diff=diff).put)
         return self
     
     @classmethod
@@ -186,16 +246,24 @@ class Article(AbstractArticle):
         q.order('-%s' % orderby)
         return [{'id': item.key().id(), 'category': item.category.category, 'title': item.title, 'author': {'nickname': item.author.nickname, 'id': item.author.key().id()}, 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated}for item in q.fetch(limit, offset)]
 
-    
+    def increase_comment_count(self):
+        self.comment_count += 1
+        self.put()
+
+    def decrease_comment_count(self):
+        if self.comment_count == 0:
+            raise db.Rollback()
+        self.comment_count -= 1
+        self.put()    
+            
 class Comment(AbstractArticle):
     article = db.ReferenceProperty(reference_class=Article, required=True)
     parent_comment = db.SelfReferenceProperty()
     sort_key = db.StringProperty(required=False) # to sort comments
     
     def delete(self):
-        self.article.comment_count -= 1
-        self.article.put()
-        super(Comment, self).delete()    
+        super(Comment, self).delete()
+        db.run_in_transaction_options(xg_on, self.article.decrease_comment_count);
     
     def save(self):
         self.body = bleach.linkify(bleach.clean(self.body), parse_email=True)
@@ -206,8 +274,7 @@ class Comment(AbstractArticle):
         if is_insert:
             self.sort_key = '%s%s' % (self.parent_comment.sort_key, self.key().name()) if self.parent_comment else '%s' % self.key().name()
             super(Comment, self).put()
-            self.article.comment_count += 1
-            self.article.put()
+            db.run_in_transaction_options(xg_on, self.article.increase_comment_count);
     
     @classmethod
     def get_list(cls, article, limit=20, offset=0, orderby='sort_key'):
@@ -223,14 +290,12 @@ class Reputation(db.Model):
     reputation = db.StringProperty(required=True, choices=['like', 'hate'])
     
     def put(self):
-        cnt = getattr(self.article, self.reputation + '_count')
-        cnt += 1
         self.article.save()
+        db.run_in_transaction_options(xg_on, getattr(self.article, 'increase_' + self.reputation + '_count'))
         
     def delete(self):
-        cnt = getattr(self.article, self.reputation + '_count')
-        cnt -= 1
         self.article.save()
+        db.run_in_transaction_options(xg_on, getattr(self.article, 'decrease_' + self.reputation + '_count'))
     
     @classmethod
     def exists(cls, article_id):
@@ -245,14 +310,25 @@ class StarredCategory(db.Model):
         is_insert = not self.is_saved()
         super(StarredCategory, self).put(**kwargs)
         if is_insert:
-            self.category.starred_count += 1
-            self.category.put()
-            
+            db.run_in_transaction_options(xg_on, self.category.increase_starred_count)
+
     def delete(self, **kwargs):
         super(StarredCategory, self).delete(**kwargs)
-        self.category.starred_count -= 1
-        self.category.put()    
+        db.run_in_transaction_options(xg_on, self.category.decrease_starred_count)
+                      
+    @classmethod
+    def get_list(cls):
+        return [item.category.category for item in StarredCategory.gql('WHERE user = :1', User.get_current()).fetch(DEFAULT_FETCH_COUNT)]
     
+    @classmethod
+    def star(cls, category):
+        user = User.get_current()
+        cls(key_name = '%s-%s' % (user.user.email, category.category), user=user, category=category).put()
+    
+    @classmethod
+    def unstar(cls, category):
+        cls.gql('WHERE user = :1 AND category = :2', User.get_current(), category).get().delete()
+
 class ArticleHistory(db.Model):
     article = db.ReferenceProperty(reference_class=Article, required=True)
     updater = db.UserProperty(required=True, auto_current_user=True)

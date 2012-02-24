@@ -8,11 +8,15 @@
     <div id="container" class="container-fluid">
       <div class="row-fluid">
         <div class="span3">
-		<ul class="breadcrumb">
-		  <li>
-		    <a href="#!/" class="home-link">{% trans 'Home' %}</a> <span class="divider" style="display:none">/</span>
-		  </li>
-		</ul> 
+          <ul class="breadcrumb">
+            <li>
+              <a href="#!/" class="home-link">{% trans 'Home' %}</a> <span class="divider" style="display:none">/</span>
+            </li>
+          </ul>
+          <h5><i class="icon-bookmark"></i>Starred Categories</h5>
+          <div id="starred" class="well sidebar-nav">
+            <ul class="nav nav-list"><li class="loading"><i class="icon-refresh"></i> Loading...</li></ul>
+          </div>          
           <div id="sidebar" class="well sidebar-nav">
             <ul class="nav nav-list"><li class="loading"><i class="icon-refresh"></i> Loading...</li></ul>
           </div><!--/.well -->
