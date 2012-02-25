@@ -13,16 +13,22 @@
               <a href="#!/" class="home-link">{% trans 'Home' %}</a> <span class="divider" style="display:none">/</span>
             </li>
           </ul>
-          <h5><i class="icon-bookmark"></i>Starred Categories</h5>
-          <div id="starred"></div>          
-          <div id="sidebar" class="well sidebar-nav">
-            <ul class="nav nav-list"><li class="loading"><i class="icon-time"></i> {% trans 'Loading...' %}</li></ul>
-          </div><!--/.well -->
+          <div id="starred-wrapper">
+	        <h5><i class="icon-bookmark"></i> {% trans 'Starred Categories' %}</h5>
+	        <nav id="starred"></nav>
+	      </div>
+	      <div id="sidebar-wrapper">
+	        <h5><i class="icon-th-list"></i> {% trans 'Category Explorer' %}</h5>
+	        <nav id="sidebar" class="well sidebar-nav">
+	          <ul class="nav nav-list"><li class="loading"><i class="icon-time"></i> {% trans 'Loading...' %}</li></ul>
+	        </nav><!--/.well -->
+	      </div>
         </div><!--/span-->
         <div class="span9">
           <article id="article-item">
-          	<h2 id="article-item-title"></h2>
-          	<hr>
+            <div class="page-header">
+              	<h2 id="article-item-title"></h2>
+            </div>
           	<div id="article-item-body"></div>
           	<hr>
           </article>
@@ -31,14 +37,24 @@
           		<button id="btn-list-article" class="btn btn-read"><i class="icon-list"></i> {% trans 'List' %}</button><button id="btn-like-article" class="btn btn-read"><i class="icon-heart"></i> {% trans 'Like' %}</button><button id="btn-follow-article" class="btn btn-read"><i class="icon-signal"></i> {% trans 'Follow' %}</button>
           	</div>          
           	<div id="btn-group-edit-article">
-          		<button id="btn-post-article" class="btn btn-primary"><i class="icon-pencil icon-white"></i> {% trans 'New Post' %}</button><span class="btn-group">
+          		<button class="btn-post-article btn btn-primary"><i class="icon-pencil icon-white"></i> {% trans 'New Post' %}</button>
+          		<span class="btn-group">
 		          	<button id="btn-edit-article" class="btn btn-read"><i class="icon-edit"></i> {% trans 'Edit' %}</button>
 		          	<button id="btn-delete-article" class="btn btn-read"><i class="icon-trash"></i> {% trans 'Delete' %}</button>
 	          	</span>
           	</div>
           </div>
+          <div id="no-article">
+			<div class="hero-unit">
+			  <h1>No article in <span class="current-category-name"></span> yet.</h1>
+			  <p>Be a first person</p>
+			  <p>
+			    <button class="btn-post-article btn btn-primary btn-large"><i class="icon-pencil icon-white"></i> {% trans 'New Post' %}</button>
+			  </p>
+			</div>          
+          </div>
           <table id="article-list" class="table table-striped table-bordered table-condensed">
-          	<caption></caption>
+          	<caption class="well"></caption>
 			<thead>
 	          <tr>
 	            <th>{% trans 'Category' %}</th>

@@ -3,7 +3,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 from django.conf import settings
 from django.utils import translation
-from google.appengine.ext import db, webapp
+from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from lib import get_geoipcode
 from lib.json import encode
@@ -23,7 +23,6 @@ LANG_COOKIE_NAME = 'django_language'
 TIMEZONE_COOKIE_NAME = 'django_tz'
 
 class Controller(webapp.RequestHandler):
-    
         url_mapping = []
         
         def __init__(self):

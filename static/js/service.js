@@ -15,7 +15,7 @@ var models = {
 	        models.Article.loadList(category, callback);
 	        return;
 	      }
-	      $("#article-list, #article-pagination").hide();
+	      models.Article.hideList();
 	      $.getJSON("/service/category/" + category, function(data) {
 	        $("#container .breadcrumb li:gt(0)").remove();
 	        $("#container .breadcrumb li:eq(0) .divider").toggle(data.current_category != null);
@@ -29,16 +29,16 @@ var models = {
 	        $(self.starred).each(function(i, item) {
 	          self.markStarred(item);
 	        });
-	        if(data.current_category) {
+	        if(data.current_category) { 
 	          var lastPos = data.current_category.path.length - 1; 
 	          $("#container .breadcrumb").append($(data.current_category.path).map(function(i, item) {
 	            return '<li' + (i == lastPos ? ' class="active"' : "") + '><a href="#!/' + item + '">' + gettext(item) + '</a> ' + (i != lastPos ? '<span class="divider">/</span>' : '') + '</li>'; 
 	          }).get().join(""));
-	          $("#article-list caption").html(data.current_category.description);
+	          data.current_category.description ? $("#article-list caption").html(data.current_category.description) : $("#article-list caption").hide();
 	          models.Article.loadList(data.current_category.category, callback);
 	        } else {
 	        	$("#article-list caption").empty();
-	        	$("#loading").hide();
+	        	$("#loading, #no-article, .btn-post-article").hide();
 	        	models.Article.hide();
 	        }
 	      });
@@ -56,6 +56,7 @@ var models = {
 	      $("#loading").show();
 	      $.getJSON("/service/starred-category", function(data) {
 	        self.renderStarred(data.starred_category_list);
+	        $("#starred-wrapper").toggle(data.starred_category_list.length > 0);
 	        $("#loading").hide();
 	      });
 	    },
@@ -79,6 +80,7 @@ var models = {
 	      $.post("/service/starred-category/" + category, function() {
 	        $("#starred").append(self.decorateStarredItem(category));
 	        self.starred.push(category);
+	        $("#starred-wrapper").toggle(self.starred.length > 0);
 	      }, "json");
 	    },
 	    unstar: function(category) {
@@ -91,12 +93,27 @@ var models = {
 	          $("#starred span:has(.category-link[title=" + category + "])").remove();
 	          var needle = $.inArray(category, self.starred);
 	          needle != -1 && self.starred.splice(needle, 1);
+	          $("#starred-wrapper").toggle(self.starred.length > 0);
 	        },
 	        dataType: "json"
 	      });
 	    }
 	  }
 	  self.loadStarred();
+
+    $("#sidebar .nav .icon-star, #starred .icon-star").live("click", function() {
+      $(this).hasClass("icon-star-empty") ? models.Category.star($(this).parent().attr("title")) : models.Category.unstar($(this).parent().attr("title"));
+      return false;
+    });
+
+	  $("#sidebar .nav > li > a").live("click", function() {
+	    if(!$(this).hasClass("children")) {
+	      $("#container .breadcrumb .active").text($(this).attr("title"));
+	      $("#sidebar .nav .active").removeClass("active");
+	      $(this).parent().addClass("active");    
+	    }
+	    return true;
+	  });	  
 	  return self;
 	})(),
 	
@@ -104,23 +121,31 @@ var models = {
 	  var self = {
 	  		current: null,
 	      loadList: function(category, callback) {
+	        $("#loading, #article-btns, .btn-post-article").show();
 	      	var page = self.getCurrentPage();
 	      	page || (page = 1);
 	      	if($("#article-list").data("category") == category && $("#article-list").data("page") == page) {
+	      	  self.showList();
 	      		callback && callback();
-	      		$("#loading").hide();
+	      		$("#no-article, #loading").hide();
 	      		return;
 	      	}
-	      	document.title = models.Category.getCurrent();
-	      	$("#loading").show();
+	      	var currentCategory = models.Category.getCurrent();
+	      	document.title = currentCategory;
 	      	self.hide();
 	      	$.getJSON("/service/article-list/" + category, {page: page}, function(data) {
-	      		var currentCategory = models.Category.getCurrent();
+	      	  if(data.list.length == 0) { // no article in this category.
+	      	    $("#no-article").show().find(".current-category-name").text(currentCategory);
+	      	    $("#loading").hide();
+	      	    self.hideList();
+	      	    return;
+	      	  }
+	      	  $("#no-article").hide();
 	      		$("#article-list tbody").html($(data.list).map(function(i, item) {
 	      			return self.decorateRow(currentCategory, page, item);
 	      		}).get().join(""));
 	      		$("#article-list").data("category", category).data("page", page);
-	      		$("#article-list, #article-pagination").show();
+	      		self.showList();
 	      		$("#article-pagination").pagination(data.count, {
 	            items_per_page : 20,
 	            current_page : page - 1, // zero base
@@ -142,8 +167,6 @@ var models = {
 	        return HASH_PARAMS.page;
 	      },
 	      show: function(id) {
-	        $.scrollTo(0, 100);
-	      	$("#loading, .btn-read").show();
 	      	$("#article-list tbody .active").removeClass("active");
 	      	$("#article-list tbody tr:has(a[href*='/" + id + "'])").addClass("active");
 	      	$("#article-item #article-item-body").html('<div class="loading"><i class="icon-clock">' + gettext("Loading...") + "</div>");
@@ -151,14 +174,23 @@ var models = {
 	      		if(!data.article) {
 	      			return;
 	      		}
+	          $("#loading, .btn-read").show();
 	      		document.title = data.article.title + " - " + data.article.category.category;
 	      		self.current = data.article;
 	      		$.each(data.article, function(k, v) {
 	      			$("#article-item #article-item-" + k).html(v);
 	      		});
 	      		$("#article-item").show();
-	      		$("#loading").hide();
+	      		$.scrollTo($("#article-item").position().top - 57, 100)
+	      		$("#loading, #article-list caption").hide();
 	      	});
+	      },
+	      hideList: function() {
+	        $("#article-list, #article-pagination, #article-list caption").hide();
+	      },
+	      showList: function() {
+	        $("#no-article").hide();
+	        $("#article-list, #article-pagination, #article-list caption:not(:empty)").show();
 	      },
 	      hide: function() {
 	      	self.current = null;
@@ -173,7 +205,16 @@ var models = {
 	          }
 	          $(data.article.category.path).each(function(i, item) {
 	            var countDiv = $("#sidebar .category-link[title=" + item + "] .article-count");
-	            countDiv.length > 0 && countDiv.text("(" + (parseInt(countDiv.text().match(/[0-9]+/)[0]) + 1) + ")");
+	            if(countDiv.length > 0) {
+	              count = parseInt(countDiv.text().match(/[0-9]+/)[0]) + 1;
+	              countDiv.text("(" + count + ")");
+	              count == 1 && self.showList();
+	              
+                if(item == currentCategory && count == 1) {
+                  $("#no-article").hide();
+                  self.showList();
+                }	              
+	            }
 	          });
 	          $(self.decorateRow(currentCategory, 1, $.extend(true, data.article, {
 	            category: data.article.category.category,
@@ -197,8 +238,18 @@ var models = {
 		        success: function() {
 		        	$().toastmessage("showSuccessToast", gettext("Deleted."));
 		          $("#article-list tr.active").remove();
-		        	$.history.load("!/" + models.Category.getCurrent());
+		          var currentCategory = models.Category.getCurrent();
+		        	$.history.load("!/" + currentCategory);
 		          $("#loading").hide();
+	            $(self.current.category.path).each(function(i, item) {
+	              var countDiv = $("#sidebar .category-link[title=" + item + "] .article-count");
+	              if(countDiv.length > 0) {
+	                count = parseInt(countDiv.text().match(/[0-9]+/)[0]) - 1;
+	                countDiv.text("(" + count + ")");
+	                count == 1 && self.showList();
+	              }
+	            });
+		          self.current = null;
 		        },
 		        dataType: "json"
 		      });	      	
@@ -207,17 +258,58 @@ var models = {
 	        return '<tr>\
 	          <td>' + item.category + '</td>\
 	          <td><a href="#!/' + currentCategory + '/' + item.id + '?page=' + page + '" class="article-item" title="' + item.title + '">' + item.title + '</a>' + (item.comment_count > 0 ? ' <span class="comment-count">(' + item.comment_count + ')</span>' : "") + '</td>\
-	          <td><a href="/user/' + item.author.id + '" class="user">' + item.author.nickname + '</td>\
+	          <td><a href="/user/' + item.author.id + '" class="user">' + models.User.getAvatar(item.author.email_hash, 16) +  item.author.nickname + '</td>\
 	          <td><span class="like-count">' + item.like_count + '</span></td>\
 	          <td><time datetime="">' + prettyDate(item.created) + '</time></td>\
 	        </tr>';
 	      }
 	  }
+    $("#btn-list-article").click(function() {
+      var loc = "!/" + models.Category.getCurrent();
+      var page = self.getCurrentPage();
+      page > 1 && (loc += '?page=' + page);
+      $.history.load(loc)
+    });
+
+	  $("#btn-like-article, #btn-hate-article").click(function() {
+      var type = $(this).attr("id") == "btn-like-article" ? "like" : "hate";
+      var callback = function() {
+        var countDiv = $("#article-list tr.active ." + type + "-count");
+        if(countDiv.length > 0) {
+          var count = parseInt(countDiv.text().match(/[0-9]+/)[0]) + 1;
+          countDiv.text(count);
+          $("#article-item #article-item-" + type + "_count").text(count);
+          $().toastmessage("showSuccessToast", gettext(type + "d."));
+        }
+      };
+      var id = models.Article.getCurrent().id;
+      type == "like" ? models.Reputation.like(id, callback) : models.Reputation.hate(id, callback);
+    });
+
+    $("#btn-post-article-submit").click(function() {
+      models.Article.post($("#post-article-form"));
+      return false;
+    });
+
+    $("#btn-delete-article").click(function() {
+      models.Article.delete();
+      return false;
+    });
+	  
+	  $("#article-list tbody .article-item").live("click", function(event) {
+	    $("#article-item #article-item-title").text($(this).attr("title"));
+	    return true;
+	  });
 	  return self;
 	})(),
 	
 	User: (function() {
-		
+		var self = {
+		    getAvatar: function(hash, size) {
+		      return '<img class="avatar ' + (size ? "avatar-" + size : "") + '" src=http://www.gravatar.com/avatar/' + hash + '?d=mm' + (size ? "&s=" + size : "") + '>';
+		    }
+		};
+	  return self;
 	})(),
 	
 	Reputation: {
@@ -229,51 +321,3 @@ var models = {
 		}
 	}
 }
-
-$("#article-list tbody .article-item").live("click", function(event) {
-	$("#article-item #article-item-title").text($(this).attr("title"));
-	return true;
-});
-
-$("#sidebar .nav .icon-star, #starred .icon-star").live("click", function() {
-  $(this).hasClass("icon-star-empty") ? models.Category.star($(this).parent().attr("title")) : models.Category.unstar($(this).parent().attr("title"));
-  return false;
-});
-
-$("#btn-list-article").click(function() {
-	models.Article.hide();
-});
-
-$("#btn-like-article, #btn-hate-article").click(function() {
-	var type = $(this).attr("id") == "btn-like-article" ? "like" : "hate";
-	var callback = function() {
-		var countDiv = $("#article-list tr.active ." + type + "-count");
-    if(countDiv.length > 0) {
-    	var count = parseInt(countDiv.text().match(/[0-9]+/)[0]) + 1;
-    	countDiv.text(count);
-    	$("#article-item #article-item-" + type + "_count").text(count);
-    	$().toastmessage("showSuccessToast", gettext(type + "d."));
-    }
-	};
-	var id = models.Article.getCurrent().id;
-	type == "like" ? models.Reputation.like(id, callback) : models.Reputation.hate(id, callback);
-});
-
-$("#btn-post-article-submit").click(function() {
-  models.Article.post($("#post-article-form"));
-  return false;
-});
-
-$("#btn-delete-article").click(function() {
-  models.Article.delete();
-  return false;
-});
-
-$("#sidebar .nav > li > a").live("click", function() {
-  if(!$(this).hasClass("children")) {
-    $("#container .breadcrumb .active").text($(this).attr("title"));
-    $("#sidebar .nav .active").removeClass("active");
-    $(this).parent().addClass("active");    
-  }
-  return true;
-});

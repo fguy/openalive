@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-23 21:02-0800\n"
+"POT-Creation-Date: 2012-02-24 13:52-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,23 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
+
+#: models.py:296
+msgid "Can not give a reputation to your's."
+msgstr "不能给你的声誉。"
+
+#: models.py:298
+#, python-format
+msgid "You already gave a %s."
+msgstr "你已经给了％s。"
+
+#: action/service.py:23
+msgid "Only the author can edit this article."
+msgstr "只有作者可以编辑这篇文章。"
+
+#: action/service.py:34
+msgid "Only the author can delete this article."
+msgstr "只有作者可以删除这篇文章。"
 
 #: conf/__init__.py:5
 msgid "Do not specify."
@@ -29,45 +46,93 @@ msgstr "韩国"
 msgid "Home"
 msgstr "家"
 
-#: templates/index.html:48
+#: templates/index.html:17
+msgid "Starred Categories"
+msgstr "五星分类"
+
+#: templates/index.html:21
+msgid "Categories"
+msgstr "分类"
+
+#: templates/index.html:23 templates/index.html.py:75
 msgid "Loading..."
 msgstr "载入中..."
 
-#: templates/index.html:53
-msgid "Post an Article"
-msgstr "发表文章"
+#: templates/index.html:37
+msgid "List"
+msgstr "表"
 
-#: templates/index.html:54
-msgid "Location"
-msgstr "位置"
+#: templates/index.html:37
+msgid "Like"
+msgstr "喜欢"
+
+#: templates/index.html:37
+msgid "Follow"
+msgstr "遵循"
+
+#: templates/index.html:40 templates/index.html.py:52
+msgid "New Post"
+msgstr "发新话题"
+
+#: templates/index.html:42
+msgid "Edit"
+msgstr "编辑"
+
+#: templates/index.html:43
+msgid "Delete"
+msgstr "删除"
 
 #: templates/index.html:60
+msgid "Category"
+msgstr "类别"
+
+#: templates/index.html:61 templates/index.html.py:87
 msgid "Title"
 msgstr "标题"
 
-#: templates/index.html:66
+#: templates/index.html:62
+msgid "Author"
+msgstr "作者"
+
+#: templates/index.html:63
+msgid "Liked"
+msgstr "喜欢"
+
+#: templates/index.html:64
+msgid "Date"
+msgstr "日期"
+
+#: templates/index.html:80
+msgid "Post an Article"
+msgstr "发表文章"
+
+#: templates/index.html:81
+msgid "Location"
+msgstr "位置"
+
+#: templates/index.html:93
 msgid "Body"
 msgstr "身体"
 
-#: templates/index.html:72 templates/_snippets/nav.html:14
+#: templates/index.html:99 templates/_snippets/nav.html:14
 msgid "Tags"
 msgstr "标签"
 
-#: templates/index.html:75
+#: templates/index.html:102
 msgid ""
 "Hit ENTER to add tag. Please do not tag different variations of the same "
 "name."
 msgstr "敲击回车键添加标签。请不要标记相同名称的不同变化。"
 
-#: templates/index.html:79
+#: templates/index.html:106
 msgid "Captcha"
 msgstr "验证码"
 
-#: templates/index.html:88
+#: templates/index.html:115
 msgid "POST"
 msgstr "热门"
 
-#: templates/index.html:89
+#: templates/index.html:116
 msgid "Cancel"
 msgstr "取消"
 

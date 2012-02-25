@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-23 21:02-0800\n"
+"POT-Creation-Date: 2012-02-24 13:52-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,7 @@ msgstr "태그 추가"
 
 #: static/js/editor.js:54
 msgid "No category selected."
-msgstr "어떤 카테고리를 선택하지 않았습니다."
+msgstr "분류를 지정하지 않았습니다."
 
 #: static/js/jquery.pagination.js:17
 msgid "Prev"
@@ -44,3 +44,15 @@ msgstr "1 시간 전"
 #: static/js/pretty.js:24
 msgid " weeks ago"
 msgstr "주 전"
+
+#: static/js/service.js:171
+msgid "Loading..."
+msgstr "로드 중 ..."
+
+#: static/js/service.js:211
+msgid "Posted."
+msgstr "게시되었습니다."
+
+#: static/js/service.js:222
+msgid "Deleted."
+msgstr "삭제되었습니다."

@@ -8,7 +8,7 @@
             <span class="icon-bar"></span>
           </button>
           <a class="brand" href="#!/" class="home-link">{% trans 'Open Alive' %}</a>
-          <div class="nav-collapse">
+          <nav class="nav-collapse">
             <ul class="nav">
               <li class="active"><a href="#!/" class="home-link">{% trans 'Home' %}</a></li>
               <li><a href="#/tags">{% trans 'Tags' %}</a></li>
@@ -18,10 +18,10 @@
             </ul>
 		    <div class="btn-toolbar pull-right">
 				{% ifequal user None %}
-                    <a class="btn btn-primary" href="{{login_url}}">{% trans 'Login' %}</a>
+                    <a class="btn btn-primary" href="{{login_url}}"><i class="icon-arrow-right icon-white"></i> {% trans 'Login' %}</a>
                 {% else %}
 					<div class="btn-group">
-					    <button class="btn btn-primary"><i class="icon-user icon-white"></i> {{ user }}</button>
+					    <button class="btn btn-primary"><i class="icon-user icon-white"></i> {{ user.nickname }}</button>
 					    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
 						<ul class="dropdown-menu">
 						    <li><a href="/user/me">Edit</a></li>
@@ -31,7 +31,7 @@
 				    </div>
 				{% endifequal %}
 			</div>
-          </div><!--/.nav-collapse -->
+          </nav><!--/.nav-collapse -->
         </div>
       </div>
     </div>

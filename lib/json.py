@@ -67,7 +67,7 @@ class GqlEncoder(simplejson.JSONEncoder):
 
     elif isinstance(obj, users.User):
       output = {}
-      methods = ['nickname', 'email', 'auth_domain']
+      methods = ['nickname']
       for method in methods:
         output[method] = getattr(obj, method)()
       return output

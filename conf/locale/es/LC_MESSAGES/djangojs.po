@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-23 21:02-0800\n"
+"POT-Creation-Date: 2012-02-24 13:52-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,3 +44,15 @@ msgstr "Hace 1 hora"
 #: static/js/pretty.js:24
 msgid " weeks ago"
 msgstr "semanas"
+
+#: static/js/service.js:171
+msgid "Loading..."
+msgstr "Cargando ..."
+
+#: static/js/service.js:211
+msgid "Posted."
+msgstr "Publicado."
+
+#: static/js/service.js:222
+msgid "Deleted."
+msgstr "Eliminados."

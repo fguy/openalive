@@ -6,11 +6,14 @@ import wsgiref.handlers
 import admin
 
 def main():
-    Controller.url_mapping = (
-                              (ur'^/(%s)$' % '|'.join(Category.get_all_categories()), ('service', 'Category')),
+    categories = '|'.join(Category.get_all_categories())
+    Controller.url_mapping = [
                               (r'^/([0-9]+)$', ('service', 'Article')),
                               (r'^/user/([0-9]+)$', ('user', 'Index')),
-                            )    
+                            ]
+    if categories:
+        Controller.url_mapping.append((ur'^/(%s)$' % categories, ('service', 'Category')))
+                 
     application = webapp.WSGIApplication([
                                           (r'^(/admin)(.*)$', appengine_admin.Admin),
                                           ('/.*', Controller)],

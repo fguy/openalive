@@ -1,5 +1,5 @@
 $(function() {
-  var button = $("#btn-post-article");
+  var button = $(".btn-post-article");
   var div = $("#post-article");
   var initialized = false;
 

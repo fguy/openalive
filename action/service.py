@@ -4,7 +4,6 @@ from google.appengine.api import users
 import models
 
 class Article(Action):
-    LIST_PER_PAGE = 20
     @login_required
     def post(self, category):
         self.article = models.Article(
@@ -23,7 +22,12 @@ class Article(Action):
             raise users.NotAllowedError(_('Only the author can edit this article.'))        
         article.title = self.request.get('title'),
         article.body = self.request.get('body'),
-        article.tags = models.Tag.save_all(self.request.get('tags').split(',')),
+        tag_string = self.request.get('tags')
+        if tag_string:
+            tags = models.Tag.save_all(self.request.get('tags').split(','))
+            if article.tags:
+                models.Tag.decrease(list(set(article.tags)-set([item.key() for item in tags])))
+            article.tags = tags
         article.save()
         return Action.Result.DEFAULT
 
@@ -37,15 +41,40 @@ class Article(Action):
     
     def get(self, article_id):
         self.article = models.Article.get_by_id(int(article_id))
-        self.tags = models.Tag.get(self.article.tags)
+        if self.article:
+            self.tags = models.Tag.get(self.article.tags)
+        user = users.get_current_user()
+        if user:
+            for item in models.Reputation.types:
+                setattr(self, item, models.Reputation.exists(self.article, item))
+        return Action.Result.DEFAULT
+
+class User(Action):
+    def get(self, user_id):
+        self.user = models.User.get_by_id(user_id)
+        return Action.Result.DEFAULT
+    
+    @login_required
+    def put(self):
+        user = models.User.get_current()
+        user.put()
+        return Action.Result.DEFAULT
+    
+class UserArticleList():
+    LIST_PER_PAGE = 20
+    def get(self, user_id, page):
+        page = int(self.request.get('page', 1))
+        offset = (page - 1) * self.LIST_PER_PAGE        
+        self.article_list = models.User.get_article_list(self.LIST_PER_PAGE, offset, self.request.get('sort', 'created'))
         return Action.Result.DEFAULT
             
 class ArticleList(Action):
+    LIST_PER_PAGE = 20
     def get(self, category):
         page = int(self.request.get('page', 1))
-        offset = (page - 1) * Article.LIST_PER_PAGE
+        offset = (page - 1) * self.LIST_PER_PAGE
         category_obj = models.Category.get_by_name(category)
-        self.list = models.Article.get_list(category_obj, Article.LIST_PER_PAGE, offset)
+        self.list = models.Article.get_list(category_obj, self.LIST_PER_PAGE, offset)
         self.count = category_obj.article_count
         return Action.Result.DEFAULT  
     
@@ -58,15 +87,32 @@ class Category(Action):
         self.current_category = current_category     
         return Action.Result.DEFAULT
     
+class Reputation(Action):
+    def post(self, article_id):
+        models.Reputation(article=models.Article.get_by_id(int(article_id)), user=models.User.get_current(), reputation='like').put()
+        return Action.Result.DEFAULT
+    
+    def get(self, article_id):
+        self.count = models.Reputation.get_list(models.Article.get_by_id(article_id), 'like')
+        return Action.Result.DEFAULT
+    
 class Like(Action):
     def post(self, article_id):
         models.Reputation(article=models.Article.get_by_id(int(article_id)), user=models.User.get_current(), reputation='like').put()
+        return Action.Result.DEFAULT
+    
+    def get(self, article_id):
+        self.count = models.Reputation.get_list(models.Article.get_by_id(article_id), 'like')
         return Action.Result.DEFAULT
 
 class Hate(Action):
     def post(self, article_id):
         models.Reputation(article=models.Article.get_by_id(int(article_id)), user=models.User.get_current(), reputation='hate').put()
         return Action.Result.DEFAULT
+    
+    def get(self, article_id):
+        self.count = models.Reputation.get_list(models.Article.get_by_id(article_id), 'like')
+        return Action.Result.DEFAULT    
     
 class StarredCategory(Action):
     def get(self):

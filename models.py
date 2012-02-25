@@ -4,6 +4,7 @@ from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.ext import db
 from lib import bleach
 import re
+import md5
 import datetime
 import logging
 import difflib
@@ -20,6 +21,7 @@ class User(db.Model):
     article_count = db.IntegerProperty(default=0)
     comment_count = db.IntegerProperty(default=0)
     locale = db.StringProperty()
+    email_hash = db.StringProperty()
     signature = db.TextProperty()
     
     @classmethod
@@ -34,9 +36,11 @@ class User(db.Model):
     @classmethod
     def get_current(cls):
         user = users.get_current_user()
+        if not user:
+            return None
         result = User.gql('WHERE user = :1', user).get()
         if not result:
-            result = User(user=user, nickname=user.nickname())
+            result = User(user=user, nickname=user.nickname(), email_hash=md5.new(user.email().lower()).hexdigest())
             result.put()
         return result
     
@@ -58,7 +62,21 @@ class User(db.Model):
         if self.comment_count == 0:
             raise db.Rollback()
         self.comment_count -= 1
-        self.put()            
+        self.put()
+        
+    @classmethod
+    def get_article_list(cls, limit=20, offset=0, orderby='created'):
+        q = Article.all()
+        q.filter('author = ', User.get_current())
+        q.order('-%s' % orderby)
+        return [{'id': item.key().id(), 'category': item.category.category, 'title': item.title, 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated}for item in q.fetch(limit, offset)]
+
+    @classmethod
+    def get_comment_list(cls, limit=20, offset=0, orderby='created'):
+        q = Comment.all()
+        q.filter('author = ', User.get_current())
+        q.order('-%s' % orderby)
+        return [{'id': item.key().id(), 'article': {'id': item.article.key().id(), 'category': item.article.category.category}, 'body': item.body, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created} for item in q.fetch(limit, offset)]
     
 class UserNicknameHistory(db.Model):
     user = db.ReferenceProperty(reference_class=User, required=True)
@@ -73,8 +91,14 @@ class Tag(db.Model):
     
     @classmethod
     def normalize(cls, tag):
-        return [tag, TAG_NORMALIZE_PATTERN.sub(u'', tag)]
-
+        normalized = TAG_NORMALIZE_PATTERN.sub(u'', tag)
+        return [tag, normalized] if tag != normalized else [tag]
+    
+    @classmethod
+    def decrease(cls, tags):
+        for tag in cls.get(tags):
+            tag.count -= 1
+            db.run_in_transaction(tag.put)
         
     @classmethod
     def save_all(cls, tags):
@@ -85,10 +109,10 @@ class Tag(db.Model):
                 tag = Tag.gql('WHERE content IN :1', normalized).get()
                 if tag:
                     tag.content = list(set(tag.content + normalized))
-                    tag.put()
                 else:
                     tag = Tag(content=normalized)
-                    tag.put()
+                tag.count += 1
+                db.run_in_transaction(tag.put)
                 result.append(tag.key())
         return result
     
@@ -212,6 +236,7 @@ class Article(AbstractArticle):
     
     def delete(self):
         db.run_in_transaction_options(xg_on, super(Article, self).delete)
+        db.run_in_transaction_options(xg_on, ArticleHistory.gql('WHERE article = :1', self).delete)
         db.run_in_transaction_options(xg_on, self.author.decrease_article_count)
         for item in self.category.get_path():
             db.run_in_transaction_options(xg_on, item.decrease_article_count)            
@@ -244,7 +269,7 @@ class Article(AbstractArticle):
         q = Article.all()
         q.filter('category IN ', categories)
         q.order('-%s' % orderby)
-        return [{'id': item.key().id(), 'category': item.category.category, 'title': item.title, 'author': {'nickname': item.author.nickname, 'id': item.author.key().id()}, 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated}for item in q.fetch(limit, offset)]
+        return [{'id': item.key().id(), 'category': item.category.category, 'title': item.title, 'author': {'email_hash': item.author.email_hash, 'nickname': item.author.nickname, 'id': item.author.key().id()}, 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated}for item in q.fetch(limit, offset)]
 
     def increase_comment_count(self):
         self.comment_count += 1
@@ -284,10 +309,11 @@ class Comment(AbstractArticle):
         return query.fetch(limit, offset)         
     
 class Reputation(db.Model):
+    types = ['like', 'hate']
     article = db.ReferenceProperty(reference_class=Article, required=True)
     user = db.ReferenceProperty(reference_class=User, required=True)
     created = db.DateTimeProperty(auto_now_add=True)
-    reputation = db.StringProperty(required=True, choices=['like', 'hate'])
+    reputation = db.StringProperty(required=True, choices=types)
     
     def put(self):
         if self.user.user == self.article.author.user:
@@ -300,10 +326,17 @@ class Reputation(db.Model):
     def delete(self):
         db.run_in_transaction_options(xg_on, super(Reputation, self).delete)
         db.run_in_transaction_options(xg_on, getattr(self.article, 'decrease_' + self.reputation + '_count'))
+    
+    @classmethod
+    def get_list(cls, article, reputation):
+        return [item.user.user for item in cls.gql('WHERE article = :1 AND reputation = :2', article, reputation).fetch(DEFAULT_FETCH_COUNT)]
 
     @classmethod
-    def exists(cls, article_id):
-        return Reputation.all().gql('WHERE article=:article AND user=:user', article=Article.get_by_id(article_id), user=users.get_current_user()).get() is not None
+    def exists(cls, article, reputation):
+        user = User.get_current()
+        if not user:
+            return False
+        return cls.gql('WHERE article=:article AND user=:user AND reputation = :reputation', article=article, user=user, reputation=reputation).get() is not None
     
 class StarredCategory(db.Model):
     category = db.ReferenceProperty(reference_class=Category, required=True)
@@ -327,7 +360,7 @@ class StarredCategory(db.Model):
     @classmethod
     def star(cls, category):
         user = User.get_current()
-        cls(key_name = '%s-%s' % (user.user.email, category.category), user=user, category=category).put()
+        cls(key_name='%s-%s' % (user.user.email, category.category), user=user, category=category).put()
     
     @classmethod
     def unstar(cls, category):

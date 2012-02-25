@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-23 21:02-0800\n"
+"POT-Creation-Date: 2012-02-24 13:52-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,63 +17,128 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
+#: models.py:296
+msgid "Can not give a reputation to your's."
+msgstr "자기가 쓴 글을 스스로 평가할 수 없습니다."
+
+#: models.py:298
+#, python-format
+msgid "You already gave a %s."
+msgstr "이미 % s 했습니다."
+
+#: action/service.py:23
+msgid "Only the author can edit this article."
+msgstr "글쓴이만 편집할 수 있습니다."
+
+#: action/service.py:34
+msgid "Only the author can delete this article."
+msgstr "글쓴이만 삭제할 수 있습니다."
+
 #: conf/__init__.py:5
 msgid "Do not specify."
 msgstr "지정하지 마십시오."
 
 #: conf/__init__.py:7
 msgid "Korean"
-msgstr "한국의"
+msgstr "한국어"
 
 #: templates/index.html:13 templates/_snippets/nav.html:13
 msgid "Home"
 msgstr "홈"
 
-#: templates/index.html:48
+#: templates/index.html:17
+msgid "Starred Categories"
+msgstr "별표 분류"
+
+#: templates/index.html:21
+msgid "Categories"
+msgstr "분류 목록"
+
+#: templates/index.html:23 templates/index.html.py:75
 msgid "Loading..."
 msgstr "로드 중 ..."
 
-#: templates/index.html:53
-msgid "Post an Article"
-msgstr "기사 올리기"
+#: templates/index.html:37
+msgid "List"
+msgstr "목록"
 
-#: templates/index.html:54
-msgid "Location"
-msgstr "위치"
+#: templates/index.html:37
+msgid "Like"
+msgstr "좋아요"
+
+#: templates/index.html:37
+msgid "Follow"
+msgstr "관심 게시물"
+
+#: templates/index.html:40 templates/index.html.py:52
+msgid "New Post"
+msgstr "새 게시물 작성"
+
+#: templates/index.html:42
+msgid "Edit"
+msgstr "편집"
+
+#: templates/index.html:43
+msgid "Delete"
+msgstr "삭제"
 
 #: templates/index.html:60
+msgid "Category"
+msgstr "분류"
+
+#: templates/index.html:61 templates/index.html.py:87
 msgid "Title"
 msgstr "제목"
 
-#: templates/index.html:66
-msgid "Body"
-msgstr "몸"
+#: templates/index.html:62
+msgid "Author"
+msgstr "작성자"
 
-#: templates/index.html:72 templates/_snippets/nav.html:14
+#: templates/index.html:63
+msgid "Liked"
+msgstr "추천"
+
+#: templates/index.html:64
+msgid "Date"
+msgstr "날짜"
+
+#: templates/index.html:80
+msgid "Post an Article"
+msgstr "새 글 쓰기"
+
+#: templates/index.html:81
+msgid "Location"
+msgstr "위치"
+
+#: templates/index.html:93
+msgid "Body"
+msgstr "내용"
+
+#: templates/index.html:99 templates/_snippets/nav.html:14
 msgid "Tags"
 msgstr "태그"
 
-#: templates/index.html:75
+#: templates/index.html:102
 msgid ""
 "Hit ENTER to add tag. Please do not tag different variations of the same "
 "name."
-msgstr "태그를 추가하려면 Enter를 누르십시오. 같은 이름의 여러 유사 콘텐츠에 태그를 추가하지 마십시오."
+msgstr "태그를 추가하려면 Enter를 누르십시오. 비슷한 이름의 태그를 여러개 추가하진 마십시오."
 
-#: templates/index.html:79
+#: templates/index.html:106
 msgid "Captcha"
 msgstr "보안 문자"
 
-#: templates/index.html:88
+#: templates/index.html:115
 msgid "POST"
 msgstr "게시"
 
-#: templates/index.html:89
+#: templates/index.html:116
 msgid "Cancel"
 msgstr "취소"
 
 #: templates/_snippets/nav.html:10
 msgid "Open Alive"
-msgstr "살아 열기"
+msgstr "개생"
 
 #: templates/_snippets/nav.html:15
 msgid "Images"
@@ -85,7 +150,7 @@ msgstr "동영상"
 
 #: templates/_snippets/nav.html:17
 msgid "About"
-msgstr "약"
+msgstr "소개"
 
 #: templates/_snippets/nav.html:21
 msgid "Login"

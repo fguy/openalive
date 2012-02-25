@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-23 21:01-0800\n"
+"POT-Creation-Date: 2012-02-24 13:52-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,23 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
+
+#: models.py:296
+msgid "Can not give a reputation to your's."
+msgstr "Impossible de donner une réputation à la vôtre."
+
+#: models.py:298
+#, python-format
+msgid "You already gave a %s."
+msgstr "Vous avez déjà donné un% s."
+
+#: action/service.py:23
+msgid "Only the author can edit this article."
+msgstr "Seul l&#39;auteur peut modifier cet article."
+
+#: action/service.py:34
+msgid "Only the author can delete this article."
+msgstr "Seul l&#39;auteur peut supprimer cet article."
 
 #: conf/__init__.py:5
 msgid "Do not specify."
@@ -29,31 +46,79 @@ msgstr "Coréen"
 msgid "Home"
 msgstr "Maison"
 
-#: templates/index.html:48
+#: templates/index.html:17
+msgid "Starred Categories"
+msgstr "Catégories favorites"
+
+#: templates/index.html:21
+msgid "Categories"
+msgstr "Catégories"
+
+#: templates/index.html:23 templates/index.html.py:75
 msgid "Loading..."
 msgstr "Chargement en cours ..."
 
-#: templates/index.html:53
-msgid "Post an Article"
-msgstr "Poster un article"
+#: templates/index.html:37
+msgid "List"
+msgstr "Liste"
 
-#: templates/index.html:54
-msgid "Location"
-msgstr "Emplacement"
+#: templates/index.html:37
+msgid "Like"
+msgstr "Comme"
+
+#: templates/index.html:37
+msgid "Follow"
+msgstr "Suivre"
+
+#: templates/index.html:40 templates/index.html.py:52
+msgid "New Post"
+msgstr "Poster un nouveau"
+
+#: templates/index.html:42
+msgid "Edit"
+msgstr "Éditer"
+
+#: templates/index.html:43
+msgid "Delete"
+msgstr "Effacer"
 
 #: templates/index.html:60
+msgid "Category"
+msgstr "Catégorie"
+
+#: templates/index.html:61 templates/index.html.py:87
 msgid "Title"
 msgstr "Titre"
 
-#: templates/index.html:66
+#: templates/index.html:62
+msgid "Author"
+msgstr "Auteur"
+
+#: templates/index.html:63
+msgid "Liked"
+msgstr "A aimé"
+
+#: templates/index.html:64
+msgid "Date"
+msgstr "Date"
+
+#: templates/index.html:80
+msgid "Post an Article"
+msgstr "Poster un article"
+
+#: templates/index.html:81
+msgid "Location"
+msgstr "Emplacement"
+
+#: templates/index.html:93
 msgid "Body"
 msgstr "Corps"
 
-#: templates/index.html:72 templates/_snippets/nav.html:14
+#: templates/index.html:99 templates/_snippets/nav.html:14
 msgid "Tags"
 msgstr "Mots-clés"
 
-#: templates/index.html:75
+#: templates/index.html:102
 msgid ""
 "Hit ENTER to add tag. Please do not tag different variations of the same "
 "name."
@@ -61,15 +126,15 @@ msgstr ""
 "Hit ENTRER pour ajouter tag. S&#39;il vous plaît ne pas étiqueter les "
 "différentes variantes du même nom."
 
-#: templates/index.html:79
+#: templates/index.html:106
 msgid "Captcha"
 msgstr "Captcha"
 
-#: templates/index.html:88
+#: templates/index.html:115
 msgid "POST"
 msgstr "POST"
 
-#: templates/index.html:89
+#: templates/index.html:116
 msgid "Cancel"
 msgstr "Annuler"
 

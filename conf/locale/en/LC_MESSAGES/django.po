@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-23 21:01-0800\n"
+"POT-Creation-Date: 2012-02-24 13:52-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,23 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: models.py:296
+msgid "Can not give a reputation to your's."
+msgstr ""
+
+#: models.py:298
+#, python-format
+msgid "You already gave a %s."
+msgstr ""
+
+#: action/service.py:23
+msgid "Only the author can edit this article."
+msgstr ""
+
+#: action/service.py:34
+msgid "Only the author can delete this article."
+msgstr ""
 
 #: conf/__init__.py:5
 msgid "Do not specify."
@@ -29,31 +46,79 @@ msgstr "Korean"
 msgid "Home"
 msgstr "Home"
 
-#: templates/index.html:48
+#: templates/index.html:17
+msgid "Starred Categories"
+msgstr ""
+
+#: templates/index.html:21
+msgid "Categories"
+msgstr ""
+
+#: templates/index.html:23 templates/index.html.py:75
 msgid "Loading..."
 msgstr "Loading..."
 
-#: templates/index.html:53
-msgid "Post an Article"
-msgstr "Post an Article"
+#: templates/index.html:37
+msgid "List"
+msgstr ""
 
-#: templates/index.html:54
-msgid "Location"
-msgstr "Location"
+#: templates/index.html:37
+msgid "Like"
+msgstr ""
+
+#: templates/index.html:37
+msgid "Follow"
+msgstr ""
+
+#: templates/index.html:40 templates/index.html.py:52
+msgid "New Post"
+msgstr ""
+
+#: templates/index.html:42
+msgid "Edit"
+msgstr ""
+
+#: templates/index.html:43
+msgid "Delete"
+msgstr ""
 
 #: templates/index.html:60
+msgid "Category"
+msgstr ""
+
+#: templates/index.html:61 templates/index.html.py:87
 msgid "Title"
 msgstr "Title"
 
-#: templates/index.html:66
+#: templates/index.html:62
+msgid "Author"
+msgstr ""
+
+#: templates/index.html:63
+msgid "Liked"
+msgstr ""
+
+#: templates/index.html:64
+msgid "Date"
+msgstr ""
+
+#: templates/index.html:80
+msgid "Post an Article"
+msgstr "Post an Article"
+
+#: templates/index.html:81
+msgid "Location"
+msgstr "Location"
+
+#: templates/index.html:93
 msgid "Body"
 msgstr "Body"
 
-#: templates/index.html:72 templates/_snippets/nav.html:14
+#: templates/index.html:99 templates/_snippets/nav.html:14
 msgid "Tags"
 msgstr "Tags"
 
-#: templates/index.html:75
+#: templates/index.html:102
 msgid ""
 "Hit ENTER to add tag. Please do not tag different variations of the same "
 "name."
@@ -61,15 +126,15 @@ msgstr ""
 "Hit ENTER to add tag. Please do not tag different variations of the same "
 "name."
 
-#: templates/index.html:79
+#: templates/index.html:106
 msgid "Captcha"
 msgstr "Captcha"
 
-#: templates/index.html:88
+#: templates/index.html:115
 msgid "POST"
 msgstr "POST"
 
-#: templates/index.html:89
+#: templates/index.html:116
 msgid "Cancel"
 msgstr "Cancel"
 

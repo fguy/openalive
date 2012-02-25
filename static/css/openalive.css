@@ -77,6 +77,12 @@ body {
 	color: #FFF
 }
 
+#article-list .avatar {
+	vertical-align: middle;
+	margin-bottom: .25em;
+	margin-right: 6px;
+}
+
 #article-item {
 	
 }
@@ -115,6 +121,10 @@ body {
 	padding: 2px 0;
 }
 
+#starred-wrapper {
+	display: none;
+}
+
 #starred {
 	padding: 5px 0 10px 0;
 	line-height: 1.8
@@ -142,5 +152,9 @@ body {
 	text-align: right;
 }
 .btn-read {
+	display: none
+}
+
+#no-article {
 	display: none
 }
