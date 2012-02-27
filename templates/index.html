@@ -1,11 +1,4 @@
-{% load i18n %}<!DOCTYPE html>
-<html lang="en">
-<head>
-{% include '_snippets/header.html' %}
-</head>
-<body>
-{% include '_snippets/nav.html' %}
-    <div id="container" class="container-fluid">
+{% load i18n %}
       <div class="row-fluid">
         <div class="span3">
           <ul class="breadcrumb">
@@ -13,10 +6,12 @@
               <a href="#!/" class="home-link">{% trans 'Home' %}</a> <span class="divider" style="display:none">/</span>
             </li>
           </ul>
+          {% if user %}
           <div id="starred-wrapper">
 	        <h5><i class="icon-bookmark"></i> {% trans 'Starred Categories' %}</h5>
 	        <nav id="starred"></nav>
 	      </div>
+	      {% endif %}
 	      <div id="sidebar-wrapper">
 	        <h5><i class="icon-th-list"></i> {% trans 'Category Explorer' %}</h5>
 	        <nav id="sidebar" class="well sidebar-nav">
@@ -32,17 +27,34 @@
           	<div id="article-item-body"></div>
           	<hr>
           </article>
+          <ul id="comments">
+          	<li id="comment-load-more"><button id="btn-comment-load">{% trans 'Show previous' %}</button></li>
+          	{% if user %}
+          	<li id="comment-input" class="well">
+	          	<div><img src="http://www.gravatar.com/avatar/{{ user.email_hash }}?d=mm&s=32" class="avatar"></div>
+	          	<div><textarea rows="1" id="post-comment"></textarea></div>
+          	</li>
+          	{% endif %}
+          </ul>
           <div id="article-btns">
-          	<div id="btn-group-misc-article" class="btn-group">
-          		<button id="btn-list-article" class="btn btn-read"><i class="icon-list"></i> {% trans 'List' %}</button><button id="btn-like-article" class="btn btn-read"><i class="icon-heart"></i> {% trans 'Like' %}</button><button id="btn-follow-article" class="btn btn-read"><i class="icon-signal"></i> {% trans 'Follow' %}</button>
+          	<div id="btn-group-misc-article">
+          		<button id="btn-list-article" class="btn btn-read"><i class="icon-list"></i> {% trans 'List' %}</button>
+          		{% if user %}
+          		<button id="btn-like-article" class="btn btn-reputation btn-read"><i class="icon-heart"></i> {% trans 'Like' %}</button>
+          		<button id="btn-unlike-article" class="btn btn-reputation btn-info btn-read"><i class="icon-heart icon-white"></i> {% trans 'Unlike' %}</button>
+          		<button id="btn-hate-article" class="btn btn-reputation btn-read"><i class="icon-fire"></i> {% trans 'Hate' %}</button>
+          		<button id="btn-unhate-article" class="btn btn-reputation btn-info btn-read"><i class="icon-fire icon-white"></i> {% trans 'Unhate' %}</button>          		
+          		<button id="btn-follow-article" class="btn btn-follow btn-read"><i class="icon-eye-open"></i> {% trans 'Follow' %}</button>
+          		<button id="btn-unfollow-article" class="btn btn-follow btn-info btn-read"><i class="icon-eye-close"></i> {% trans 'Unfollow' %}</button>
+          		{% endif %}
           	</div>          
+          	{% if user %}
           	<div id="btn-group-edit-article">
-          		<button class="btn-post-article btn btn-primary"><i class="icon-pencil icon-white"></i> {% trans 'New Post' %}</button>
-          		<span class="btn-group">
-		          	<button id="btn-edit-article" class="btn btn-read"><i class="icon-edit"></i> {% trans 'Edit' %}</button>
-		          	<button id="btn-delete-article" class="btn btn-read"><i class="icon-trash"></i> {% trans 'Delete' %}</button>
-	          	</span>
+	          	<button id="btn-edit-article" class="btn btn-edit btn-read"><i class="icon-edit"></i> {% trans 'Edit' %}</button>
+	          	<button id="btn-delete-article" class="btn btn-edit btn-read"><i class="icon-trash"></i> {% trans 'Delete' %}</button>
+	          	<button class="btn-post-article btn btn-primary"><i class="icon-pencil icon-white"></i> {% trans 'New Post' %}</button>
           	</div>
+          	{% endif %}
           </div>
           <div id="no-article">
 			<div class="hero-unit">
@@ -70,55 +82,4 @@
           <div class="pagination"><ul id="article-pagination"></ul></div>    
         </div><!--/span-->
       </div><!--/row-->
-
-      <hr>
-<div id="loading"><i class="icon-refresh"></i> {% trans 'Loading...' %}</div>
-<div id="post-article" class="modal hide">
-    <div id="post-dialog-wrapper" class="well">
-	        <div class="modal-header">
-              <a class="close" data-dismiss="modal" >&times;</a>
-              <h3>{% trans 'Post an Article' %}</h3>
-              <div>{% trans 'Location' %}: <span id="current-path"></span></div>
-            </div>
-            <div class="modal-body">
-				<form id="post-article-form" class="form-horizontal">
-				  <fieldset>
-				    <div class="control-group">
-				      <label class="control-label" for="title">{% trans 'Title' %}</label>
-				      <div class="controls">
-				        <input type="text" class="input-xlarge" name="title" id="title">
-				      </div>
-				    </div>
-				    <div class="control-group">
-	                  <label class="control-label" for="body">{% trans 'Body' %}</label>
-	                  <div class="controls">
-	                    <textarea class="input-xlarge" name="body" id="body"></textarea>
-	                  </div>
-	                </div>
-                    <div class="control-group">
-                      <label class="control-label" for="tags">{% trans 'Tags' %}</label>
-                      <div class="controls">
-                        <input type="text" class="input-xlarge" name="tags" id="tags">
-                        <p class="help-block">{% trans 'Hit ENTER to add tag. Please do not tag different variations of the same name.' %}</p>
-                      </div>
-                    </div>
-                    <div class="control-group">
-                      <label class="control-label" for="recaptcha_response_field">{% trans 'Captcha' %}</label>
-                      <div class="controls">
-                        <div id="article-captcha"></div>
-                      </div>
-                    </div>                           
-				  </fieldset>
-				</form>
-            </div>
-            <div class="modal-footer">
-				<button class="btn btn-primary" id="btn-post-article-submit"><i class="icon-ok icon-white"></i> {% trans 'POST' %}</button>
-				<button class="btn" data-dismiss="modal"><i class="icon-remove"></i> {% trans 'Cancel' %}</button>
-            </div>
-    </div>
-</div>      
-{% include '_snippets/footer.html' %}
-{% include '_snippets/scripts.html' %}
-
-</body>
-</html>
+{% include '_snippets/post-article.html' %}

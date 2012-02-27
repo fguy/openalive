@@ -1,8 +1,6 @@
-$(function() {
-  var button = $(".btn-post-article");
+var ArticleEditor = (function() {
   var div = $("#post-article");
   var initialized = false;
-
   var init = function() {
 	  $("textarea", div)
 	      .tinymce(
@@ -28,7 +26,7 @@ $(function() {
 	            content_css : "/static/css/content.css"
 	          });
 	  // http://xoxco.com/projects/code/tagsinput/
-	  $("#tags_tagsinput", div).length == 0 && $("#tags", div).tagsInput({
+	  $("#post-article-tags_tagsinput").length == 0 && $("#post-article-tags").tagsInput({
 	    width : $(".input-xlarge", div).width(),
 	    height : "66px",
 	    defaultText : gettext("Add a tag"),
@@ -42,22 +40,78 @@ $(function() {
 	    callback : Recaptcha.focus_response_field
 	  });
 	  div.on("shown", function() {
-	    $("#title", div).focus();
+	    $("#post-article-title").focus();
 	    $("body").css("overflow", "hidden");
-	  });
-	  div.on("hidden", function() {
+	  }).on("hidden", function() {
 	    $("body").css("overflow", "auto");
+	    isEdit() && reset();
 	  });
 	  initialized = true;
   }
-  button.click(function() {
-  	initialized || init();
+  var isEdit = function() {
+  	return !$("#post-article-id").attr("disabled");
+  }
+  var open = function() {
+  	initialized ? transferFieldValues() :init();
+  	
     if (!models.Category.getCurrent()) {
       $().toastmessage("showWarningToast", gettext("No category selected."));
       return false;
     }
-    $("#current-path", div).text(models.Category.getCurrentPath());
+    $("#post-article-current-path").text(isEdit() ? gettext("Home") + " / " + models.Article.getCurrent().category.path.join(" / ") : models.Category.getCurrentPath());
     div.modal();
     return false;
-  });
-});
+  }
+  var transferFieldValues = function() {
+  	$("#post-article-tags").importTags($("#post-article-tags").val());
+  	tinyMCE.activeEditor.setContent($("#post-article-body").val());
+  }
+  var close = function() {
+	  div.modal("hide");
+	  $("#post-article-form")[0].reset();
+	  $("#post-article-tags").importTags("");
+	  Recaptcha.reload();
+  }
+  var reset = function() {
+  	$("#post-article-title").val("");
+  	$("#post-article-tags").val("").importTags("");
+  	$("#post-article-body").val("");
+  	tinyMCE.activeEditor.setContent("");
+  }
+  this.close = close;
+  this.open = open;
+  this.init = init;
+  return this;
+})();
+
+var CommentEditor = (function() {
+	var self = {
+			callback: null,
+			registerCallback : function(callback) {
+				self.callback = callback;
+			}
+	}
+	$("textarea#post-comment").autoResize({
+  	// On resize:
+    onResize : function() {
+        $(this).css({opacity:0.8});
+    },
+    // After resize:
+    animateCallback : function() {
+        $(this).css({opacity:1});
+    },
+    // Quite slow animation:
+    animateDuration : 0,
+    // More extra space:
+    extraSpace : 0
+	}).bind("keydown", function(event) {
+		if(!event.shiftKey && event.keyCode == 13) {
+			self.callback && self.callback();
+			event.preventDefault();
+			return false;
+		}
+		return true;
+	});
+	
+	return self;
+})();

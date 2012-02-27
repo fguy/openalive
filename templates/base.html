@@ -1,0 +1,15 @@
+{% load i18n %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include '_snippets/header.html' %}
+</head>
+<body>
+{% include '_snippets/nav.html' %}
+<div id="loading"><i class="icon-refresh"></i> {% trans 'Loading...' %}</div>
+<div id="container" class="container-fluid">{{ rendered_content }}</div>
+<hr>
+{% include '_snippets/footer.html' %}
+{% include '_snippets/scripts.html' %}
+
+</body>
+</html>

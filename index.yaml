@@ -27,3 +27,20 @@ indexes:
   - name: is_active
   - name: parent_category
   - name: category
+
+- kind: Category
+  properties:
+  - name: is_active
+  - name: parent_category
+  - name: name
+
+- kind: Comment
+  properties:
+  - name: article
+  - name: sort_key
+
+- kind: Comment
+  properties:
+  - name: article
+  - name: sort_key
+    direction: desc

@@ -60,7 +60,7 @@ class GqlEncoder(simplejson.JSONEncoder):
       return output
 
     elif isinstance(obj, datetime.datetime):
-      return time.mktime(obj.utctimetuple()) * 1000
+      return int(time.mktime(obj.utctimetuple()) * 1000)
 
     elif isinstance(obj, time.struct_time):
       return list(obj)

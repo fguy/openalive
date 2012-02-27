@@ -31,6 +31,7 @@ class Controller(webapp.RequestHandler):
                         self.__lang_map[key] = key
                         for lang in lang_list:
                                 self.__lang_map[lang] = key
+                self.__base_template = template.load('%s/base.html' % TEMPLATES_PATH)
                 settings.SETTINGS_MODULE = 'conf'
         
         def initialize(self, request, response):
@@ -105,7 +106,10 @@ class Controller(webapp.RequestHandler):
                                 elif result is not None:
                                         template_path = self._find_template(result)
                                         if template_path:
-                                                self.response.out.write(template.render(template_path, self.__action._get_context()))
+                                            rendered = template.render(template_path, self.__action._get_context())
+                                            param = self.__action._get_context()
+                                            param['rendered_content'] = rendered
+                                            self.response.out.write(self.__base_template.render(param))
                                         logging.debug('Current result : %s' % result)
                                 else:
                                         logging.debug('Has no result.')
@@ -120,7 +124,7 @@ class Controller(webapp.RequestHandler):
             if action_class is not 'Index':
                 result.append(action_class.lower())
                     
-            if result_name is not '':
+            if result_name is not '' and result_name != 'html':
                 result.append(result_name) 
 
             return '%s%s' % (os.path.sep.join(result), TEMPLATES_SUFFIX)

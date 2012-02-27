@@ -1,0 +1,47 @@
+{% load i18n %}{% if user %}
+<div id="post-article" class="modal hide">
+    <div id="post-dialog-wrapper" class="well">
+	        <div class="modal-header">
+              <a class="close" data-dismiss="modal" >&times;</a>
+              <h3>{% trans 'Post an Article' %}</h3>
+              <div>{% trans 'Location' %}: <span id="post-article-current-path"></span></div>
+            </div>
+            <div class="modal-body">
+				<form id="post-article-form" class="form-horizontal">
+				  <input type="hidden" name="id" id="post-article-id" disabled="disabled">
+				  <fieldset>
+				    <div class="control-group">
+				      <label class="control-label" for="post-article-title">{% trans 'Title' %}</label>
+				      <div class="controls">
+				        <input type="text" class="input-xlarge" name="title" id="post-article-title">
+				      </div>
+				    </div>
+				    <div class="control-group">
+	                  <label class="control-label" for="post-article-body">{% trans 'Body' %}</label>
+	                  <div class="controls">
+	                    <textarea class="input-xlarge" name="body" id="post-article-body"></textarea>
+	                  </div>
+	                </div>
+                    <div class="control-group">
+                      <label class="control-label" for="post-article-tags">{% trans 'Tags' %}</label>
+                      <div class="controls">
+                        <input type="text" class="input-xlarge" name="tags" id="post-article-tags">
+                        <p class="help-block">{% trans 'Hit ENTER to add tag. Please do not tag different variations of the same name.' %}</p>
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="recaptcha_response_field">{% trans 'Captcha' %}</label>
+                      <div class="controls">
+                        <div id="article-captcha"></div>
+                      </div>
+                    </div>
+				  </fieldset>
+				</form>
+            </div>
+            <div class="modal-footer">
+				<button class="btn btn-primary" id="btn-post-article-submit"><i class="icon-ok icon-white"></i> {% trans 'POST' %}</button>
+				<button class="btn" data-dismiss="modal"><i class="icon-remove"></i> {% trans 'Cancel' %}</button>
+            </div>
+    </div>
+</div>
+{% endif %}

@@ -1,34 +1,38 @@
+from google.appengine.api import users
 from lib.controller import Action
 from lib.decorators import login_required
-from google.appengine.api import users
 import models
+import simplejson as json
 
 class Article(Action):
     @login_required
-    def post(self, category):
+    def post(self, category_name):
         self.article = models.Article(
                        author=models.User.get_current(),
                        title=self.request.get('title'),
                        body=self.request.get('body'),
-                       category=models.Category.get_by_name(category),
+                       category=models.Category.get_by_name(category_name),
                        tags=models.Tag.save_all(self.request.get('tags').split(','))
                        ).save()
         return Action.Result.DEFAULT
     
     @login_required
-    def put(self, article_id):
+    def put(self):
+        params = json.loads(self.request.body)
+        article_id = int(params['id'])
         article = models.Article.get_by_id(article_id)
-        if article.author.user is not users.get_current_user():
+        if article.author.user != users.get_current_user():
             raise users.NotAllowedError(_('Only the author can edit this article.'))        
-        article.title = self.request.get('title'),
-        article.body = self.request.get('body'),
-        tag_string = self.request.get('tags')
+        article.title = params['title']
+        article.body = params['body']
+        tag_string = params['tags']
         if tag_string:
-            tags = models.Tag.save_all(self.request.get('tags').split(','))
+            tags = models.Tag.save_all(tag_string.split(','))
             if article.tags:
-                models.Tag.decrease(list(set(article.tags)-set([item.key() for item in tags])))
+                models.Tag.decrease(list(set(article.tags)-set([item for item in tags])))
             article.tags = tags
         article.save()
+        self.article = article
         return Action.Result.DEFAULT
 
     @login_required
@@ -40,18 +44,47 @@ class Article(Action):
         return Action.Result.DEFAULT
     
     def get(self, article_id):
-        self.article = models.Article.get_by_id(int(article_id))
+        article_id = int(article_id)
+        self.article = models.Article.get_by_id(article_id)
         if self.article:
             self.tags = models.Tag.get(self.article.tags)
+            self.comment_list = models.Comment.get_list(self.article)
         user = users.get_current_user()
         if user:
             for item in models.Reputation.types:
-                setattr(self, item, models.Reputation.exists(self.article, item))
+                setattr(self, item, models.Reputation.exists(article_id, item))
+            self.subscribed = models.Subscription.is_subscribed(self.article) 
         return Action.Result.DEFAULT
+    
+class Comment(Action):
+    def get(self, article_id):
+        offset = int(self.request.get('offset'))
+        self.comment_list = models.Comment.get_list(article=models.Article.get_by_id(int(article_id)), offset=offset)
+        return Action.Result.DEFAULT
+    
+    @login_required
+    def post(self, article_id, comment_id=None):
+        comment = models.Comment(
+                                      article=models.Article.get_by_id(int(article_id)),
+                                      author=models.User.get_current(),
+                                      body=self.request.get('body'),
+                                      )
+        if comment_id is not None:
+            comment.parent_comment = models.Comment.get_by_id(int(comment_id))
+        self.comment = comment.save().to_dict()
+        return Action.Result.DEFAULT
+    
+    @login_required
+    def delete(self, comment_id):
+        comment = models.Comment.get_by_id(int(comment_id))
+        if comment.author.user != users.get_current_user():
+            raise users.NotAllowedError(_('Only the author can delete this comment.'))
+        comment.delete()
+        return Action.Result.DEFAULT    
 
 class User(Action):
-    def get(self, user_id):
-        self.user = models.User.get_by_id(user_id)
+    def get(self, user_id = None):
+        self.user = models.User.get_by_id(user_id) if user_id else models.User.get_current()
         return Action.Result.DEFAULT
     
     @login_required
@@ -62,6 +95,7 @@ class User(Action):
     
 class UserArticleList():
     LIST_PER_PAGE = 20
+    
     def get(self, user_id, page):
         page = int(self.request.get('page', 1))
         offset = (page - 1) * self.LIST_PER_PAGE        
@@ -70,49 +104,47 @@ class UserArticleList():
             
 class ArticleList(Action):
     LIST_PER_PAGE = 20
-    def get(self, category):
+    def get(self, category_name):
         page = int(self.request.get('page', 1))
         offset = (page - 1) * self.LIST_PER_PAGE
-        category_obj = models.Category.get_by_name(category)
-        self.list = models.Article.get_list(category_obj, self.LIST_PER_PAGE, offset)
-        self.count = category_obj.article_count
+        category = models.Category.get_by_name(category_name)
+        self.list = models.Article.get_list(category, self.LIST_PER_PAGE, offset)
+        self.count = category.article_count
         return Action.Result.DEFAULT  
     
 class Category(Action):
-    def get(self, category=None):
+    def get(self, category_name=None):
         current_category = None
-        if category:
-            current_category = models.Category.get_by_name(category) 
+        if category_name:
+            current_category = models.Category.get_by_name(category_name) 
         self.category_list = models.Category.get_list(current_category)
         self.current_category = current_category     
         return Action.Result.DEFAULT
     
 class Reputation(Action):
-    def post(self, article_id):
-        models.Reputation(article=models.Article.get_by_id(int(article_id)), user=models.User.get_current(), reputation='like').put()
+    reputation = None
+    @login_required
+    def post(self, obj_class, obj_id):
+        models.Reputation(keys_name = '%s-%s' % (obj_class, obj_id), obj_class=obj_class, obj_id=int(obj_id), user=models.User.get_current(), reputation=self.reputation).put()
         return Action.Result.DEFAULT
     
-    def get(self, article_id):
-        self.count = models.Reputation.get_list(models.Article.get_by_id(article_id), 'like')
-        return Action.Result.DEFAULT
-    
-class Like(Action):
-    def post(self, article_id):
-        models.Reputation(article=models.Article.get_by_id(int(article_id)), user=models.User.get_current(), reputation='like').put()
-        return Action.Result.DEFAULT
-    
-    def get(self, article_id):
-        self.count = models.Reputation.get_list(models.Article.get_by_id(article_id), 'like')
-        return Action.Result.DEFAULT
-
-class Hate(Action):
-    def post(self, article_id):
-        models.Reputation(article=models.Article.get_by_id(int(article_id)), user=models.User.get_current(), reputation='hate').put()
-        return Action.Result.DEFAULT
-    
-    def get(self, article_id):
-        self.count = models.Reputation.get_list(models.Article.get_by_id(article_id), 'like')
+    @login_required
+    def delete(self, obj_class, obj_id):
+        reputation = models.Reputation.get_one(obj_id=int(obj_id), reputation=self.reputation)
+        if reputation.user.user != users.get_current_user():
+            raise users.NotAllowedError(_('You did not give an reputation for this.'))
+        reputation.delete()
         return Action.Result.DEFAULT    
+    
+    def get(self, obj_id):
+        self.count = models.Reputation.get_list(int(obj_id), self.reputation)
+        return Action.Result.DEFAULT
+    
+class Like(Reputation):
+    reputation = 'like'
+
+class Hate(Reputation):
+    reputation = 'hate'
     
 class StarredCategory(Action):
     def get(self):
@@ -120,10 +152,10 @@ class StarredCategory(Action):
         return Action.Result.DEFAULT
     
     @login_required
-    def post(self, category):
-        models.StarredCategory.star(models.Category.get_by_name(category))
+    def post(self, category_name):
+        models.StarredCategory.star(models.Category.get_by_name(category_name))
         return Action.Result.DEFAULT
     
-    def delete(self, category):
-        models.StarredCategory.unstar(models.Category.get_by_name(category))
+    def delete(self, category_name):
+        models.StarredCategory.unstar(models.Category.get_by_name(category_name))
         return Action.Result.DEFAULT
