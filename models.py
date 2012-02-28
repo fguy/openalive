@@ -184,8 +184,16 @@ class Category(db.Model):
         
         if self.__class__.gql('WHERE __key__ != :1 AND name = :2 AND is_active = True', self.key(), self.name).get() if self.is_saved() else Category.gql('WHERE name = :1 AND is_active = True', self.name).get():
             raise BadValueError('Category name must be unique')
+                
+        previous = None
         
-        if not self.is_saved() and self.parent_category:
+        try:
+            previous = self.__class__.get(self.key())
+            is_insert = False
+        except db.NotSavedError:
+            is_insert = True
+            
+        if (is_insert and self.parent_category) or (previous and previous.parent_category is not None):
             self.path = deepcopy(self.parent_category.path)
         elif self.parent_category:
             self.path.pop()
@@ -347,7 +355,7 @@ class Comment(AbstractArticle):
 
         user_reputation_list = Reputation.gql('WHERE user = :1 AND obj_class = :2 AND obj_id IN :3', User.get_current(), 'Comment', ids).fetch(DEFAULT_FETCH_COUNT)
         for item in user_reputation_list:
-            result[ids.index(item.obj_id)][item.reputation] = True
+            result[ids.index(item.obj_id)]['%sd' % item.reputation] = True
         return result
     
     def to_dict(self):
@@ -382,8 +390,9 @@ class Reputation(db.Model):
         db.run_in_transaction_options(xg_on, getattr(obj.author, 'increase_' + self.reputation + '_count'))
     
     @classmethod
-    def get_list(cls, obj_id, reputation):
-        return [item.user.user for item in cls.gql('WHERE obj_id = :1 AND reputation = :2', obj_id, reputation).fetch(DEFAULT_FETCH_COUNT)]
+    def get_list(cls, obj_id, limit=None, reputation=None):
+        q = cls.gql('WHERE obj_id = :1 AND reputation = :2', obj_id, reputation) if reputation is not None else cls.gql('WHERE obj_id = :1', obj_id)
+        return [{'id': item.user.key().id(), 'nickname': item.user.nickname, 'email_hash': item.user.email_hash, 'type': item.reputation} for item in q.fetch(DEFAULT_FETCH_COUNT if limit is None else limit)]
     
     @classmethod
     def get_one(cls, obj_id, reputation):

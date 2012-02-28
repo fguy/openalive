@@ -19,23 +19,28 @@
 	        </nav><!--/.well -->
 	      </div>
         </div><!--/span-->
-        <div class="span9">
+        <div id="content" class="span9">
           <article id="article-item">
-            <div class="page-header">
+            <header class="page-header">
               	<h2 id="article-item-title"></h2>
-            </div>
-          	<div id="article-item-body"></div>
+            </header>
+          	<p id="article-item-body"></p>
           	<hr>
           </article>
-          <ul id="comments">
-          	<li id="comment-load-more"><button id="btn-comment-load">{% trans 'Show previous' %}</button></li>
-          	{% if user %}
-          	<li id="comment-input" class="well">
-	          	<div><img src="http://www.gravatar.com/avatar/{{ user.email_hash }}?d=mm&s=32" class="avatar"></div>
-	          	<div><textarea rows="1" id="post-comment"></textarea></div>
-          	</li>
-          	{% endif %}
-          </ul>
+          <div id="article-">
+	          <ul id="likes"></ul>
+	          <ul id="hates"></ul>
+	          <ul id="subscriptions"></ul>             
+	          <ul id="comments">
+	          	<li id="comment-load-more"><button id="btn-comment-load">{% trans 'Show previous' %}</button></li>
+	          	{% if user %}
+	          	<li id="comment-input" class="well">
+		          	<div><img src="http://www.gravatar.com/avatar/{{ user.email_hash }}?d=mm&s=32" class="avatar"></div>
+		          	<div><textarea rows="1" id="post-comment"></textarea></div>
+	          	</li>
+	          	{% endif %}
+	          </ul>
+          </div>
           <div id="article-btns">
           	<div id="btn-group-misc-article">
           		<button id="btn-list-article" class="btn btn-read"><i class="icon-list"></i> {% trans 'List' %}</button>

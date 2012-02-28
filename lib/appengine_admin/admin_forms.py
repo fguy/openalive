@@ -78,7 +78,7 @@ class AdminModelForm(djangoforms.ModelForm):
                     )
         # Save the item in Datastore if not told otherwise.
         if kwargs.get('commit', True):
-            item.save()
+            item.put()
         return item
 
 

@@ -52,8 +52,11 @@ class Article(Action):
         user = users.get_current_user()
         if user:
             for item in models.Reputation.types:
-                setattr(self, item, models.Reputation.exists(article_id, item))
-            self.subscribed = models.Subscription.is_subscribed(self.article) 
+                setattr(self, '%sd' % item, models.Reputation.exists(article_id, item))
+                setattr(self, '%sd-users' % item, [])
+            for item in models.Reputation.get_list(obj_id=article_id, limit=5):
+                getattr(self, '%sd-users' % item['type']).append(item)
+            self.subscribed = models.Subscription.is_subscribed(self.article)
         return Action.Result.DEFAULT
     
 class Comment(Action):
@@ -108,8 +111,8 @@ class ArticleList(Action):
         page = int(self.request.get('page', 1))
         offset = (page - 1) * self.LIST_PER_PAGE
         category = models.Category.get_by_name(category_name)
-        self.list = models.Article.get_list(category, self.LIST_PER_PAGE, offset)
-        self.count = category.article_count
+        self.list = models.Article.get_list(category, self.LIST_PER_PAGE, offset) if category else None
+        self.count = category.article_count if category else 0
         return Action.Result.DEFAULT  
     
 class Category(Action):

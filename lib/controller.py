@@ -13,7 +13,7 @@ import action
 import logging
 import re
 import sys
-import urllib2
+import urllib
 
 ACTION_PACKAGE = 'action'
 TEMPLATES_PATH = os.path.abspath('%s/../templates' % os.path.dirname(os.path.realpath(__file__)))
@@ -43,7 +43,7 @@ class Controller(webapp.RequestHandler):
                 
                 if Controller.url_mapping:
                     for regex, action_location in Controller.url_mapping:
-                        m = re.match(regex, unicode(urllib2.unquote(request.path)))
+                        m = re.match(regex, urllib.unquote_plus(request.path).decode('utf-8'))
                         if m:
                             action_module, action_class = action_location
                             self._current_request_args = m.groups()
@@ -61,7 +61,7 @@ class Controller(webapp.RequestHandler):
                     path_len = len(path)
                     if path_len > 1:
                         action_class = ''.join([x.title() for x in path[1].split('-')])
-                        self._current_request_args = [unicode(urllib2.unquote(item)) for item in path[2:]]
+                        self._current_request_args = [urllib.unquote_plus(item).decode('utf-8') for item in path[2:]]
                     else:
                         action_class = 'Index'
                     del path

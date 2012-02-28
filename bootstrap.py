@@ -18,8 +18,8 @@ def main():
                                           (r'^(/admin)(.*)$', appengine_admin.Admin),
                                           ('/.*', Controller)],
                                                                              debug=True)
-    wsgiref.handlers.CGIHandler().run(application)
     webapp.template.register_template_library('lib.template_library')
+    wsgiref.handlers.CGIHandler().run(application)
 
 if __name__ == '__main__':
     main()

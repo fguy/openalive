@@ -49,7 +49,7 @@ var ArticleEditor = (function() {
 	  initialized = true;
   }
   var isEdit = function() {
-  	return !$("#post-article-id").attr("disabled");
+  	return $("#post-article-id").length > 0 && !$("#post-article-id").attr("disabled");
   }
   var open = function() {
   	initialized ? transferFieldValues() :init();

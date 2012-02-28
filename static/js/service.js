@@ -44,7 +44,15 @@ var models = {
 	      });
 	    },
 	    decorateItem: function(item, isActive, isChild) {
-	    	return '<li' + (isActive ? ' class="active"' : "") + '><a href="#!/' + item.name + '" title="' + item.name + '" class="category-link' + (isChild ? ' children' : "") + '"' + (item.description ? ' data-content="' + gettext(item.description) + '"' : "") + '>' + (isChild ? '<i class="icon-chevron-right"></i> ' : "") + '<i class="icon-star icon-star-empty" title="' + gettext("Star") + '"></i> <span class="category-title">' + gettext(item.name) + '</span> <span class="article-count">(' + item.article_count + ')</span></a></li>';
+	      var me = models.User.getMe();
+	    	return '<li' + (isActive ? ' class="active"' : "") + '>\
+	    	          <a href="#!/' + item.name + '" title="' + item.name + '" class="category-link' + (isChild ? ' children' : "") + '">'
+  	    	          + (isChild ? '<i class="icon-chevron-right"></i> ' : "") 
+  	    	          + (me ? '<i class="icon-star icon-star-empty" title="' + gettext("Star") + '"></i>' : "") + '\
+  	    	          <span class="category-title">' + gettext(item.name) + '</span> \
+  	    	          <span class="article-count">(' + item.article_count + ')</span>\
+	    	          </a>\
+  	    	      </li>';
 	    },
 	    getCurrent: function() {
 	      return $("#sidebar .nav .active > .category-link").attr("title");
@@ -406,6 +414,7 @@ var models = {
 				},
 				decorateRow: function(item) {
 					var me = models.User.getMe();
+					var isMine = me && me.email_hash == item.author.email_hash;
 					return '<li id="comment-item-' + item.id + '" class="comment-item ' + (item.parent_id ? "comment-item-children" : "comment-item-parent") + '">\
 						<span><a href="/user/' + item.author.id + '" class="user">' + models.User.getAvatar(item.author.email_hash, 32) + '</a></span>\
 						<span><a href="/user/' + item.author.id + '" class="user">' + item.author.nickname + '</a></span>\
@@ -413,15 +422,12 @@ var models = {
 						<time datetime="">' + prettyDate(item.created) + '</time>\
 						<span class="comment-btns">\
 							' + 
-							(me && me.email_hash == item.author.email_hash ? 
-									'<button class="btn-comment-delete btn" data-comment-id="' + item.id + '" title="' + gettext('Delete') + '"><i class="icon-trash"></i></button>' 
-									: 
-									'\
-									<button class="btn-comment-like btn btn-reputation' + (item.like ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Like') + '"' + (item.hate ? ' disabled="disabled"' : "") + '><i class="icon-heart"></i> <span class="like-count count">' + item.like_count + '</span></button>\
-									<button class="btn-comment-hate btn btn-reputation' + (item.hate ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Hate') + '"' + (item.like ? ' disabled="disabled"' : "") + '><i class="icon-fire"></i> <span class="hate-count count">' + item.hate_count + '</span></button>\
-									'
-							) + 
-							(item.parent_id ? "" : ' <button class="btn-comment-reply btn" data-comment-id="' + item.id + '" title="' + gettext('Reply') + '"><i class="icon-plus"></i> ' + gettext('Reply') + '</button>') +
+							(isMine ? '<button class="btn-comment-delete btn" data-comment-id="' + item.id + '" title="' + gettext('Delete') + '"><i class="icon-trash"></i></button>' : "")
+								+ '\
+									<button class="btn-comment-like btn btn-reputation' + (item.liked ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Like') + '"' + (!me || isMine || item.hated ? ' disabled="disabled"' : "") + '><i class="icon-heart"></i> <span class="like-count count">' + item.like_count + '</span></button>\
+									<button class="btn-comment-hate btn btn-reputation' + (item.hated ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Hate') + '"' + (!me || isMine || item.liked ? ' disabled="disabled"' : "") + '><i class="icon-fire"></i> <span class="hate-count count">' + item.hate_count + '</span></button>\
+									' + 
+							(item.parent_id || !me ? "" : ' <button class="btn-comment-reply btn" data-comment-id="' + item.id + '" title="' + gettext('Reply') + '"><i class="icon-plus"></i> ' + gettext('Reply') + '</button>') +
 						'</span>\
 						</li>';
 				},
