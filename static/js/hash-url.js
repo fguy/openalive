@@ -25,6 +25,7 @@ $(function() {
       })
     }
 		if (hash.match(/^!/)) {
+			initializeModels();
 			var tokens = hash.substring(2, idx > -1 ? idx : hash.length).split("/");
 			var callback = tokens.length > 1 && tokens[1] ? function() {
 				models.Article.show(tokens[1]);

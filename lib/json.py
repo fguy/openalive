@@ -45,6 +45,10 @@ class GqlEncoder(simplejson.JSONEncoder):
     
     """Tests the input object, obj, to encode as JSON."""
 
+    if hasattr(obj, '__call__'):
+      del obj
+      return
+  
     if hasattr(obj, '__json__'):
       return getattr(obj, '__json__')()
 

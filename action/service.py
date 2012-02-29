@@ -3,6 +3,7 @@ from lib.controller import Action
 from lib.decorators import login_required
 import models
 import simplejson as json
+from gettext import gettext as _
 
 class Article(Action):
     @login_required

@@ -18,6 +18,12 @@ indexes:
 
 - kind: Article
   properties:
+  - name: author
+  - name: created
+    direction: desc
+
+- kind: Article
+  properties:
   - name: category
   - name: created
     direction: desc
@@ -45,8 +51,20 @@ indexes:
   - name: sort_key
     direction: desc
 
+- kind: Comment
+  properties:
+  - name: author
+  - name: created
+    direction: desc
+
 - kind: Reputation
   properties:
   - name: obj_id
   - name: created
+    direction: desc
+
+- kind: UserNicknameHistory
+  properties:
+  - name: user
+  - name: changed
     direction: desc

@@ -91,7 +91,7 @@ body {
 	margin-right: 6px;
 }
 
-#article-item, #article-reputation {
+#article-item,#article-reputation {
 	display: none
 }
 
@@ -137,6 +137,7 @@ body {
 	-moz-border-top-left-radius: 0;
 	-moz-border-top-right-radius: 0;
 	padding: 2px 0;
+	display: none
 }
 
 #starred-wrapper {
@@ -155,7 +156,7 @@ body {
 }
 
 #article-btns {
-	margin-bottom:16px;	
+	margin-bottom: 16px;
 	clear: both;
 	float: left;
 	width: 100%;
@@ -169,10 +170,36 @@ body {
 	float: right;
 	text-align: right;
 }
+
 .btn-read {
 	display: none
 }
 
 #no-article {
+	display: none
+}
+
+#user-profile dl {
+	width: 330px;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+#user-profile dt {
+	float: left;
+	width: 80px;
+	margin: 10px 0;
+	padding: 0
+}
+
+#user-profile dd {
+	float: left;
+	width: 250px;
+	margin: 10px 0;
+	padding: 0
+}
+
+#user-articles, #user-comments {
 	display: none
 }

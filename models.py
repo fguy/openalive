@@ -23,7 +23,6 @@ class User(db.Model):
     comment_count = db.IntegerProperty(default=0)
     like_count = db.IntegerProperty(default=0)
     hate_count = db.IntegerProperty(default=0)    
-    locale = db.StringProperty()
     email_hash = db.StringProperty()
     signature = db.TextProperty()
     
@@ -88,16 +87,16 @@ class User(db.Model):
         self.put()
                         
     @classmethod
-    def get_article_list(cls, limit=20, offset=0, orderby='created'):
+    def get_article_list(cls, user=None, limit=20, offset=0, orderby='created'):
         q = Article.all()
-        q.filter('author = ', User.get_current())
+        q.filter('author = ', User.get_current() if user is None else user)
         q.order('-%s' % orderby)
-        return [{'id': item.key().id(), 'category': item.category.name, 'title': item.title, 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated}for item in q.fetch(limit, offset)]
+        return [{'id': item.key().id(), 'category': item.category.name, 'title': item.title, 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated} for item in q.fetch(limit, offset)]
 
     @classmethod
-    def get_comment_list(cls, limit=20, offset=0, orderby='created'):
+    def get_comment_list(cls, user=None, limit=20, offset=0, orderby='created'):
         q = Comment.all()
-        q.filter('author = ', User.get_current())
+        q.filter('author = ', User.get_current() if user is None else user)
         q.order('-%s' % orderby)
         return [{'id': item.key().id(), 'article': {'id': item.article.key().id(), 'category': item.article.category.name}, 'body': item.body, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created} for item in q.fetch(limit, offset)]
     
@@ -105,6 +104,13 @@ class UserNicknameHistory(db.Model):
     user = db.ReferenceProperty(reference_class=User, required=True)
     nickname = db.StringProperty()
     changed = db.DateTimeProperty(auto_now_add=True)
+    
+    @classmethod
+    def get_list(cls, limit=20, offset=0):
+        q = cls.all()
+        q.filter('user = ', User.get_current())
+        q.order('-changed')
+        return [{'nickname': item.nickname, 'changed': item.changed} for item in q.fetch(limit, offset)]
 
 TAG_NORMALIZE_PATTERN = re.compile(u'[\W]+', re.UNICODE)
 class Tag(db.Model):
@@ -325,6 +331,7 @@ class Comment(AbstractArticle):
     def delete(self):
         db.run_in_transaction_options(xg_on, super(self.__class__, self).delete)
         db.run_in_transaction_options(xg_on, self.article.decrease_comment_count)
+        db.run_in_transaction_options(xg_on, self.author.decrease_comment_count)
     
     def save(self):
         self.body = bleach.linkify(bleach.clean(self.body).replace('\n','<br>\n'), parse_email=True, target='_blank')
@@ -334,6 +341,7 @@ class Comment(AbstractArticle):
             self.sort_key = '%s%s' % (self.parent_comment.sort_key, base62_encode(self.key().id())) if self.parent_comment else '%s' % base62_encode(self.key().id())
             db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
             db.run_in_transaction_options(xg_on, self.article.increase_comment_count)
+            db.run_in_transaction_options(xg_on, self.author.increase_comment_count)
         return self
     
     @classmethod

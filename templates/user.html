@@ -1,0 +1,39 @@
+{% extends base %}
+{% load i18n %}
+{% block content %}
+<ul id="nav-user-info" class="nav nav-tabs">
+  <li class="active"><a href="/user/{{ id }}" data-div="#user-profile">Profile</a></li>
+  {% ifnotequal user.article_count 0 %}<li><a href="/user/articles/{{ id }}" data-div="#user-articles" data-callback="loadArticles">Articles</a></li>{% endifnotequal %}
+  {% ifnotequal user.comment_count 0 %}<li><a href="/user/comments/{{ id }}" data-div="#user-comments" data-callback="loadComments">Comments</a></li>{% endifnotequal %}
+</ul>
+
+<div class="vcard row user-info-tab" id="user-profile">
+	<div class="span2"><a href="http://www.gravatar.com/{{ user.email_hash }}" class="url" target="_blank"><img class="avatar photo" src="http://www.gravatar.com/avatar/{{ user.email_hash }}?d=mm&s=160" alt="{{ user.nickname }}"></a></div>
+	<dl class="span2">
+		<dt>{% trans 'Nickname' %}</dt>
+		<dd class="n nickname"><bdi>{{ user.nickname }}</bdi> 
+			<span class="user-btns"><a href="/user/nickname-history/{{ id }}" class="btn" target="_blank" id="show-nickname-history">{% trans 'Show History' %}</a> {% if is_me %}<button class="btn" id="change-nickname">{% trans 'Change' %}</button>{% endif %}</span></dd>
+		<dt>{% trans 'Joined' %}</dt>
+		<dd><time>{{ user.joined|pretty_date }}</time></dd>
+		<dt>{% trans 'Stats' %}</dt>
+		<dd>
+			<ul>
+				<li>{{ user.article_count }} {% trans 'articles' %}.</li>
+				<li>{{ user.comment_count }} {% trans 'comments' %}.</li>
+				<li>{% blocktrans with user.like_count as like_count %}Got {{ like_count }} likes.{% endblocktrans %}</li>
+				<li>{% blocktrans with user.hate_count as hate_count %}Got {{ hate_count }} hates.{% endblocktrans %}</li>
+			</ul>
+		</dd>
+		{% if user.signature %}
+		<dt>{% trans 'Signature' %}</dt>
+		<dd class="note">{{ user.signature }}</dd>
+		{% endif %}
+	</dl>
+</div>
+<ul id="user-articles" class="user-info-tab">
+	<li class="load-more"><button class="btn">{% trans 'Show More' %}</button></li>
+</ul>
+<ul id="user-comments" class="user-info-tab">
+	<li class="load-more"><button class="btn">{% trans 'Show More' %}</button></li>
+</ul>
+{% endblock %}

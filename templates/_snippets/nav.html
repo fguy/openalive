@@ -24,7 +24,7 @@
 					    <button class="btn btn-primary user"><i class="icon-user icon-white"></i> {{ user.nickname }}</button>
 					    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
 						<ul class="dropdown-menu">
-						    <li><a href="/user/me" class="user">Edit</a></li>
+						    <li><a href="/user/me" class="user">{% trans 'My Profile' %}</a></li>
 						    <li class="divider"></li>
 						    <li><a href="{{logout_url}}" class="login-url">{% trans 'Logout' %}</a></li>
 						</ul>

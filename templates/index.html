@@ -30,11 +30,11 @@
           	<hr>
           </article>
           <div id="article-reputation">
-	          <div id="likes-wrapper"><i class="icon-heart"></i><span id="likes"></span> {% trans 'likes this article.' %}</div>
-	          <div id="hates-wrapper"><i class="icon-fire"></i><span id="hates"></span> {% trans 'hates this article.' %}</div>
+	          <div id="likes-wrapper"><i class="icon-heart"></i><span id="likes"></span></div>
+	          <div id="hates-wrapper"><i class="icon-fire"></i><span id="hates"></span></div>
 	          <ul id="subscriptions"></ul>             
 	          <ul id="comments">
-	          	<li id="comment-load-more"><button id="btn-comment-load">{% trans 'Show previous' %}</button></li>
+	          	<li id="comment-load-more" class="load-more"><button id="btn-comment-load">{% trans 'Show previous' %}</button></li>
 	          	{% if user %}
 	          	<li id="comment-input" class="well">
 		          	<div><img src="http://www.gravatar.com/avatar/{{ user.email_hash }}?d=mm&s=32" class="avatar"></div>
@@ -90,6 +90,13 @@
         </div><!--/span-->
       </div><!--/row-->
 {% include '_snippets/post-article.html' %}
+      <div id="user-info" class="modal hide fade">
+        <div id="user-info-body" class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button class="btn" data-dismiss="modal">Close</button>
+        </div>
+      </div>
 {% endblock %}
 
 {% block jslib %}
