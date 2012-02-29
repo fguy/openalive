@@ -106,10 +106,9 @@ class Controller(webapp.RequestHandler):
                                 elif result is not None:
                                         template_path = self._find_template(result)
                                         if template_path:
-                                            rendered = template.render(template_path, self.__action._get_context())
-                                            param = self.__action._get_context()
-                                            param['rendered_content'] = rendered
-                                            self.response.out.write(self.__base_template.render(param))
+                                            context = self.__action._get_context()
+                                            context['base'] = 'base/default.html' if not self.__action.is_ajax else 'base/ajax.html'
+                                            self.response.out.write(template.render(template_path, context))
                                         logging.debug('Current result : %s' % result)
                                 else:
                                         logging.debug('Has no result.')
@@ -124,7 +123,7 @@ class Controller(webapp.RequestHandler):
             if action_class is not 'Index':
                 result.append(action_class.lower())
                     
-            if result_name is not '' and result_name != 'html':
+            if result_name is not '' and result_name != Action.Result.HTML:
                 result.append(result_name) 
 
             return '%s%s' % (os.path.sep.join(result), TEMPLATES_SUFFIX)
@@ -265,5 +264,6 @@ class Action(object):
                 SUCCESS = 'success'
                 NONE = 'none'
                 ERROR = 'error'
+                HTML = 'html'
                 INPUT = 'input'
                 JSON = '__json__'

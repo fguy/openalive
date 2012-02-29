@@ -1,4 +1,6 @@
+{% extends base %}
 {% load i18n %}
+{% block content %}
       <div class="row-fluid">
         <div class="span3">
           <ul class="breadcrumb">
@@ -27,9 +29,9 @@
           	<p id="article-item-body"></p>
           	<hr>
           </article>
-          <div id="article-">
-	          <ul id="likes"></ul>
-	          <ul id="hates"></ul>
+          <div id="article-reputation">
+	          <div id="likes-wrapper"><i class="icon-heart"></i><span id="likes"></span> {% trans 'likes this article.' %}</div>
+	          <div id="hates-wrapper"><i class="icon-fire"></i><span id="hates"></span> {% trans 'hates this article.' %}</div>
 	          <ul id="subscriptions"></ul>             
 	          <ul id="comments">
 	          	<li id="comment-load-more"><button id="btn-comment-load">{% trans 'Show previous' %}</button></li>
@@ -88,3 +90,22 @@
         </div><!--/span-->
       </div><!--/row-->
 {% include '_snippets/post-article.html' %}
+{% endblock %}
+
+{% block jslib %}
+    {{ block.super }}
+	<script type="text/javascript">
+	var RECAPTCHA_PUBLIC_KEY = "6LdU1M0SAAAAAIlUgA9SIgB4mri-A_9Y6Ht7oTGA";
+	</script>
+	<script type="text/javascript" src="/static/js/jquery.tagsinput.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.toastmessage.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.history.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.pagination.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.scrollTo-min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.autoresize.min.js"></script>
+	<script type="text/javascript" src="/static/tiny_mce/jquery.tinymce.js"></script>
+	<script type="text/javascript" src="/static/js/pretty.js"></script>
+	<script type="text/javascript" src="/static/js/editor.js"></script>
+	<script type="text/javascript" src="/static/js/service.js"></script>
+	<script type="text/javascript" src="/static/js/hash-url.js"></script>    
+{% endblock %}

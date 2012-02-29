@@ -1,5 +1,15 @@
 var HASH_PARAMS;
 $(function() {
+  $("#nav .login-url").click(function() {
+    var href = $(this).attr("href");
+    var hashPart = encodeURIComponent(location.hash);
+    $(this).attr("href", href.indexOf("&action=") > -1 ? href.replace("&action=", hashPart + "&action=") : href + hashPart);
+    return true;
+  });
+  
+  if(location.pathname != "/") {
+    return;
+  }
 	$.history.init(function(hash) {
 		if (hash == "") {
 			$.history.load("!");

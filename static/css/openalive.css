@@ -91,7 +91,7 @@ body {
 	margin-right: 6px;
 }
 
-#article-item {
+#article-item, #article-reputation {
 	display: none
 }
 
@@ -99,7 +99,6 @@ body {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
-	display: none
 }
 
 #post-comment {

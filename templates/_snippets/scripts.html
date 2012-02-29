@@ -1,20 +1,10 @@
+{% block jslib %}
 <!-- http://code.google.com/intl/ko-KR/apis/libraries/devguide.html#jqueryUI -->
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">
 	google.load("jquery", "1");
-	var RECAPTCHA_PUBLIC_KEY = "6LdU1M0SAAAAAIlUgA9SIgB4mri-A_9Y6Ht7oTGA";
 </script>
 <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
 <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/i18n/js"></script>
-<script type="text/javascript" src="/static/js/jquery.tagsinput.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.toastmessage.js"></script>
-<script type="text/javascript" src="/static/js/jquery.history.js"></script>
-<script type="text/javascript" src="/static/js/jquery.pagination.js"></script>
-<script type="text/javascript" src="/static/js/jquery.scrollTo-min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.autoresize.min.js"></script>
-<script type="text/javascript" src="/static/tiny_mce/jquery.tinymce.js"></script>
-<script type="text/javascript" src="/static/js/pretty.js"></script>
-<script type="text/javascript" src="/static/js/editor.js"></script>
-<script type="text/javascript" src="/static/js/service.js"></script>
-<script type="text/javascript" src="/static/js/hash-url.js"></script>
+{% endblock %}

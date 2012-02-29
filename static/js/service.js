@@ -186,6 +186,9 @@ var models = {
 	      		document.title = data.article.title + " - " + data.article.category.name;
 	      		self.current = data.article;
 	      		self.current.tags = data.tags;
+	      		self.current["liked-users"] = data["liked-users"];
+	      		self.current["hated-users"] = data["hated-users"];
+	      		self.current["subscribed"] = data["subscribed"];
 	      		self.render();
 	      		$("#article-btns .btn-read").show();
 	      		$("#article-btns .btn-reputation, #article-btns .btn-follow").hide();
@@ -206,7 +209,7 @@ var models = {
 	      			$("#article-btns .btn-edit").show();
 	      		}
 	      		
-	      		$("#article-item, #comments").show();
+	      		$("#article-item, #article-reputation").show();
 	      		$.scrollTo($("#article-item").position().top - 57, 100);
 	      		$("#loading, #article-list caption").hide();
 	      		$("#comments li:not(:last):not(:first)").remove();
@@ -217,6 +220,9 @@ var models = {
 	      render: function() {
       		$.each(self.current, function(k, v) {
       			$("#article-item-" + k).html(v);
+      		});
+      		$.each(models.Reputation.types, function(i, item) {
+      		  models.Reputation.renderUsers(item);
       		});
 	      },
 	      hideList: function() {
@@ -229,7 +235,7 @@ var models = {
 	      hide: function() {
 	      	self.current = null;
 	      	$("#article-list tbody .active").removeClass("active");
-	      	$("#article-item, #comments, .btn-read").hide();
+	      	$("#article-item, #article-reputation, .btn-read").hide();
 	      },
 	      post: function(form) {
 	        var currentCategory = models.Category.getCurrent();
@@ -574,6 +580,29 @@ var models = {
         success: callback,
         dataType: "json"
       });	
-		}		
+		},
+		renderUsers: function(type) {
+		  var article = models.Article.getCurrent();
+		  var users = article[type + "d-users"];
+		  var count = users.length;
+		  var wrapperDiv = $("#" + type + "s-wrapper");
+		  if(count == 0) {
+		    wrapperDiv.hide();
+		    return;
+		  }
+		  wrapperDiv.show();
+      var rendered = $(users).map(function(i, item) {
+        return '<a href="/user/' + item.id + '" class="user">' + models.User.getAvatar(item.email_hash, 16) + "<bdi>" + item.nickname + "</bdi></a>";
+      });
+      var output = rendered.get().join(",");
+      
+      var totalCount = article[type + "_count"];
+      if(count < totalCount) {
+        var link = "/users/" + type + "d/" + article.id;
+        var diff = totalCount - count;
+        output += interpolate(ngettext(' and <a href="' + link + '" class="more-users">%s</a> more', ' and <a href="' + link + '" class="more-users">%s</a> others', diff), [diff]);
+      }
+      $("#" + type + "s").html(output);
+		}
 	}
 }

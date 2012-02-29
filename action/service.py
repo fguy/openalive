@@ -50,12 +50,13 @@ class Article(Action):
             self.tags = models.Tag.get(self.article.tags)
             self.comment_list = models.Comment.get_list(self.article)
         user = users.get_current_user()
-        if user:
-            for item in models.Reputation.types:
+        for item in models.Reputation.types:
+            if user:
                 setattr(self, '%sd' % item, models.Reputation.exists(article_id, item))
-                setattr(self, '%sd-users' % item, [])
-            for item in models.Reputation.get_list(obj_id=article_id, limit=5):
-                getattr(self, '%sd-users' % item['type']).append(item)
+            setattr(self, '%sd-users' % item, [])
+        for item in models.Reputation.get_list(obj_id=article_id, limit=5):
+            getattr(self, '%sd-users' % item['type']).append(item)
+        if user:
             self.subscribed = models.Subscription.is_subscribed(self.article)
         return Action.Result.DEFAULT
     

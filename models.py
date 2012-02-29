@@ -391,7 +391,7 @@ class Reputation(db.Model):
     
     @classmethod
     def get_list(cls, obj_id, limit=None, reputation=None):
-        q = cls.gql('WHERE obj_id = :1 AND reputation = :2', obj_id, reputation) if reputation is not None else cls.gql('WHERE obj_id = :1', obj_id)
+        q = cls.gql('WHERE obj_id = :1 AND reputation = :2 ORDER BY created DESC', obj_id, reputation) if reputation is not None else cls.gql('WHERE obj_id = :1 ORDER BY created DESC', obj_id)
         return [{'id': item.user.key().id(), 'nickname': item.user.nickname, 'email_hash': item.user.email_hash, 'type': item.reputation} for item in q.fetch(DEFAULT_FETCH_COUNT if limit is None else limit)]
     
     @classmethod

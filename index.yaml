@@ -44,3 +44,9 @@ indexes:
   - name: article
   - name: sort_key
     direction: desc
+
+- kind: Reputation
+  properties:
+  - name: obj_id
+  - name: created
+    direction: desc
