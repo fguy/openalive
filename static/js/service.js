@@ -188,7 +188,7 @@ var models = {
 	      		self.current.tags = data.tags;
 	      		self.current["liked-users"] = data["liked-users"];
 	      		self.current["hated-users"] = data["hated-users"];
-	      		self.current["subscribed"] = data["subscribed"];
+	      		self.current["subscribed-users"] = data["subscribed-users"];
 	      		self.render();
 	      		$("#article-btns .btn-read").show();
 	      		$("#article-btns .btn-reputation, #article-btns .btn-follow").hide();
@@ -196,7 +196,7 @@ var models = {
 	      		if(!me || data.article.author.email_hash != me.email_hash) { // don't show for mine
 		      		var reputationFound = false;
 		      		$(models.Reputation.types).each(function(i, item) {
-		      			if(data[item]) {
+		      			if(data[item + "d"]) {
 		      				reputationFound = true;
 		      				$("#btn-un" + item + "-article").show();
 		      				return;
@@ -355,7 +355,23 @@ var models = {
           $("#article-item #article-item-" + type + "_count").text(count);
         }
         $("#article-btns .btn-reputation").hide();
-    		isUndo ? $("#btn-like-article, #btn-hate-article").show() : $("#btn-un" + action + "-article").show();    		
+        var me = models.User.getMe();
+    		if(isUndo) {
+    		  var users = self.current[type + "d-users"];
+    		  var pos = -1;
+    		  $(users).each(function(i, item) {
+    		    if(item.id == me.id) {
+    		      pos = i;
+    		      return;
+    		    }
+    		  });
+    		  pos > -1 && (users = users.splice(pos, 1));
+    		  $("#btn-like-article, #btn-hate-article").show();
+    		} else {
+    		  self.current[type + "d-users"].unshift(me);
+    		  $("#btn-un" + action + "-article").show();
+    		}
+    		models.Reputation.renderUsers(type);
         $().toastmessage("showSuccessToast", gettext(action + "d."));
         
         $("#loading").hide();
@@ -554,6 +570,15 @@ var models = {
 		self.loadMe();
 	  return self;
 	})(),
+	
+	Subscription: {
+	  subscribe: function(id) {
+	    
+	  },
+	  unsubscribe: function(id) {
+	    
+	  }
+	},
 	
 	Reputation: {
 		types: ['like','hate'],
