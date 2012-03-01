@@ -26,14 +26,13 @@ class User(db.Model):
     email_hash = db.StringProperty()
     signature = db.TextProperty()
     
-    @classmethod
-    def nickname_exists(cls, nickname):
-        return User.gql('WHERE nickname = :1', nickname).get() != None
+    def nickname_exists(self, nickname):
+        return User.gql('WHERE user != :1 AND nickname = :2', self, nickname).get() != None
     
     def change_nickname(self, nickname):
-        UserNicknameHistory(user=self, nickname=self.nickname).put()
+        db.run_in_transaction_options(xg_on, UserNicknameHistory(user=self, nickname=self.nickname).put)
         self.nickname = nickname
-        self.put()
+        db.run_in_transaction_options(xg_on, self.put)
         
     @classmethod
     def get_current(cls):
@@ -106,9 +105,9 @@ class UserNicknameHistory(db.Model):
     changed = db.DateTimeProperty(auto_now_add=True)
     
     @classmethod
-    def get_list(cls, limit=20, offset=0):
+    def get_list(cls, user, limit=20, offset=0):
         q = cls.all()
-        q.filter('user = ', User.get_current())
+        q.filter('user = ', user)
         q.order('-changed')
         return [{'nickname': item.nickname, 'changed': item.changed} for item in q.fetch(limit, offset)]
 

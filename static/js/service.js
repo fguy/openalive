@@ -556,7 +556,7 @@ var initializeModels = function() {
 			var self = {
 					me: null,
 					_limit: 20,
-					_loadedOffset: {article: 0, comment: 0},
+					_loadedOffset: {article: 0, comment: 0, change: 0},
 					loadMe: function() {
 						$.getJSON("/service/user", function(data){
 							if(data.user) {
@@ -573,6 +573,7 @@ var initializeModels = function() {
 			    show: function(url) {
 			      self.reset("article");
 			      self.reset("comment");
+			      self.reset("change");
 			    	$.get(url, function(data) {
 			    		$("#user-info-body").html(data);
 			    		$("#user-info").modal();
@@ -630,11 +631,19 @@ var initializeModels = function() {
                 </div>\
                 <p class="body">' + item.body + '</p>\
               </li>';
+			      case "change":
+			        return '<li>\
+			          <span class="nickname">' + item.nickname + '</span>\
+			          <span class="changed"><time datetime="">' + prettyDate(item.changed) + '</time></span>\
+			        </li>';
 			      }
+			    },
+			    changed: function(user) {
+			      self.me.nickname = user.nickname;
 			    }
 			};
 			self.loadMe();
-			$("#nav-user-info a").live("click", function(event) {
+			$("#nav-user-info a").live("click", function() {
 				$("#nav-user-info li").removeClass("active");
 				$(this).parent().addClass("active");
 				$("#user-info .user-info-tab").hide();
@@ -658,9 +667,37 @@ var initializeModels = function() {
 			  return true;
 			});
 			
-			$(".user").live("click", function(event) {
+			$("a.user").live("click", function() {
 				self.show($(this).attr("href"));
 				return false;
+			});
+			
+			$("#change-userinfo-dialog").live("shown", function() {
+			  $("#change-userinfo-nickname").focus();
+			});
+			$("#change-userinfo-form").live("submit", function() {
+        var json = {};
+        $($(this).serializeArray()).each(function(i, item) {
+          json[item.name] = item.value;
+        });
+        $("#loading").show();
+        $.ajax({
+          type: "PUT",
+          url: "/user/me",
+          data: JSON.stringify(json),
+          cache: false,
+          success: function(data) {
+            self.changed(data.user);
+            $("#loading").hide();
+            $().toastmessage("showSuccessToast", gettext("Nickname has been changed."));
+            $("#change-userinfo-dialog").modal("hide");
+          },
+          dataType: "json"
+        });
+        return false;
+			});
+			$("#change-userinfo-submit").live("click", function() {
+			  $($(this).data("form")).submit();
 			});
 		  return self;
 		})(),

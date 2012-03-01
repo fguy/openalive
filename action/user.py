@@ -17,14 +17,19 @@ class Index(Action):
     @login_required
     def put(self):
         params = json.loads(self.request.body)
-        if User.nickname_exists(params['nickname']):
+        me = User.get_current()
+        self.user = me
+        if me.nickname == params['nickname']:
+            return Action.Result.JSON
+        if me.nickname_exists(params['nickname']):
             raise users.NotAllowedError(_('Already taken'))
-        User.change_nickname(params['nickname'])
-        return Action.Result.HTML
+        me.change_nickname(params['nickname'])
+        return Action.Result.JSON
 
-class NicknameHistory(Action):
-    def get(self, offset=0):
-        self.history = UserNicknameHistory.get_list(offset=int(offset))
+class Changes(Action):
+    def get(self, user_id, offset=0):
+        user = User.get_by_id(int(user_id))
+        self.change_list = UserNicknameHistory.get_list(user=user, offset=int(offset))
         return Action.Result.DEFAULT
     
 class Articles(Action):

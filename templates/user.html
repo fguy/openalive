@@ -2,9 +2,10 @@
 {% load i18n %}
 {% block content %}
 <ul id="nav-user-info" class="nav nav-tabs">
-  <li class="active"><a href="/user/{{ id }}" data-div="#user-profile">Profile</a></li>
-  {% ifnotequal user.article_count 0 %}<li><a href="/user/articles/{{ id }}" data-div="#user-articles" data-type="article" data-callback="load">Articles</a></li>{% endifnotequal %}
-  {% ifnotequal user.comment_count 0 %}<li><a href="/user/comments/{{ id }}" data-div="#user-comments" data-type="comment" data-callback="load">Comments</a></li>{% endifnotequal %}
+  <li class="active"><a href="/user/{{ id }}" data-div="#user-profile">{% trans 'Profile' %}</a></li>
+  {% ifnotequal user.article_count 0 %}<li><a href="/user/articles/{{ id }}" data-div="#user-articles" data-type="article" data-callback="load">{% trans 'Posted Articles' %}</a></li>{% endifnotequal %}
+  {% ifnotequal user.comment_count 0 %}<li><a href="/user/comments/{{ id }}" data-div="#user-comments" data-type="comment" data-callback="load">{% trans 'Posted Comments' %}</a></li>{% endifnotequal %}
+  <li><a href="/user/changes/{{ id }}" data-div="#user-changes" data-type="change" data-callback="load">{% trans 'Nickname Changes' %}</a></li>
 </ul>
 
 <div class="vcard row user-info-tab" id="user-profile">
@@ -12,7 +13,7 @@
 	<dl class="span2">
 		<dt>{% trans 'Nickname' %}</dt>
 		<dd class="n nickname"><bdi>{{ user.nickname }}</bdi> 
-			<span class="user-btns"><a href="/user/nickname-history/{{ id }}" class="btn" target="_blank" id="show-nickname-history">{% trans 'Show History' %}</a> {% if is_me %}<button class="btn" id="change-nickname">{% trans 'Change' %}</button>{% endif %}</span></dd>
+			<span class="user-btns">{% if is_me %}<a href="#change-userinfo-dialog" class="btn" id="change-userinfo" data-toggle="modal">{% trans 'Change' %}</a>{% endif %}</span></dd>
 		<dt>{% trans 'Joined' %}</dt>
 		<dd><time>{{ user.joined|pretty_date }}</time></dd>
 		<dt>{% trans 'Stats' %}</dt>
@@ -36,4 +37,32 @@
 <ul id="user-comments" class="user-info-tab">
 	<li class="load-more"><button class="btn" data-type="comment" data-callback="load" data-source="/user/comments/{{ id }}">{% trans 'Show More' %}</button></li>
 </ul>
+<ul id="user-changes" class="user-info-tab">
+    <li class="load-more"><button class="btn" data-type="change" data-callback="load" data-source="/user/changes/{{ id }}">{% trans 'Show More' %}</button></li>
+</ul>
+{% if is_me %}
+<div id="change-userinfo-dialog" class="modal hide fade">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>{% trans 'New Nickname' %}</h3>
+    </div> 
+    <div class="modal-body">
+	    <form id="change-userinfo-form" class="form-horizontal">
+	      <input type="hidden" name="id" id="post-article-id" disabled="disabled">
+	      <fieldset>
+	        <div class="control-group">
+	          <label class="control-label" for="change-userinfo-input">{% trans 'Nickname' %}</label>
+	          <div class="controls">
+	            <input type="text" class="input-xlarge" name="nickname" id="change-userinfo-nickname">
+	          </div>
+	        </div>
+	      </fieldset>
+	    </form>        
+    </div>
+    <div class="modal-footer">
+        <button id="change-userinfo-submit" class="btn btn-primary" data-form="#change-userinfo-form">{% trans 'Save changes' %}</a>
+        <button class="btn" onclick="$('#change-userinfo-dialog').modal('hide')">{% trans 'Close' %}</button>
+    </div>
+</div>
+{% endif %}
 {% endblock %}

@@ -63,6 +63,11 @@ indexes:
   - name: created
     direction: desc
 
+- kind: User
+  properties:
+  - name: nickname
+  - name: user
+
 - kind: UserNicknameHistory
   properties:
   - name: user
