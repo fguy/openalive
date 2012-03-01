@@ -87,18 +87,18 @@ class User(db.Model):
         self.put()
                         
     @classmethod
-    def get_article_list(cls, user=None, limit=20, offset=0, orderby='created'):
+    def get_article_list(cls, user=None, limit=20, offset=0, orderby='created'):                
         q = Article.all()
         q.filter('author = ', User.get_current() if user is None else user)
         q.order('-%s' % orderby)
-        return [{'id': item.key().id(), 'category': item.category.name, 'title': item.title, 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated} for item in q.fetch(limit, offset)]
+        return [{'id': item.key().id(), 'category': item.category.name, 'title': item.title, 'excerpt': item.get_excerpt(), 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated} for item in q.fetch(limit, offset)]
 
     @classmethod
     def get_comment_list(cls, user=None, limit=20, offset=0, orderby='created'):
         q = Comment.all()
         q.filter('author = ', User.get_current() if user is None else user)
         q.order('-%s' % orderby)
-        return [{'id': item.key().id(), 'article': {'id': item.article.key().id(), 'category': item.article.category.name}, 'body': item.body, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created} for item in q.fetch(limit, offset)]
+        return [{'id': item.key().id(), 'article': {'id': item.article.key().id(), 'title': item.article.title, 'category': item.article.category.name}, 'body': item.body, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created} for item in q.fetch(limit, offset)]
     
 class UserNicknameHistory(db.Model):
     user = db.ReferenceProperty(reference_class=User, required=True)
@@ -275,6 +275,10 @@ class Article(AbstractArticle):
     tags = db.ListProperty(db.Key)
     last_updated = db.DateTimeProperty()
     
+    def get_excerpt(self):
+        body = bleach.clean(self.body, strip=True)
+        return '%s...' % body[:253] if len(body) > 253 else body
+        
     def delete(self):
         db.run_in_transaction_options(xg_on, super(self.__class__, self).delete)
         [db.run_in_transaction_options(xg_on, item.delete) for item in ArticleHistory.gql('WHERE article = :1', self).fetch(DEFAULT_FETCH_COUNT)]

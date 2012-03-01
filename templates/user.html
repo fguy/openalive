@@ -3,8 +3,8 @@
 {% block content %}
 <ul id="nav-user-info" class="nav nav-tabs">
   <li class="active"><a href="/user/{{ id }}" data-div="#user-profile">Profile</a></li>
-  {% ifnotequal user.article_count 0 %}<li><a href="/user/articles/{{ id }}" data-div="#user-articles" data-callback="loadArticles">Articles</a></li>{% endifnotequal %}
-  {% ifnotequal user.comment_count 0 %}<li><a href="/user/comments/{{ id }}" data-div="#user-comments" data-callback="loadComments">Comments</a></li>{% endifnotequal %}
+  {% ifnotequal user.article_count 0 %}<li><a href="/user/articles/{{ id }}" data-div="#user-articles" data-type="article" data-callback="load">Articles</a></li>{% endifnotequal %}
+  {% ifnotequal user.comment_count 0 %}<li><a href="/user/comments/{{ id }}" data-div="#user-comments" data-type="comment" data-callback="load">Comments</a></li>{% endifnotequal %}
 </ul>
 
 <div class="vcard row user-info-tab" id="user-profile">
@@ -31,9 +31,9 @@
 	</dl>
 </div>
 <ul id="user-articles" class="user-info-tab">
-	<li class="load-more"><button class="btn">{% trans 'Show More' %}</button></li>
+	<li class="load-more"><button class="btn" data-type="article" data-callback="load" data-source="/user/articles/{{ id }}">{% trans 'Show More' %}</button></li>
 </ul>
 <ul id="user-comments" class="user-info-tab">
-	<li class="load-more"><button class="btn">{% trans 'Show More' %}</button></li>
+	<li class="load-more"><button class="btn" data-type="comment" data-callback="load" data-source="/user/comments/{{ id }}">{% trans 'Show More' %}</button></li>
 </ul>
 {% endblock %}

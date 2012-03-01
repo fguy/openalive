@@ -427,13 +427,13 @@ var initializeModels = function() {
 						}).get().join(""));
 						switch(position) {
 						case "last":
-							rendered.insertBefore("#comment-input");
+							rendered.hide().insertBefore("#comment-input").slideDown("slow");
 							break;
 						case "reply":
 							rendered.insertAfter($("#comment-item-" + self.parentId).nextUntil(".comment-item-parent").last());
 							break;
 						default:
-							rendered.insertAfter("#comment-load-more");
+							rendered.hide().insertAfter("#comment-load-more").slideDown();
 						}
 					},
 					decorateRow: function(item) {
@@ -555,6 +555,8 @@ var initializeModels = function() {
 		User: (function() {
 			var self = {
 					me: null,
+					_limit: 20,
+					_loadedOffset: {article: 0, comment: 0},
 					loadMe: function() {
 						$.getJSON("/service/user", function(data){
 							if(data.user) {
@@ -569,21 +571,66 @@ var initializeModels = function() {
 			      return '<img class="avatar ' + (size ? "avatar-" + size : "") + '" src=http://www.gravatar.com/avatar/' + hash + '?d=mm' + (size ? "&s=" + size : "") + '>';
 			    },
 			    show: function(url) {
+			      self.reset("article");
+			      self.reset("comment");
 			    	$.get(url, function(data) {
 			    		$("#user-info-body").html(data);
 			    		$("#user-info").modal();
 			    		$("#loading").hide();
 			    	}, "html");
 			    },
-			    loadArticles: function(url) {
-			    	$.getJSON(url, function(data) {
-			    		console.log(data);
+			    reset: function(type) {
+			      self._loadedOffset[type] = 0;
+			      $("#user-" + type + "s li:not(.load-more)").remove();
+			      $("#user-" + type + "s .load-more").show();
+			    },
+			    load: function(type, url, more) {
+			      var params = null;
+			      if(!more) {
+			        if(self._loadedOffset[type] != 0 && self._loadedOffset[type] <= self._limit) {
+			          return;
+			        }
+			        self.reset(type);
+			      } else {
+			        params = {offset: self._loadedOffset[type]};
+			      }
+			      $("#loading").show();
+			    	$.getJSON(url, params, function(data) {
+			    	  var list = data[type + "_list"];
+			    	  var len = list.length;
+			    	  len < self._limit && $("#user-" + type + "s .load-more").hide();
+			    	  len == 0 && more && $().toastmessage("showNoticeToast", gettext("No more."));
+			    	  self._loadedOffset[type] += len;
+			    		$($(list).map(function(i, item) {
+			    		  return self.renderRow(type, item);
+			    		}).get().join("")).hide().insertBefore("#user-" + type + "s .load-more").slideDown();
+			    		$("#loading").hide();
 			    	});
 			    },
-			    loadComments: function(url) {
-			    	$.getJSON(url, function(data) {
-			    		console.log(data);
-			    	});			    	
+			    renderRow: function(type, item) {
+			      switch(type) {
+			      case "article":
+			        return '<li>\
+                <div>\
+                  <h5><a href="/#!/' + item.category + '/' + item.id + '" class="title">'+ item.title + '</a></h5>\
+                  <span class="comment-count">(' + item.comment_count + ')</span>\
+                  <span class="category">' + item.category + '</span>\
+                  <span class="posted"><time datetime="">' + prettyDate(item.created) + '</time></span>\
+                </div>\
+                <p class="excerpt"><a href="/#!/' + item.category + '/' + item.id + '" class="title">' + item.excerpt + '</a></p>\
+              </li>';
+			      case "comment":
+			        return '<li>\
+                <div>\
+                  <h5><a href="/#!/' + item.article.category + '/' + item.article.id + '" class="title">'+ item.article.title + '</a></h5>\
+                  <span class="category">' + item.article.category + '</span>' + 
+                  (item.like_count > 0 ? '<span class="like-count"><i class="icon-heart"></i> ' + item.like_count + '</span>' : "") +
+                  (item.hate_count > 0 ? '<span class="hate-count"><i class="icon-fire"></i> ' + item.hate_count + '</span>' : "") +
+                  '<span class="posted"><time datetime="">' + prettyDate(item.created) + '</time></span>\
+                </div>\
+                <p class="body">' + item.body + '</p>\
+              </li>';
+			      }
 			    }
 			};
 			self.loadMe();
@@ -593,8 +640,22 @@ var initializeModels = function() {
 				$("#user-info .user-info-tab").hide();
 				$($(this).data("div")).show();
 				var callback = $(this).data("callback");
-				callback && self[callback]($(this).attr("href"));
+				if(callback) {
+				  self[callback]($(this).data("type"), $(this).attr("href"));
+				}
 				return false;
+			});
+			
+			$("#user-articles .load-more button, #user-comments .load-more button").live("click", function() {
+        var callback = $(this).data("callback");
+        if(callback) {
+          self[callback]($(this).data("type"), $(this).data("source"), true);
+        }
+			});
+			
+			$("#user-articles .title, #user-comments .title").live("click", function() {
+			  $("#user-info").modal("hide");
+			  return true;
 			});
 			
 			$(".user").live("click", function(event) {

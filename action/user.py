@@ -28,13 +28,13 @@ class NicknameHistory(Action):
         return Action.Result.DEFAULT
     
 class Articles(Action):
-    def get(self, user_id, offset=0):
-        user = User.get_by_id(int(user_id))
-        self.article_list = User.get_article_list(user=user, offset=offset)
-        return Action.Result.DEFAULT
+    def get(self, user_id):
+        user = User.get_by_id(int(user_id)) 
+        self.article_list = User.get_article_list(user=user, offset=int(self.request.get('offset', 0)))
+        return Action.Result.JSON
     
 class Comments(Action):
     def get(self, user_id, offset=0):
         user = User.get_by_id(int(user_id))
-        self.comment_list = User.get_comment_list(user=user, offset=offset)
-        return Action.Result.DEFAULT    
+        self.comment_list = User.get_comment_list(user=user, offset=int(self.request.get('offset', 0)))
+        return Action.Result.JSON    
