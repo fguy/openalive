@@ -43,6 +43,12 @@ indexes:
 - kind: Comment
   properties:
   - name: article
+  - name: like_count
+    direction: desc
+
+- kind: Comment
+  properties:
+  - name: article
   - name: sort_key
 
 - kind: Comment

@@ -30,7 +30,7 @@ class User(db.Model):
         return User.gql('WHERE user != :1 AND nickname = :2', self, nickname).get() != None
     
     def change_nickname(self, nickname):
-        db.run_in_transaction_options(xg_on, UserNicknameHistory(user=self, nickname=self.nickname).put)
+        db.run_in_transaction_options(xg_on, UserNicknameHistory(user=self, nickname=bleach.clean(self.nickname)).put)
         self.nickname = nickname
         db.run_in_transaction_options(xg_on, self.put)
         
@@ -368,6 +368,14 @@ class Comment(AbstractArticle):
         for item in user_reputation_list:
             result[ids.index(item.obj_id)]['%sd' % item.reputation] = True
         return result
+    
+    @classmethod
+    def get_best(cls, article, limit=3, offset=0):
+        q = cls.all()
+        q.filter('article = ', article)
+        q.filter('like_count != ', 0)
+        q.order('-like_count')
+        return [item.to_dict() for item in q.fetch(limit, offset)]
     
     def to_dict(self):
         return {'id': self.key().id(), 'parent_id': self.parent_comment.key().id() if self.parent_comment else None, 'body': self.body, 'author': {'email_hash': self.author.email_hash, 'nickname': self.author.nickname, 'id': self.author.key().id()}, 'like_count': self.like_count, 'hate_count': self.hate_count, 'created': self.created, 'like': False, 'hate': False}

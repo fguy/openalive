@@ -34,7 +34,7 @@
 	          <div id="hates-wrapper"><i class="icon-fire"></i><span id="hates"></span></div>
 	          <ul id="subscriptions"></ul>             
 	          <ul id="comments">
-	          	<li id="comment-load-more" class="load-more"><button id="btn-comment-load">{% trans 'Show previous' %}</button></li>
+	          	<li id="comment-load-more" class="load-more"><button id="btn-comment-load" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show Previous' %}">{% trans 'Show Previous' %}</button></li>
 	          	{% if user %}
 	          	<li id="comment-input" class="well">
 		          	<div><img src="http://www.gravatar.com/avatar/{{ user.email_hash }}?d=mm&s=32" class="avatar"></div>

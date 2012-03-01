@@ -94,6 +94,7 @@ class Controller(webapp.RequestHandler):
                     del self.__action.lang                                          
                     context = self.__action._get_context()
                     logging.debug('Context data for JSON Serialize : %s' % context)
+                    self.response.headers['Content-type'] = 'application/json'
                     self.response.out.write(encode(context))
                 elif result is not None:
                     template_path = self._find_template(result)

@@ -12,8 +12,8 @@
 	<div class="span2"><a href="http://www.gravatar.com/{{ user.email_hash }}" class="url" target="_blank"><img class="avatar photo" src="http://www.gravatar.com/avatar/{{ user.email_hash }}?d=mm&s=160" alt="{{ user.nickname }}"></a></div>
 	<dl class="span2">
 		<dt>{% trans 'Nickname' %}</dt>
-		<dd class="n nickname"><bdi>{{ user.nickname }}</bdi> 
-			<span class="user-btns">{% if is_me %}<a href="#change-userinfo-dialog" class="btn" id="change-userinfo" data-toggle="modal">{% trans 'Change' %}</a>{% endif %}</span></dd>
+		<dd class="n"><span class="nickname">{{ user.nickname }}</span> 
+			<span class="user-btns">{% if is_me %}<a href="#change-user-dialog" class="btn" id="change-user" data-toggle="modal">{% trans 'Change' %}</a>{% endif %}</span></dd>
 		<dt>{% trans 'Joined' %}</dt>
 		<dd><time>{{ user.joined|pretty_date }}</time></dd>
 		<dt>{% trans 'Stats' %}</dt>
@@ -32,36 +32,36 @@
 	</dl>
 </div>
 <ul id="user-articles" class="user-info-tab">
-	<li class="load-more"><button class="btn" data-type="article" data-callback="load" data-source="/user/articles/{{ id }}">{% trans 'Show More' %}</button></li>
+	<li class="load-more"><button class="btn" data-type="article" data-callback="load" data-source="/user/articles/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
 </ul>
 <ul id="user-comments" class="user-info-tab">
-	<li class="load-more"><button class="btn" data-type="comment" data-callback="load" data-source="/user/comments/{{ id }}">{% trans 'Show More' %}</button></li>
+	<li class="load-more"><button class="btn" data-type="comment" data-callback="load" data-source="/user/comments/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
 </ul>
 <ul id="user-changes" class="user-info-tab">
-    <li class="load-more"><button class="btn" data-type="change" data-callback="load" data-source="/user/changes/{{ id }}">{% trans 'Show More' %}</button></li>
+    <li class="load-more"><button class="btn" data-type="change" data-callback="load" data-source="/user/changes/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
 </ul>
 {% if is_me %}
-<div id="change-userinfo-dialog" class="modal hide fade">
+<div id="change-user-dialog" class="modal hide fade">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
         <h3>{% trans 'New Nickname' %}</h3>
     </div> 
     <div class="modal-body">
-	    <form id="change-userinfo-form" class="form-horizontal">
+	    <form id="change-user-form" class="form-horizontal">
 	      <input type="hidden" name="id" id="post-article-id" disabled="disabled">
 	      <fieldset>
 	        <div class="control-group">
-	          <label class="control-label" for="change-userinfo-input">{% trans 'Nickname' %}</label>
+	          <label class="control-label" for="change-user-input">{% trans 'Nickname' %}</label>
 	          <div class="controls">
-	            <input type="text" class="input-xlarge" name="nickname" id="change-userinfo-nickname">
+	            <input type="text" class="input-xlarge" name="nickname" id="change-user-nickname" value="{{ user.nickname }}">
 	          </div>
 	        </div>
 	      </fieldset>
 	    </form>        
     </div>
     <div class="modal-footer">
-        <button id="change-userinfo-submit" class="btn btn-primary" data-form="#change-userinfo-form">{% trans 'Save changes' %}</a>
-        <button class="btn" onclick="$('#change-userinfo-dialog').modal('hide')">{% trans 'Close' %}</button>
+        <button id="change-user-submit" class="btn btn-primary" data-form="#change-user-form">{% trans 'Save changes' %}</a>
+        <button class="btn" onclick="$('#change-user-dialog').modal('hide')">{% trans 'Close' %}</button>
     </div>
 </div>
 {% endif %}

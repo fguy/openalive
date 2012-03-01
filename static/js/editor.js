@@ -92,17 +92,13 @@ var CommentEditor = (function() {
 			}
 	}
 	$("textarea#post-comment").autoResize({
-  	// On resize:
     onResize : function() {
         $(this).css({opacity:0.8});
     },
-    // After resize:
     animateCallback : function() {
         $(this).css({opacity:1});
     },
-    // Quite slow animation:
     animateDuration : 0,
-    // More extra space:
     extraSpace : 0
 	}).bind("keydown", function(event) {
 		if(!event.shiftKey && event.keyCode == 13) {

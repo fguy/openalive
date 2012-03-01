@@ -317,7 +317,7 @@ var initializeModels = function() {
 		        return '<tr>\
 		          <td>' + item.category + '</td>\
 		          <td><a href="#!/' + currentCategory + '/' + item.id + '?page=' + page + '" class="article-item" title="' + item.title + '">' + item.title + '</a>' + (item.comment_count > 0 ? ' <span class="comment-count">(' + item.comment_count + ')</span>' : "") + '</td>\
-		          <td><a href="/user/' + item.author.id + '" class="user">' + models.User.getAvatar(item.author.email_hash, 16) +  item.author.nickname + '</td>\
+		          <td><a href="/user/' + item.author.id + '" class="user">' + models.User.getAvatar(item.author.email_hash, 16) +  ' <span class="nickname">' + item.author.nickname + '</span></td>\
 		          <td><span class="like-count count">' + item.like_count + '</span></td>\
 		          <td><time datetime="">' + prettyDate(item.created) + '</time></td>\
 		        </tr>';
@@ -404,7 +404,7 @@ var initializeModels = function() {
 			var self = {
 					parentId: null,
 					didClass: "btn-info",
-					activeReplyClass: "btn-danger",
+					activeReplyClass: "btn-inverse",
 					limit: 20,
 					loadedCount: 0,
 					defaultText: gettext("Please comment here..."),
@@ -417,6 +417,7 @@ var initializeModels = function() {
 						$.getJSON("/service/comment/" + article.id, {offset: article.comment_count - self.limit - self.loadedCount}, function(data) {
 							self.render(data.comment_list, -1);
 							$("#loading").hide();
+							$("#btn-comment-load").button("complete");
 						});
 					},
 					render: function(data, position) {
@@ -441,7 +442,7 @@ var initializeModels = function() {
 						var isMine = me && me.email_hash == item.author.email_hash;
 						return '<li id="comment-item-' + item.id + '" class="comment-item ' + (item.parent_id ? "comment-item-children" : "comment-item-parent") + '">\
 							<span><a href="/user/' + item.author.id + '" class="user">' + models.User.getAvatar(item.author.email_hash, 32) + '</a></span>\
-							<span><a href="/user/' + item.author.id + '" class="user">' + item.author.nickname + '</a></span>\
+							<span><a href="/user/' + item.author.id + '" class="user"><span class="nickname">' + item.author.nickname + '</span></a></span>\
 							<span>' + item.body + '</span>\
 							<time datetime="">' + prettyDate(item.created) + '</time>\
 							<span class="comment-btns">\
@@ -504,6 +505,7 @@ var initializeModels = function() {
 			CommentEditor.registerCallback(self.post);
 			
 			$("#btn-comment-load").click(function() {
+				$(this).button("loading");
 				self.loadList();
 			});
 			
@@ -543,11 +545,13 @@ var initializeModels = function() {
 					self.parentId = $(this).data("comment-id");
 					$("#comment-input").insertAfter("#comment-item-" + self.parentId);
 					$("#post-comment").focus();
+					$("#comments .btn-comment-reply." + self.activeReplyClass).removeClass(self.activeReplyClass).find("i").removeClass("icon-white");
+					
+					$(this).addClass(self.activeReplyClass).find("i").addClass("icon-white");
 				} else {
 					self.restoreInput();
+					$(this).removeClass(self.activeReplyClass).find("i").removeClass("icon-white");
 				}
-				$(this).toggleClass(self.activeReplyClass);
-				$(this).find("i").toggleClass("icon-white");
 			});
 			return self;
 		})(),
@@ -577,6 +581,7 @@ var initializeModels = function() {
 			    	$.get(url, function(data) {
 			    		$("#user-info-body").html(data);
 			    		$("#user-info").modal();
+			    		$("#user-profile").show();
 			    		$("#loading").hide();
 			    	}, "html");
 			    },
@@ -588,7 +593,7 @@ var initializeModels = function() {
 			    load: function(type, url, more) {
 			      var params = null;
 			      if(!more) {
-			        if(self._loadedOffset[type] != 0 && self._loadedOffset[type] <= self._limit) {
+			        if(self._loadedOffset[type] > 0 && self._loadedOffset[type] <= self._limit) {
 			          return;
 			        }
 			        self.reset(type);
@@ -600,11 +605,21 @@ var initializeModels = function() {
 			    	  var list = data[type + "_list"];
 			    	  var len = list.length;
 			    	  len < self._limit && $("#user-" + type + "s .load-more").hide();
-			    	  len == 0 && more && $().toastmessage("showNoticeToast", gettext("No more."));
-			    	  self._loadedOffset[type] += len;
-			    		$($(list).map(function(i, item) {
-			    		  return self.renderRow(type, item);
-			    		}).get().join("")).hide().insertBefore("#user-" + type + "s .load-more").slideDown();
+			    	  var html;
+			    	  if(len == 0) {
+			    	  	if(more) {
+			    	  		$().toastmessage("showNoticeToast", gettext("No more."));
+			    	  	} else {
+			    	  		html = '<li class="no-record">' + gettext("No record.") + '</li>';
+			    	  	}
+			    	  } else {
+			    	  	self._loadedOffset[type] += len;
+			    	  	html = $(list).map(function(i, item) {
+				    		  return self.renderRow(type, item);
+				    		}).get().join("");
+			    	  }
+			    	  $(html).hide().insertBefore("#user-" + type + "s .load-more").slideDown();
+			    	  $("#user-info .load-more button").button("complete");
 			    		$("#loading").hide();
 			    	});
 			    },
@@ -639,7 +654,9 @@ var initializeModels = function() {
 			      }
 			    },
 			    changed: function(user) {
+			      $(".nickname:contains(" + self.me.nickname + ")").html(user.nickname);
 			      self.me.nickname = user.nickname;
+			      $("#change-user-nickname").val(user.nickname);			      
 			    }
 			};
 			self.loadMe();
@@ -650,16 +667,17 @@ var initializeModels = function() {
 				$($(this).data("div")).show();
 				var callback = $(this).data("callback");
 				if(callback) {
-				  self[callback]($(this).data("type"), $(this).attr("href"));
+				  self[callback]($(this).data("type"), $(this).attr("href"), false);
 				}
 				return false;
 			});
 			
-			$("#user-articles .load-more button, #user-comments .load-more button").live("click", function() {
+			$("#user-info .load-more button").live("click", function() {
         var callback = $(this).data("callback");
         if(callback) {
           self[callback]($(this).data("type"), $(this).data("source"), true);
         }
+        $(this).button("loading");
 			});
 			
 			$("#user-articles .title, #user-comments .title").live("click", function() {
@@ -672,10 +690,10 @@ var initializeModels = function() {
 				return false;
 			});
 			
-			$("#change-userinfo-dialog").live("shown", function() {
-			  $("#change-userinfo-nickname").focus();
+			$("#change-user-dialog").live("shown", function() {
+			  $("#change-user-nickname").focus();
 			});
-			$("#change-userinfo-form").live("submit", function() {
+			$("#change-user-form").live("submit", function() {
         var json = {};
         $($(this).serializeArray()).each(function(i, item) {
           json[item.name] = item.value;
@@ -690,13 +708,13 @@ var initializeModels = function() {
             self.changed(data.user);
             $("#loading").hide();
             $().toastmessage("showSuccessToast", gettext("Nickname has been changed."));
-            $("#change-userinfo-dialog").modal("hide");
+            $("#change-user-dialog").modal("hide");
           },
           dataType: "json"
         });
         return false;
 			});
-			$("#change-userinfo-submit").live("click", function() {
+			$("#change-user-submit").live("click", function() {
 			  $($(this).data("form")).submit();
 			});
 		  return self;
@@ -740,6 +758,9 @@ var initializeModels = function() {
 			renderUsers: function(type) {
 			  var article = models.Article.getCurrent();
 			  var users = article[type + "d-users"];
+			  if(!users) {
+			  	return;
+			  }
 			  var count = users.length;
 			  var wrapperDiv = $("#" + type + "s-wrapper");
 			  if(count == 0) {
@@ -748,7 +769,7 @@ var initializeModels = function() {
 			  }
 			  wrapperDiv.show();
 	      var rendered = $(users).map(function(i, item) {
-	        return '<a href="/user/' + item.id + '" class="user">' + models.User.getAvatar(item.email_hash, 16) + " <bdi>" + item.nickname + "</bdi></a> ";
+	        return '<a href="/user/' + item.id + '" class="user">' + models.User.getAvatar(item.email_hash, 16) + ' <span class="nickname">' + item.nickname + "</span></a> ";
 	      });
 	      var output = rendered.get().join(",");
 	      

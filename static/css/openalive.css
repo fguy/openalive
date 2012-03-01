@@ -200,6 +200,6 @@ body {
 	padding: 0
 }
 
-#user-articles, #user-comments {
+#user-info .load-more, #user-info .user-info-tab {
 	display: none
 }
