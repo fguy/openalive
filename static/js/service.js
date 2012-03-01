@@ -216,6 +216,7 @@ var initializeModels = function() {
 		      		$("#loading, #article-list caption").hide();
 		      		$("#comments li:not(:last):not(:first)").remove();
 		      		models.Comment.resetLoadedCount();
+		      		models.Comment.renderBest(data.best_comment_list);
 		      		models.Comment.render(data.comment_list);
 		      	});
 		      },
@@ -424,7 +425,7 @@ var initializeModels = function() {
 						self.loadedCount += data.length;
 						$("#comment-load-more").toggle(self.loadedCount < models.Article.getCurrent().comment_count);					
 						var rendered = $($(data).map(function(i, item) {
-							return self.decorateRow(item);
+							return self.decorateRow(item, false);
 						}).get().join(""));
 						switch(position) {
 						case "last":
@@ -437,24 +438,35 @@ var initializeModels = function() {
 							rendered.hide().insertAfter("#comment-load-more").slideDown();
 						}
 					},
-					decorateRow: function(item) {
-						var me = models.User.getMe();
-						var isMine = me && me.email_hash == item.author.email_hash;
-						return '<li id="comment-item-' + item.id + '" class="comment-item ' + (item.parent_id ? "comment-item-children" : "comment-item-parent") + '">\
-							<span><a href="/user/' + item.author.id + '" class="user">' + models.User.getAvatar(item.author.email_hash, 32) + '</a></span>\
-							<span><a href="/user/' + item.author.id + '" class="user"><span class="nickname">' + item.author.nickname + '</span></a></span>\
-							<span>' + item.body + '</span>\
-							<time datetime="">' + prettyDate(item.created) + '</time>\
-							<span class="comment-btns">\
-								' + 
-								(isMine ? '<button class="btn-comment-delete btn" data-comment-id="' + item.id + '" title="' + gettext('Delete') + '"><i class="icon-trash"></i></button>' : "")
-									+ '\
-										<button class="btn-comment-like btn btn-reputation' + (item.liked ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Like') + '"' + (!me || isMine || item.hated ? ' disabled="disabled"' : "") + '><i class="icon-heart"></i> <span class="like-count count">' + item.like_count + '</span></button>\
-										<button class="btn-comment-hate btn btn-reputation' + (item.hated ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Hate') + '"' + (!me || isMine || item.liked ? ' disabled="disabled"' : "") + '><i class="icon-fire"></i> <span class="hate-count count">' + item.hate_count + '</span></button>\
-										' + 
-								(item.parent_id || !me ? "" : ' <button class="btn-comment-reply btn" data-comment-id="' + item.id + '" title="' + gettext('Reply') + '"><i class="icon-plus"></i> ' + gettext('Reply') + '</button>') +
-							'</span>\
-							</li>';
+					renderBest: function(data) {
+					  if(data.length == 0) {
+					    $("#best-comments").hide();
+					    return;
+					  }
+					  $("#best-comments").append($(data).map(function(i, item) {
+					    return self.decorateRow(item, true);
+					  }).get().join(""));
+					},
+					decorateRow: function(item, isBest) {
+						return '<li id="comment-item-' + item.id + '" class="comment-item' + (isBest ? " comment-item-best" : "") + (item.parent_id ? " comment-item-children" : " comment-item-parent") + '">\
+  							<span><a href="/user/' + item.author.id + '" class="user">' + models.User.getAvatar(item.author.email_hash, 32) + '</a></span>\
+  							<span><a href="/user/' + item.author.id + '" class="user"><span class="nickname">' + item.author.nickname + '</span></a></span>\
+  							<span>' + item.body + '</span>\
+  							<time datetime="">' + prettyDate(item.created) + '</time>'
+						    + (isBest ? "" : self._getButtons(item)) + 
+							'</li>';
+					},
+					_getButtons: function(item) {
+            var me = models.User.getMe();
+            var isMine = me && me.email_hash == item.author.email_hash;  
+					  return '<span class="comment-btns">' + 
+                    (isMine ? '<button class="btn-comment-delete btn" data-comment-id="' + item.id + '" title="' + gettext('Delete') + '"><i class="icon-trash"></i></button>' : "")
+                      + '\
+                        <button class="btn-comment-like btn btn-reputation' + (item.liked ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Like') + '"' + (!me || isMine || item.hated ? ' disabled="disabled"' : "") + '><i class="icon-heart"></i> <span class="like-count count">' + item.like_count + '</span></button>\
+                        <button class="btn-comment-hate btn btn-reputation' + (item.hated ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Hate') + '"' + (!me || isMine || item.liked ? ' disabled="disabled"' : "") + '><i class="icon-fire"></i> <span class="hate-count count">' + item.hate_count + '</span></button>\
+                        ' + 
+                    (item.parent_id || !me ? "" : ' <button class="btn-comment-reply btn" data-comment-id="' + item.id + '" title="' + gettext('Reply') + '"><i class="icon-plus"></i> ' + gettext('Reply') + '</button>') +
+                  '</span>';
 					},
 					updateCount: function(amount) {
 		        var countDiv = $("#article-list tr.active .comment-count");
