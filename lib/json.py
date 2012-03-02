@@ -32,60 +32,57 @@ provided to further simplify usage.
 
 
 class GqlEncoder(simplejson.JSONEncoder):
+    """Extends JSONEncoder to add support for GQL results and properties.
   
-  """Extends JSONEncoder to add support for GQL results and properties.
+    Adds support to simplejson JSONEncoders for GQL results and properties by
+    overriding JSONEncoder's default method.
+    """
   
-  Adds support to simplejson JSONEncoders for GQL results and properties by
-  overriding JSONEncoder's default method.
-  """
-  
-  # TODO Improve coverage for all of App Engine's Property types.
+    def default(self, obj):
+        """Tests the input object, obj, to encode as JSON."""
+         
+        if hasattr(obj, '__json__'):
+            return getattr(obj, '__json__')()
+        
+        if hasattr(obj, '__call__'):
+            del obj
+            return
+        
+        if isinstance(obj, db.GqlQuery):
+            return list(obj)
 
-  def default(self, obj):
-    
-    """Tests the input object, obj, to encode as JSON."""
+        elif isinstance(obj, db.Model):
+            properties = obj.properties().items()
+            output = {}
+            for field, value in properties:
+                output[field] = getattr(obj, field)
+                output['id'] = obj.key().id()
+            return output
 
-    if hasattr(obj, '__call__'):
-      del obj
-      return
-  
-    if hasattr(obj, '__json__'):
-      return getattr(obj, '__json__')()
+        elif isinstance(obj, datetime.datetime):
+            return time.strftime("%Y-%m-%dT%H:%M:%S", obj.utctimetuple())
 
-    if isinstance(obj, db.GqlQuery):
-      return list(obj)
+        elif isinstance(obj, time.struct_time):
+            return list(obj)
 
-    elif isinstance(obj, db.Model):
-      properties = obj.properties().items()
-      output = {}
-      for field, value in properties:
-        output[field] = getattr(obj, field)
-      output['id'] = obj.key().id()
-      return output
+        elif isinstance(obj, users.User):
+            output = {}
+            methods = ['nickname']
+            for method in methods:
+                output[method] = getattr(obj, method)()
+            return output
+        
+        elif isinstance(obj, db.Key):
+            return obj.id()
 
-    elif isinstance(obj, datetime.datetime):
-      return int(time.mktime(obj.utctimetuple()) * 1000)
-
-    elif isinstance(obj, time.struct_time):
-      return list(obj)
-
-    elif isinstance(obj, users.User):
-      output = {}
-      methods = ['nickname']
-      for method in methods:
-        output[method] = getattr(obj, method)()
-      return output
-    elif isinstance(obj, db.Key):
-      return obj.id()
-
-    return simplejson.JSONEncoder.default(self, obj)
+        return simplejson.JSONEncoder.default(self, obj)
 
 
-def encode(input):
-  """Encode an input GQL object as JSON
+def encode(value):
+    """Encode an input GQL object as JSON
 
     Args:
-      input: A GQL object or DB property.
+      value: A GQL object or DB property.
 
     Returns:
       A JSON string based on the input object. 
@@ -94,4 +91,6 @@ def encode(input):
       TypeError: Typically occurs when an input object contains an unsupported
         type.
     """
-  return GqlEncoder().encode(input)  
+    return GqlEncoder().encode(value)  
+
+

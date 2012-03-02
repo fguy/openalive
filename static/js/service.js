@@ -320,7 +320,7 @@ var initializeModels = function() {
 		          <td><a href="#!/' + currentCategory + '/' + item.id + '?page=' + page + '" class="article-item" title="' + item.title + '">' + item.title + '</a>' + (item.comment_count > 0 ? ' <span class="comment-count">(' + item.comment_count + ')</span>' : "") + '</td>\
 		          <td><a href="/user/' + item.author.id + '" class="user">' + models.User.getAvatar(item.author.email_hash, 16) +  ' <span class="nickname">' + item.author.nickname + '</span></td>\
 		          <td><span class="like-count count">' + item.like_count + '</span></td>\
-		          <td><time datetime="">' + prettyDate(item.created) + '</time></td>\
+		          <td><time datetime="' + item.created + '">' + prettyDate(item.created) + '</time></td>\
 		        </tr>';
 		      }
 		  }
@@ -440,19 +440,19 @@ var initializeModels = function() {
 					},
 					renderBest: function(data) {
 					  if(data.length == 0) {
-					    $("#best-comments").hide();
+					    $("#best-comments").empty().hide();
 					    return;
 					  }
-					  $("#best-comments").append($(data).map(function(i, item) {
+					  $("#best-comments").html($(data).map(function(i, item) {
 					    return self.decorateRow(item, true);
-					  }).get().join(""));
+					  }).get().join("")).show();
 					},
 					decorateRow: function(item, isBest) {
 						return '<li id="comment-item-' + item.id + '" class="comment-item' + (isBest ? " comment-item-best" : "") + (item.parent_id ? " comment-item-children" : " comment-item-parent") + '">\
   							<span><a href="/user/' + item.author.id + '" class="user">' + models.User.getAvatar(item.author.email_hash, 32) + '</a></span>\
   							<span><a href="/user/' + item.author.id + '" class="user"><span class="nickname">' + item.author.nickname + '</span></a></span>\
   							<span>' + item.body + '</span>\
-  							<time datetime="">' + prettyDate(item.created) + '</time>'
+  							<time datetime="' + item.created + '">' + prettyDate(item.created) + '</time>'
 						    + (isBest ? "" : self._getButtons(item)) + 
 							'</li>';
 					},
@@ -643,7 +643,7 @@ var initializeModels = function() {
                   <h5><a href="/#!/' + item.category + '/' + item.id + '" class="title">'+ item.title + '</a></h5>\
                   <span class="comment-count">(' + item.comment_count + ')</span>\
                   <span class="category">' + item.category + '</span>\
-                  <span class="posted"><time datetime="">' + prettyDate(item.created) + '</time></span>\
+                  <span class="posted"><time datetime="' + item.created + '">' + prettyDate(item.created) + '</time></span>\
                 </div>\
                 <p class="excerpt"><a href="/#!/' + item.category + '/' + item.id + '" class="title">' + item.excerpt + '</a></p>\
               </li>';
@@ -654,14 +654,14 @@ var initializeModels = function() {
                   <span class="category">' + item.article.category + '</span>' + 
                   (item.like_count > 0 ? '<span class="like-count"><i class="icon-heart"></i> ' + item.like_count + '</span>' : "") +
                   (item.hate_count > 0 ? '<span class="hate-count"><i class="icon-fire"></i> ' + item.hate_count + '</span>' : "") +
-                  '<span class="posted"><time datetime="">' + prettyDate(item.created) + '</time></span>\
+                  '<span class="posted"><time datetime="' + item.created + '">' + prettyDate(item.created) + '</time></span>\
                 </div>\
                 <p class="body">' + item.body + '</p>\
               </li>';
 			      case "change":
 			        return '<li>\
 			          <span class="nickname">' + item.nickname + '</span>\
-			          <span class="changed"><time datetime="">' + prettyDate(item.changed) + '</time></span>\
+			          <span class="changed"><time datetime="' + item.changed + '">' + prettyDate(item.changed) + '</time></span>\
 			        </li>';
 			      }
 			    },

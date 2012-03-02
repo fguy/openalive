@@ -3,6 +3,7 @@ from google.appengine.api import users, datastore
 from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.ext import db
 from lib import bleach
+from lib.BeautifulSoup import BeautifulSoup
 from lib.base62 import base62_encode
 import datetime
 import difflib
@@ -35,8 +36,9 @@ class User(db.Model):
         db.run_in_transaction_options(xg_on, self.put)
         
     @classmethod
-    def get_current(cls):
-        user = users.get_current_user()
+    def get_current(cls, user=None):
+        if not user:
+            user = users.get_current_user()
         if not user:
             return None
         result = User.gql('WHERE user = :1', user).get()
@@ -273,6 +275,8 @@ class Article(AbstractArticle):
     title = db.StringProperty()
     tags = db.ListProperty(db.Key)
     last_updated = db.DateTimeProperty()
+    image = db.URLProperty()
+    video = db.URLProperty()
     
     def get_excerpt(self):
         body = bleach.clean(self.body, strip=True)
@@ -290,6 +294,20 @@ class Article(AbstractArticle):
         self.title = bleach.clean(self.title)
         self.body = bleach.clean(self.body, tags=['p', 'span', 'div', 'strong', 'b', 'em', 'i', 'blockquote', 'sub', 'sup', 'img', 'iframe', 'br'], attributes=['style', 'title', 'src', 'frameborder', 'width', 'height', 'alt'], styles=['width', 'height', 'font-size', 'font-family', 'text-decoration', 'color', 'background-color', 'text-align', 'padding-left'])
         self.last_updated = datetime.datetime.now()
+        
+        soup = BeautifulSoup(self.body)
+        img = soup.find('img')
+        if img and hasattr(img, 'src') and img['src'].lower().startswith('http://'):
+            self.image = img['src']
+        
+        iframes = soup.findAll('iframe')
+        for item in iframes:
+            if item['src'].lower().startswith('http://www.youtube.com/'):
+                if self.video is None:
+                    self.video = item['src']
+            else:
+                item.decompose()
+        
         is_insert = not self.is_saved()
         diff = None
         if not is_insert:
@@ -314,7 +332,21 @@ class Article(AbstractArticle):
         q = cls.all()
         q.filter('category IN ', categories)
         q.order('-%s' % orderby)
-        return [{'id': item.key().id(), 'category': item.category.name, 'title': item.title, 'author': {'email_hash': item.author.email_hash, 'nickname': item.author.nickname, 'id': item.author.key().id()}, 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated} for item in q.fetch(limit, offset)]
+        return [item.to_dict() for item in q.fetch(limit, offset)]
+    
+    @classmethod
+    def get_image_list(cls, limit=20, offset=0):
+        q = cls.all()
+        q.filter('image IS NOT ', None)
+        q.order('-last_updated')
+        return [item.to_dict() for item in q.fetch(limit, offset)]
+    
+    @classmethod
+    def get_video_list(cls, limit=20, offset=0):
+        q = cls.all()
+        q.filter('video IS NOT ', None)
+        q.order('-last_updated')
+        return [item.to_dict() for item in q.fetch(limit, offset)]
 
     def increase_comment_count(self):
         self.comment_count += 1
@@ -325,7 +357,10 @@ class Article(AbstractArticle):
             raise db.Rollback()
         self.comment_count -= 1
         super(self.__class__, self).put()
-            
+        
+    def to_dict(self):
+        return {'id': self.key().id(), 'category': self.category.name, 'title': self.title, 'excerpt': self.get_excerpt(), 'author': {'email_hash': self.author.email_hash, 'nickname': self.author.nickname, 'id': self.author.key().id()}, 'comment_count': self.comment_count, 'like_count': self.like_count, 'hate_count': self.hate_count, 'created': self.created, 'last_updated': self.last_updated, 'image': self.image, 'video': self.video}
+
 class Comment(AbstractArticle):
     article = db.ReferenceProperty(reference_class=Article, required=True)
     parent_comment = db.SelfReferenceProperty()

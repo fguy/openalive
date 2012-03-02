@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-24 13:52-0800\n"
+"POT-Creation-Date: 2012-03-01 18:06-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,9 +21,9 @@ msgstr ""
 msgid "Add a tag"
 msgstr "添加标签"
 
-#: static/js/editor.js:54
-msgid "No category selected."
-msgstr "没有选择的类别。"
+#: static/js/editor.js:61
+msgid "Home"
+msgstr "家"
 
 #: static/js/jquery.pagination.js:17
 msgid "Prev"
@@ -33,26 +33,49 @@ msgstr "上一页"
 msgid "Next"
 msgstr "未来"
 
-#: static/js/pretty.js:19
+#: static/js/pretty.js:20
 msgid " minutes ago"
 msgstr "分钟前"
 
-#: static/js/pretty.js:20
-msgid "1 hour ago"
+#: static/js/pretty.js:21
+#, fuzzy
+msgid "An hour ago"
 msgstr "1小时前"
 
-#: static/js/pretty.js:24
+#: static/js/pretty.js:25
 msgid " weeks ago"
 msgstr "几个星期前"
 
-#: static/js/service.js:171
+#: static/js/service.js:182
 msgid "Loading..."
 msgstr "载入中..."
 
-#: static/js/service.js:211
+#: static/js/service.js:411
+msgid "Please comment here..."
+msgstr "请在这里发表评论......"
+
+#: static/js/service.js:463
+#, fuzzy
+msgid "Delete"
+msgstr "删除。"
+
+#: static/js/service.js:490
 msgid "Posted."
 msgstr "发布。"
 
-#: static/js/service.js:222
+#: static/js/service.js:505
 msgid "Deleted."
 msgstr "删除。"
+
+#: static/js/service.js:722
+msgid "Nickname has been changed."
+msgstr "昵称已经改变。"
+
+#: static/js/service.js:792
+msgid " and <a href=\""
+msgid_plural " and <a href=\""
+msgstr[0] ""
+msgstr[1] ""
+
+#~ msgid "No category selected."
+#~ msgstr "没有选择的类别。"

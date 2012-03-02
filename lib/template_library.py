@@ -1,5 +1,7 @@
-from google.appengine.ext.webapp import template
 from gettext import gettext as _
+from google.appengine.ext.webapp import template
+from datetime import datetime
+import time
 import types
 
 register = template.create_template_register()
@@ -13,6 +15,10 @@ def quote(value):
     else:
         return value
     
+@register.filter
+def date8601(value):
+    return time.strftime("%Y-%m-%dT%H:%M:%S", value.utctimetuple())    
+    
 @register.tag
 def js(value):
     return '<script type="text/javascript" src="%s"></script>' % value
@@ -24,7 +30,6 @@ def pretty_date(time):
     pretty string like 'an hour ago', 'Yesterday', '3 months ago',
     'just now', etc
     """
-    from datetime import datetime
     now = datetime.now()
     if type(time) is int:
         diff = now - datetime.fromtimestamp(time)

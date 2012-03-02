@@ -200,6 +200,11 @@ body {
 	padding: 0
 }
 
+iframe {
+	z-index: 0
+}
+
 #user-info .load-more, #user-info .user-info-tab {
+	z-index: 6001;
 	display: none
 }

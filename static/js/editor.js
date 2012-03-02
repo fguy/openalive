@@ -21,6 +21,8 @@ var ArticleEditor = (function() {
 	            theme_advanced_toolbar_align : "left",
 	            theme_advanced_statusbar_location : "bottom",
 	            theme_advanced_resizing : true,
+	            apply_source_formatting : true,
+	            convert_urls : false,
 	
 	            // Example content CSS (should be your site CSS)
 	            content_css : "/static/css/content.css"

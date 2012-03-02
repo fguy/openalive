@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-24 13:52-0800\n"
+"POT-Creation-Date: 2012-03-01 18:05-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,9 +21,9 @@ msgstr ""
 msgid "Add a tag"
 msgstr "Ajouter un tag"
 
-#: static/js/editor.js:54
-msgid "No category selected."
-msgstr "Aucune catégorie sélectionnée."
+#: static/js/editor.js:61
+msgid "Home"
+msgstr "Maison"
 
 #: static/js/jquery.pagination.js:17
 msgid "Prev"
@@ -33,26 +33,49 @@ msgstr "Précédent"
 msgid "Next"
 msgstr "Prochain"
 
-#: static/js/pretty.js:19
+#: static/js/pretty.js:20
 msgid " minutes ago"
 msgstr "minutes"
 
-#: static/js/pretty.js:20
-msgid "1 hour ago"
+#: static/js/pretty.js:21
+#, fuzzy
+msgid "An hour ago"
 msgstr "Il ya 1 heure"
 
-#: static/js/pretty.js:24
+#: static/js/pretty.js:25
 msgid " weeks ago"
 msgstr "semaines"
 
-#: static/js/service.js:171
+#: static/js/service.js:182
 msgid "Loading..."
 msgstr "Chargement en cours ..."
 
-#: static/js/service.js:211
+#: static/js/service.js:411
+msgid "Please comment here..."
+msgstr "S&#39;il vous plaît commenter ici ..."
+
+#: static/js/service.js:463
+#, fuzzy
+msgid "Delete"
+msgstr "Supprimé."
+
+#: static/js/service.js:490
 msgid "Posted."
 msgstr "Posté."
 
-#: static/js/service.js:222
+#: static/js/service.js:505
 msgid "Deleted."
 msgstr "Supprimé."
+
+#: static/js/service.js:722
+msgid "Nickname has been changed."
+msgstr "Pseudo a été changé."
+
+#: static/js/service.js:792
+msgid " and <a href=\""
+msgid_plural " and <a href=\""
+msgstr[0] ""
+msgstr[1] ""
+
+#~ msgid "No category selected."
+#~ msgstr "Aucune catégorie sélectionnée."

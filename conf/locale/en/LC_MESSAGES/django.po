@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-24 13:52-0800\n"
+"POT-Creation-Date: 2012-03-01 18:06-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,21 +17,33 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: models.py:296
+#: models.py:431
 msgid "Can not give a reputation to your's."
 msgstr ""
 
-#: models.py:298
+#: models.py:433
 #, python-format
 msgid "You already gave a %s."
 msgstr ""
 
-#: action/service.py:23
+#: action/service.py:26
 msgid "Only the author can edit this article."
 msgstr ""
 
-#: action/service.py:34
+#: action/service.py:43
 msgid "Only the author can delete this article."
+msgstr ""
+
+#: action/service.py:87
+msgid "Only the author can delete this comment."
+msgstr ""
+
+#: action/service.py:141
+msgid "You did not give an reputation for this."
+msgstr ""
+
+#: action/user.py:25
+msgid "Already taken"
 msgstr ""
 
 #: conf/__init__.py:5
@@ -42,105 +54,171 @@ msgstr "Do not specify."
 msgid "Korean"
 msgstr "Korean"
 
-#: templates/index.html:13 templates/_snippets/nav.html:13
+#: templates/index.html:8 templates/_snippets/nav.html:13
 msgid "Home"
 msgstr "Home"
 
-#: templates/index.html:17
+#: templates/index.html:13
 msgid "Starred Categories"
 msgstr ""
 
-#: templates/index.html:21
-msgid "Categories"
+#: templates/index.html:18
+msgid "Category Explorer"
 msgstr ""
 
-#: templates/index.html:23 templates/index.html.py:75
+#: templates/index.html:20 templates/_base/default.html:28
 msgid "Loading..."
 msgstr "Loading..."
 
-#: templates/index.html:37
+#: templates/index.html:38 templates/user.html:35 templates/user.html.py:38
+#: templates/user.html:41
+#, fuzzy
+msgid "loading..."
+msgstr "Loading..."
+
+#: templates/index.html:38
+msgid "Show Previous"
+msgstr ""
+
+#: templates/index.html:49
 msgid "List"
 msgstr ""
 
-#: templates/index.html:37
+#: templates/index.html:51
 msgid "Like"
 msgstr ""
 
-#: templates/index.html:37
+#: templates/index.html:52
+msgid "Unlike"
+msgstr ""
+
+#: templates/index.html:53
+msgid "Hate"
+msgstr ""
+
+#: templates/index.html:54
+msgid "Unhate"
+msgstr ""
+
+#: templates/index.html:55
 msgid "Follow"
 msgstr ""
 
-#: templates/index.html:40 templates/index.html.py:52
-msgid "New Post"
+#: templates/index.html:56
+msgid "Unfollow"
 msgstr ""
 
-#: templates/index.html:42
+#: templates/index.html:61
 msgid "Edit"
 msgstr ""
 
-#: templates/index.html:43
+#: templates/index.html:62
 msgid "Delete"
 msgstr ""
 
-#: templates/index.html:60
-msgid "Category"
-msgstr ""
-
-#: templates/index.html:61 templates/index.html.py:87
-msgid "Title"
-msgstr "Title"
-
-#: templates/index.html:62
-msgid "Author"
-msgstr ""
-
-#: templates/index.html:63
-msgid "Liked"
-msgstr ""
-
-#: templates/index.html:64
-msgid "Date"
+#: templates/index.html:63 templates/index.html.py:72
+msgid "New Post"
 msgstr ""
 
 #: templates/index.html:80
-msgid "Post an Article"
+msgid "Category"
+msgstr ""
+
+#: templates/index.html:81 templates/_snippets/post-article.html:14
+msgid "Title"
+msgstr "Title"
+
+#: templates/index.html:82
+msgid "Author"
+msgstr ""
+
+#: templates/index.html:83
+msgid "Liked"
+msgstr ""
+
+#: templates/index.html:84
+msgid "Date"
+msgstr ""
+
+#: templates/user.html:5
+msgid "Profile"
+msgstr ""
+
+#: templates/user.html:6
+#, fuzzy
+msgid "Posted Articles"
 msgstr "Post an Article"
 
-#: templates/index.html:81
-msgid "Location"
-msgstr "Location"
-
-#: templates/index.html:93
-msgid "Body"
-msgstr "Body"
-
-#: templates/index.html:99 templates/_snippets/nav.html:14
-msgid "Tags"
-msgstr "Tags"
-
-#: templates/index.html:102
-msgid ""
-"Hit ENTER to add tag. Please do not tag different variations of the same "
-"name."
+#: templates/user.html:7
+msgid "Posted Comments"
 msgstr ""
-"Hit ENTER to add tag. Please do not tag different variations of the same "
-"name."
 
-#: templates/index.html:106
-msgid "Captcha"
-msgstr "Captcha"
+#: templates/user.html:8
+msgid "Nickname Changes"
+msgstr ""
 
-#: templates/index.html:115
-msgid "POST"
-msgstr "POST"
+#: templates/user.html:14 templates/user.html.py:54
+msgid "Nickname"
+msgstr ""
 
-#: templates/index.html:116
-msgid "Cancel"
-msgstr "Cancel"
+#: templates/user.html:16
+msgid "Change"
+msgstr ""
+
+#: templates/user.html:17
+msgid "Joined"
+msgstr ""
+
+#: templates/user.html:19
+msgid "Stats"
+msgstr ""
+
+#: templates/user.html:22
+#, fuzzy
+msgid "articles"
+msgstr "Post an Article"
+
+#: templates/user.html:23
+msgid "comments"
+msgstr ""
+
+#: templates/user.html:24
+#, python-format
+msgid "Got %(like_count)s likes."
+msgstr ""
+
+#: templates/user.html:25
+#, python-format
+msgid "Got %(hate_count)s hates."
+msgstr ""
+
+#: templates/user.html:29
+msgid "Signature"
+msgstr ""
+
+#: templates/user.html:35 templates/user.html.py:38 templates/user.html:41
+msgid "Show More"
+msgstr ""
+
+#: templates/user.html:47
+msgid "New Nickname"
+msgstr ""
+
+#: templates/user.html:63
+msgid "Save changes"
+msgstr ""
+
+#: templates/user.html:64
+msgid "Close"
+msgstr ""
 
 #: templates/_snippets/nav.html:10
 msgid "Open Alive"
 msgstr "Open Alive"
+
+#: templates/_snippets/nav.html:14 templates/_snippets/post-article.html:26
+msgid "Tags"
+msgstr "Tags"
 
 #: templates/_snippets/nav.html:15
 msgid "Images"
@@ -158,6 +236,42 @@ msgstr "About"
 msgid "Login"
 msgstr "Login"
 
+#: templates/_snippets/nav.html:27
+msgid "My Profile"
+msgstr ""
+
 #: templates/_snippets/nav.html:29
 msgid "Logout"
 msgstr "Logout"
+
+#: templates/_snippets/post-article.html:6
+msgid "Post an Article"
+msgstr "Post an Article"
+
+#: templates/_snippets/post-article.html:7
+msgid "Location"
+msgstr "Location"
+
+#: templates/_snippets/post-article.html:20
+msgid "Body"
+msgstr "Body"
+
+#: templates/_snippets/post-article.html:29
+msgid ""
+"Hit ENTER to add tag. Please do not tag different variations of the same "
+"name."
+msgstr ""
+"Hit ENTER to add tag. Please do not tag different variations of the same "
+"name."
+
+#: templates/_snippets/post-article.html:33
+msgid "Captcha"
+msgstr "Captcha"
+
+#: templates/_snippets/post-article.html:42
+msgid "POST"
+msgstr "POST"
+
+#: templates/_snippets/post-article.html:43
+msgid "Cancel"
+msgstr "Cancel"

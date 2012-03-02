@@ -2,37 +2,51 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-24 13:52-0800\n"
+"POT-Creation-Date: 2012-03-01 18:06-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: models.py:296
+#: models.py:431
 msgid "Can not give a reputation to your's."
 msgstr "Non può dare una reputazione al tuo c&#39;è."
 
-#: models.py:298
+#: models.py:433
 #, python-format
 msgid "You already gave a %s."
 msgstr "Hai già dato un% s."
 
-#: action/service.py:23
+#: action/service.py:26
 msgid "Only the author can edit this article."
 msgstr "Solo l&#39;autore può modificare questo articolo."
 
-#: action/service.py:34
+#: action/service.py:43
 msgid "Only the author can delete this article."
 msgstr "Solo l&#39;autore può cancellare questo articolo."
+
+#: action/service.py:87
+#, fuzzy
+msgid "Only the author can delete this comment."
+msgstr "Solo l&#39;autore può cancellare questo articolo."
+
+#: action/service.py:141
+#, fuzzy
+msgid "You did not give an reputation for this."
+msgstr "Non può dare una reputazione al tuo c&#39;è."
+
+#: action/user.py:25
+msgid "Already taken"
+msgstr "Già preso"
 
 #: conf/__init__.py:5
 msgid "Do not specify."
@@ -42,105 +56,173 @@ msgstr "Non specificato."
 msgid "Korean"
 msgstr "Coreano"
 
-#: templates/index.html:13 templates/_snippets/nav.html:13
+#: templates/index.html:8 templates/_snippets/nav.html:13
 msgid "Home"
 msgstr "Casa"
 
-#: templates/index.html:17
+#: templates/index.html:13
 msgid "Starred Categories"
 msgstr "Categorie Preferiti"
 
-#: templates/index.html:21
-msgid "Categories"
-msgstr "Categorie"
+#: templates/index.html:18
+#, fuzzy
+msgid "Category Explorer"
+msgstr "Categoria"
 
-#: templates/index.html:23 templates/index.html.py:75
+#: templates/index.html:20 templates/_base/default.html:28
 msgid "Loading..."
 msgstr "Caricamento in corso ..."
 
-#: templates/index.html:37
+#: templates/index.html:38 templates/user.html:35 templates/user.html.py:38
+#: templates/user.html:41
+#, fuzzy
+msgid "loading..."
+msgstr "Caricamento in corso ..."
+
+#: templates/index.html:38
+msgid "Show Previous"
+msgstr "Mostra precedente"
+
+#: templates/index.html:49
 msgid "List"
 msgstr "Lista"
 
-#: templates/index.html:37
+#: templates/index.html:51
 msgid "Like"
 msgstr "Come"
 
-#: templates/index.html:37
+#: templates/index.html:52
+msgid "Unlike"
+msgstr "A differenza di"
+
+#: templates/index.html:53
+msgid "Hate"
+msgstr "Odio"
+
+#: templates/index.html:54
+msgid "Unhate"
+msgstr "Unhate"
+
+#: templates/index.html:55
 msgid "Follow"
 msgstr "Seguire"
 
-#: templates/index.html:40 templates/index.html.py:52
-msgid "New Post"
-msgstr "Posta un nuovo"
+#: templates/index.html:56
+#, fuzzy
+msgid "Unfollow"
+msgstr "Seguire"
 
-#: templates/index.html:42
+#: templates/index.html:61
 msgid "Edit"
 msgstr "Modifica"
 
-#: templates/index.html:43
+#: templates/index.html:62
 msgid "Delete"
 msgstr "Cancellare"
 
-#: templates/index.html:60
+#: templates/index.html:63 templates/index.html.py:72
+msgid "New Post"
+msgstr "Posta un nuovo"
+
+#: templates/index.html:80
 msgid "Category"
 msgstr "Categoria"
 
-#: templates/index.html:61 templates/index.html.py:87
+#: templates/index.html:81 templates/_snippets/post-article.html:14
 msgid "Title"
 msgstr "Titolo"
 
-#: templates/index.html:62
+#: templates/index.html:82
 msgid "Author"
 msgstr "Autore"
 
-#: templates/index.html:63
+#: templates/index.html:83
 msgid "Liked"
 msgstr "Piaciuto di più"
 
-#: templates/index.html:64
+#: templates/index.html:84
 msgid "Date"
 msgstr "Data"
 
-#: templates/index.html:80
-msgid "Post an Article"
+#: templates/user.html:5
+msgid "Profile"
+msgstr "Profilo"
+
+#: templates/user.html:6
+#, fuzzy
+msgid "Posted Articles"
 msgstr "Pubblica un articolo"
 
-#: templates/index.html:81
-msgid "Location"
-msgstr "Posizione"
+#: templates/user.html:7
+msgid "Posted Comments"
+msgstr "I commenti inseriti"
 
-#: templates/index.html:93
-msgid "Body"
-msgstr "Corpo"
+#: templates/user.html:8
+msgid "Nickname Changes"
+msgstr "Nickname Modifiche"
 
-#: templates/index.html:99 templates/_snippets/nav.html:14
-msgid "Tags"
-msgstr "Tags"
+#: templates/user.html:14 templates/user.html.py:54
+msgid "Nickname"
+msgstr "Soprannome"
 
-#: templates/index.html:102
-msgid ""
-"Hit ENTER to add tag. Please do not tag different variations of the same "
-"name."
-msgstr ""
-"Hit ENTER per aggiungere tag. Si prega di non etichettare diverse varianti "
-"dello stesso nome."
+#: templates/user.html:16
+msgid "Change"
+msgstr "Cambiare"
 
-#: templates/index.html:106
-msgid "Captcha"
-msgstr "Captcha"
+#: templates/user.html:17
+msgid "Joined"
+msgstr "Iscritto"
 
-#: templates/index.html:115
-msgid "POST"
-msgstr "POST"
+#: templates/user.html:19
+msgid "Stats"
+msgstr "Statistiche"
 
-#: templates/index.html:116
-msgid "Cancel"
-msgstr "Annullare"
+#: templates/user.html:22
+#, fuzzy
+msgid "articles"
+msgstr "Pubblica un articolo"
+
+#: templates/user.html:23
+msgid "comments"
+msgstr "commenti"
+
+#: templates/user.html:24
+#, python-format
+msgid "Got %(like_count)s likes."
+msgstr "Got% (like_count) piace s."
+
+#: templates/user.html:25
+#, python-format
+msgid "Got %(hate_count)s hates."
+msgstr "Got% (hate_count) s odia."
+
+#: templates/user.html:29
+msgid "Signature"
+msgstr "Firma"
+
+#: templates/user.html:35 templates/user.html.py:38 templates/user.html:41
+msgid "Show More"
+msgstr "Mostra di più"
+
+#: templates/user.html:47
+msgid "New Nickname"
+msgstr "Nickname New"
+
+#: templates/user.html:63
+msgid "Save changes"
+msgstr "Salvare le modifiche"
+
+#: templates/user.html:64
+msgid "Close"
+msgstr "Chiudere"
 
 #: templates/_snippets/nav.html:10
 msgid "Open Alive"
 msgstr "Aprire Alive"
+
+#: templates/_snippets/nav.html:14 templates/_snippets/post-article.html:26
+msgid "Tags"
+msgstr "Tags"
 
 #: templates/_snippets/nav.html:15
 msgid "Images"
@@ -158,6 +240,45 @@ msgstr "Circa"
 msgid "Login"
 msgstr "Accesso"
 
+#: templates/_snippets/nav.html:27
+msgid "My Profile"
+msgstr "Il mio profilo"
+
 #: templates/_snippets/nav.html:29
 msgid "Logout"
 msgstr "Logout"
+
+#: templates/_snippets/post-article.html:6
+msgid "Post an Article"
+msgstr "Pubblica un articolo"
+
+#: templates/_snippets/post-article.html:7
+msgid "Location"
+msgstr "Posizione"
+
+#: templates/_snippets/post-article.html:20
+msgid "Body"
+msgstr "Corpo"
+
+#: templates/_snippets/post-article.html:29
+msgid ""
+"Hit ENTER to add tag. Please do not tag different variations of the same "
+"name."
+msgstr ""
+"Hit ENTER per aggiungere tag. Si prega di non etichettare diverse varianti "
+"dello stesso nome."
+
+#: templates/_snippets/post-article.html:33
+msgid "Captcha"
+msgstr "Captcha"
+
+#: templates/_snippets/post-article.html:42
+msgid "POST"
+msgstr "POST"
+
+#: templates/_snippets/post-article.html:43
+msgid "Cancel"
+msgstr "Annullare"
+
+#~ msgid "Categories"
+#~ msgstr "Categorie"

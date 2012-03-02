@@ -15,7 +15,7 @@
 		<dd class="n"><span class="nickname">{{ user.nickname }}</span> 
 			<span class="user-btns">{% if is_me %}<a href="#change-user-dialog" class="btn" id="change-user" data-toggle="modal">{% trans 'Change' %}</a>{% endif %}</span></dd>
 		<dt>{% trans 'Joined' %}</dt>
-		<dd><time>{{ user.joined|pretty_date }}</time></dd>
+		<dd><time datetime="{{ user.joined|date8601 }}">{{ user.joined|pretty_date }}</time></dd>
 		<dt>{% trans 'Stats' %}</dt>
 		<dd>
 			<ul>

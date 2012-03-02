@@ -2,37 +2,51 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-24 13:52-0800\n"
+"POT-Creation-Date: 2012-03-01 18:06-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: models.py:296
+#: models.py:431
 msgid "Can not give a reputation to your's."
 msgstr "不能给你的声誉。"
 
-#: models.py:298
+#: models.py:433
 #, python-format
 msgid "You already gave a %s."
 msgstr "你已经给了％s。"
 
-#: action/service.py:23
+#: action/service.py:26
 msgid "Only the author can edit this article."
 msgstr "只有作者可以编辑这篇文章。"
 
-#: action/service.py:34
+#: action/service.py:43
 msgid "Only the author can delete this article."
 msgstr "只有作者可以删除这篇文章。"
+
+#: action/service.py:87
+#, fuzzy
+msgid "Only the author can delete this comment."
+msgstr "只有作者可以删除这篇文章。"
+
+#: action/service.py:141
+#, fuzzy
+msgid "You did not give an reputation for this."
+msgstr "不能给你的声誉。"
+
+#: action/user.py:25
+msgid "Already taken"
+msgstr "已采取"
 
 #: conf/__init__.py:5
 msgid "Do not specify."
@@ -42,103 +56,173 @@ msgstr "不指定。"
 msgid "Korean"
 msgstr "韩国"
 
-#: templates/index.html:13 templates/_snippets/nav.html:13
+#: templates/index.html:8 templates/_snippets/nav.html:13
 msgid "Home"
 msgstr "家"
 
-#: templates/index.html:17
+#: templates/index.html:13
 msgid "Starred Categories"
 msgstr "五星分类"
 
-#: templates/index.html:21
-msgid "Categories"
-msgstr "分类"
+#: templates/index.html:18
+#, fuzzy
+msgid "Category Explorer"
+msgstr "类别"
 
-#: templates/index.html:23 templates/index.html.py:75
+#: templates/index.html:20 templates/_base/default.html:28
 msgid "Loading..."
 msgstr "载入中..."
 
-#: templates/index.html:37
+#: templates/index.html:38 templates/user.html:35 templates/user.html.py:38
+#: templates/user.html:41
+#, fuzzy
+msgid "loading..."
+msgstr "载入中..."
+
+#: templates/index.html:38
+msgid "Show Previous"
+msgstr "显示前"
+
+#: templates/index.html:49
 msgid "List"
 msgstr "表"
 
-#: templates/index.html:37
+#: templates/index.html:51
 msgid "Like"
 msgstr "喜欢"
 
-#: templates/index.html:37
+#: templates/index.html:52
+msgid "Unlike"
+msgstr "不像"
+
+#: templates/index.html:53
+msgid "Hate"
+msgstr "恨"
+
+#: templates/index.html:54
+msgid "Unhate"
+msgstr "Unhate"
+
+#: templates/index.html:55
 msgid "Follow"
 msgstr "遵循"
 
-#: templates/index.html:40 templates/index.html.py:52
-msgid "New Post"
-msgstr "发新话题"
+#: templates/index.html:56
+#, fuzzy
+msgid "Unfollow"
+msgstr "遵循"
 
-#: templates/index.html:42
+#: templates/index.html:61
 msgid "Edit"
 msgstr "编辑"
 
-#: templates/index.html:43
+#: templates/index.html:62
 msgid "Delete"
 msgstr "删除"
 
-#: templates/index.html:60
+#: templates/index.html:63 templates/index.html.py:72
+msgid "New Post"
+msgstr "发新话题"
+
+#: templates/index.html:80
 msgid "Category"
 msgstr "类别"
 
-#: templates/index.html:61 templates/index.html.py:87
+#: templates/index.html:81 templates/_snippets/post-article.html:14
 msgid "Title"
 msgstr "标题"
 
-#: templates/index.html:62
+#: templates/index.html:82
 msgid "Author"
 msgstr "作者"
 
-#: templates/index.html:63
+#: templates/index.html:83
 msgid "Liked"
 msgstr "喜欢"
 
-#: templates/index.html:64
+#: templates/index.html:84
 msgid "Date"
 msgstr "日期"
 
-#: templates/index.html:80
-msgid "Post an Article"
+#: templates/user.html:5
+msgid "Profile"
+msgstr "轮廓"
+
+#: templates/user.html:6
+#, fuzzy
+msgid "Posted Articles"
 msgstr "发表文章"
 
-#: templates/index.html:81
-msgid "Location"
-msgstr "位置"
+#: templates/user.html:7
+msgid "Posted Comments"
+msgstr "发表评论"
 
-#: templates/index.html:93
-msgid "Body"
-msgstr "身体"
+#: templates/user.html:8
+msgid "Nickname Changes"
+msgstr "昵称变化"
 
-#: templates/index.html:99 templates/_snippets/nav.html:14
-msgid "Tags"
-msgstr "标签"
+#: templates/user.html:14 templates/user.html.py:54
+msgid "Nickname"
+msgstr "昵称"
 
-#: templates/index.html:102
-msgid ""
-"Hit ENTER to add tag. Please do not tag different variations of the same "
-"name."
-msgstr "敲击回车键添加标签。请不要标记相同名称的不同变化。"
+#: templates/user.html:16
+msgid "Change"
+msgstr "改变"
 
-#: templates/index.html:106
-msgid "Captcha"
-msgstr "验证码"
+#: templates/user.html:17
+msgid "Joined"
+msgstr "注册"
 
-#: templates/index.html:115
-msgid "POST"
-msgstr "热门"
+#: templates/user.html:19
+msgid "Stats"
+msgstr "统计"
 
-#: templates/index.html:116
-msgid "Cancel"
-msgstr "取消"
+#: templates/user.html:22
+#, fuzzy
+msgid "articles"
+msgstr "发表文章"
+
+#: templates/user.html:23
+msgid "comments"
+msgstr "评论"
+
+#: templates/user.html:24
+#, python-format
+msgid "Got %(like_count)s likes."
+msgstr "有％（like_count）喜欢。"
+
+#: templates/user.html:25
+#, python-format
+msgid "Got %(hate_count)s hates."
+msgstr "得到％（hate_count）恨。"
+
+#: templates/user.html:29
+msgid "Signature"
+msgstr "签名"
+
+#: templates/user.html:35 templates/user.html.py:38 templates/user.html:41
+msgid "Show More"
+msgstr "显示更多"
+
+#: templates/user.html:47
+msgid "New Nickname"
+msgstr "新绰号"
+
+#: templates/user.html:63
+msgid "Save changes"
+msgstr "保存更改"
+
+#: templates/user.html:64
+msgid "Close"
+msgstr "关闭"
 
 #: templates/_snippets/nav.html:10
 msgid "Open Alive"
 msgstr "打开活"
+
+#: templates/_snippets/nav.html:14 templates/_snippets/post-article.html:26
+msgid "Tags"
+msgstr "标签"
 
 #: templates/_snippets/nav.html:15
 msgid "Images"
@@ -156,6 +240,43 @@ msgstr "关于"
 msgid "Login"
 msgstr "登录"
 
+#: templates/_snippets/nav.html:27
+msgid "My Profile"
+msgstr "我的个人资料"
+
 #: templates/_snippets/nav.html:29
 msgid "Logout"
 msgstr "登出"
+
+#: templates/_snippets/post-article.html:6
+msgid "Post an Article"
+msgstr "发表文章"
+
+#: templates/_snippets/post-article.html:7
+msgid "Location"
+msgstr "位置"
+
+#: templates/_snippets/post-article.html:20
+msgid "Body"
+msgstr "身体"
+
+#: templates/_snippets/post-article.html:29
+msgid ""
+"Hit ENTER to add tag. Please do not tag different variations of the same "
+"name."
+msgstr "敲击回车键添加标签。请不要标记相同名称的不同变化。"
+
+#: templates/_snippets/post-article.html:33
+msgid "Captcha"
+msgstr "验证码"
+
+#: templates/_snippets/post-article.html:42
+msgid "POST"
+msgstr "热门"
+
+#: templates/_snippets/post-article.html:43
+msgid "Cancel"
+msgstr "取消"
+
+#~ msgid "Categories"
+#~ msgstr "分类"
