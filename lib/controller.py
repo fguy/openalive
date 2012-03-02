@@ -89,14 +89,16 @@ class Controller(webapp.RequestHandler):
 
                 self.__action.lang = self.request.lang
                 
-                if (result is Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
+                output = self.request.get('output')
+                
+                if output == 'json' or (result == Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
                     del self.__action.is_ajax
                     del self.__action.lang                                          
                     context = self.__action._get_context()
                     logging.debug('Context data for JSON Serialize : %s' % context)
                     self.response.headers['Content-type'] = 'application/json'
                     self.response.out.write(encode(context))
-                elif result is not None:
+                elif output == 'html' or result is not None:
                     template_path = self._find_template(result)
                     if template_path:
                         context = self.__action._get_context()
@@ -132,8 +134,8 @@ class Controller(webapp.RequestHandler):
             logging.debug('Newer import of %s' % module)
 
         try:
-            klass = getattr(module, action_class)
-            self.__action = klass(self.request, self.response)
+            cls = getattr(module, action_class)
+            self.__action = cls(self.request, self.response)
         except Exception:
             import traceback
             traceback.print_exc(logging.ERROR)
@@ -208,11 +210,11 @@ class Action(object):
         """Trigger method after execute request"""
         pass    
             
-    def __init__(self, request, response):
+    def __init__(self, request, response, context = {}):
         """Initializes this with the given Request and Response."""
         self.request = request
         self.response = response
-        self.__context = {}        
+        self.__context = context
             
     def __setattr__(self, attr, value, DEFAULT=[]):
         if self._is_context_key(attr) :
@@ -257,4 +259,5 @@ class Action(object):
         ERROR = 'error'
         HTML = 'html'
         INPUT = 'input'
+        RSS = 'rss'
         JSON = '__json__'

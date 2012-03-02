@@ -297,12 +297,12 @@ class Article(AbstractArticle):
         
         soup = BeautifulSoup(self.body)
         img = soup.find('img')
-        if img and hasattr(img, 'src') and img['src'].lower().startswith('http://'):
+        if img and hasattr(img, 'src') and re.match('^http(s)?://', img['src'].lower()) is not None:
             self.image = img['src']
         
         iframes = soup.findAll('iframe')
         for item in iframes:
-            if item['src'].lower().startswith('http://www.youtube.com/'):
+            if re.match('^http(s)?://(.+\.)?youtube.com/', item['src'].lower()):
                 if self.video is None:
                     self.video = item['src']
             else:

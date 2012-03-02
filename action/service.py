@@ -1,9 +1,9 @@
+from gettext import gettext as _
 from google.appengine.api import users
 from lib.controller import Action
-from lib.decorators import login_required
+from lib.decorators import login_required, rss_available
 import models
 import simplejson as json
-from gettext import gettext as _
 
 class Article(Action):
     @login_required
@@ -107,9 +107,11 @@ class UserArticleList():
         offset = (page - 1) * self.LIST_PER_PAGE        
         self.article_list = models.User.get_article_list(self.LIST_PER_PAGE, offset, self.request.get('sort', 'created'))
         return Action.Result.DEFAULT
-            
+
 class ArticleList(Action):
     LIST_PER_PAGE = 20
+    
+    @rss_available
     def get(self, category_name):
         page = int(self.request.get('page', 1))
         offset = (page - 1) * self.LIST_PER_PAGE

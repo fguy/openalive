@@ -1,6 +1,8 @@
+from action import rss
+from google.appengine.api import users
+from lib.controller import Action
 import logging
 
-from google.appengine.api import users
 
 def login_required(method):
 	"""A decorator to require that a user be logged in to access a handler.
@@ -27,3 +29,15 @@ def login_required(method):
 			logging.debug('Current user found')
 			return method(*args)
 	return new
+
+def rss_available(method):
+	def forward(*args):
+		action = args[0]
+		if action.request.get('output') == Action.Result.RSS:
+			cls = getattr(rss, action.__class__.__name__)
+			result = getattr(cls(action.request, action.response, action._get_context()), 'get')(*args[1:])
+			action.response.headers['Content-type'] = 'text/xml'
+			result.write_xml(action.response.out, 'utf-8')
+		else:
+			return method(*args)
+	return forward
