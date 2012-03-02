@@ -2,7 +2,10 @@ from google.appengine.api import users
 from lib.controller import Action
 from lib.decorators import login_required
 from models import User, UserNicknameHistory
-import simplejson as json
+try: 
+    import json
+except ImportError:
+    import simplejson as json
 
 class Index(Action):
     def get(self, user_id=None):

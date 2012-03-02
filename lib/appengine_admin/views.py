@@ -4,8 +4,8 @@ import os.path
 import logging
 import re
 import copy
+import webapp2
 
-from google.appengine.ext import webapp
 from google.appengine.api import datastore_errors
 from google.appengine.ext.webapp import template
 
@@ -19,7 +19,7 @@ from .utils import Http404, Http500
 ADMIN_TEMPLATE_DIR = admin_settings.ADMIN_TEMPLATE_DIR
 ADMIN_ITEMS_PER_PAGE = admin_settings.ADMIN_ITEMS_PER_PAGE
 
-class BaseRequestHandler(webapp.RequestHandler):
+class BaseRequestHandler(webapp2.RequestHandler):
     def handle_exception(self, exception, debug_mode):
         logging.warning("Exception catched: %r" % exception)
         if isinstance(exception, Http404) or isinstance(exception, Http500):
@@ -51,7 +51,7 @@ class Admin(BaseRequestHandler):
         2) url - admin site page url (without prefix) that is used for determining what
             action on what model user wants to make.
     """
-    def __init__(self):
+    def __init__(self, request, response):
         logging.info("NEW Admin object created")
         super(Admin, self).__init__()
         # Define and compile regexps for Admin site URL scheme.
@@ -78,6 +78,7 @@ class Admin(BaseRequestHandler):
         # This variable is set by get and port methods and used later
         # for constructing new admin urls.
         self.urlPrefix = ''
+        super(self.__class__, self).__init__(request, response)
 
     def _compileRegexps(self, regexps):
         """Compiles all regular expressions in regexps list

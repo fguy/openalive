@@ -1,3 +1,5 @@
+import os
+TEMPLATE_DIRS = (os.path.abspath('%s/templates' % os.path.dirname(os.path.realpath(__file__))),)
 GOOGLE_SIMPLE_API_KEY=''
 DEPENSIO_API_KEY=''
 IMAGE_SHACK_API_KEY='' #http://code.google.com/p/imageshackapi/

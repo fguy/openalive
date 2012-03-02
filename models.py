@@ -337,7 +337,7 @@ class Article(AbstractArticle):
     @classmethod
     def get_image_list(cls, limit=20, offset=0):
         q = cls.all()
-        q.filter('image IS NOT ', None)
+        q.filter('image != ', None)
         q.order('-last_updated')
         return [item.to_dict() for item in q.fetch(limit, offset)]
     

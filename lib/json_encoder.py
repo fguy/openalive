@@ -1,7 +1,10 @@
 from google.appengine.api import users
 from google.appengine.ext import db
 import datetime
-import simplejson
+try: 
+    import json
+except ImportError:
+    import simplejson as json
 import time
 
 # Copyright 2008 Google Inc.
@@ -31,7 +34,7 @@ provided to further simplify usage.
 
 
 
-class GqlEncoder(simplejson.JSONEncoder):
+class GqlEncoder(json.JSONEncoder):
     """Extends JSONEncoder to add support for GQL results and properties.
   
     Adds support to simplejson JSONEncoders for GQL results and properties by
@@ -75,7 +78,7 @@ class GqlEncoder(simplejson.JSONEncoder):
         elif isinstance(obj, db.Key):
             return obj.id()
 
-        return simplejson.JSONEncoder.default(self, obj)
+        return json.JSONEncoder.default(self, obj)
 
 
 def encode(value):

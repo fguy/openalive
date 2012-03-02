@@ -3,7 +3,10 @@ from google.appengine.api import users
 from lib.controller import Action
 from lib.decorators import login_required, rss_available
 import models
-import simplejson as json
+try: 
+    import json
+except ImportError:
+    import simplejson as json
 
 class Article(Action):
     @login_required

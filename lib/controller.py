@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.utils import translation
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp import template
-from lib.json import encode
+from django import template
+from django.template import loader
+from lib.json_encoder import encode
 import action
 import logging
 import os
@@ -10,29 +10,31 @@ import re
 import sys
 import urllib
 import urlparse
+import webapp2
 
 ACTION_PACKAGE = 'action'
-TEMPLATES_PATH = os.path.abspath('%s/../templates' % os.path.dirname(os.path.realpath(__file__)))
-TEMPLATES_SUFFIX = '.html'
+TEMPLATE_DIRS = (os.path.abspath('%s/../templates' % os.path.dirname(os.path.realpath(__file__))),)
+TEMPLATE_SUFFIX = '.html'
 LANG_MAP = {'ko' : ['ko-kr'], 'en' : ['en_US', 'en_GB'], 'ja' : [], 'fr' : [], 'es' : [], 'it' : [], 'ru' : [], 'th' : [], 'zh' : [], 'zh-CN' : [], 'zh-TW'  : []}
 LANG_COOKIE_NAME = 'django_language'
 
-class Controller(webapp.RequestHandler):
+class Controller(webapp2.RequestHandler):
     url_mapping = []
     
-    def __init__(self):
+    def __init__(self, request, response):
         self.__lang_map = {}
         for key, lang_list in LANG_MAP.iteritems():
             self.__lang_map[key] = key
             for lang in lang_list:
                 self.__lang_map[lang] = key
-        self.__base_template = template.load('%s/base.html' % TEMPLATES_PATH)
         settings.SETTINGS_MODULE = 'conf'
+        if not template.libraries.get('lib.template_library', None):
+            template.add_to_builtins('lib.template_library')
+        super(self.__class__, self).__init__(request, response)
     
     def initialize(self, request, response):
-        self.response = response
-        self.request = request
-            
+        super(self.__class__, self).initialize(request, response)
+
         action_module = None
         action_class = None
             
@@ -74,46 +76,53 @@ class Controller(webapp.RequestHandler):
         if not self.__action:
             logging.debug('Action is missing')
             self.error(404)
-        else:
-            self.__action.is_ajax = self.request.headers.has_key('X-Requested-With') and self.request.headers['X-Requested-With'] == 'XMLHttpRequest'
-            method = None
-            try:
-                method = getattr(self.__action, method_name)
-            except AttributeError:
-                logging.warn('Requested method "%s" not found on this action.' % method_name)
-            
-            if method:
-                getattr(self.__action, 'before')()
-                result = method(*(self._current_request_args if hasattr(self, '_current_request_args') else args))
-                getattr(self.__action, 'after')()
+            return
+        self.__action.is_ajax = self.request.headers.has_key('X-Requested-With') and self.request.headers['X-Requested-With'] == 'XMLHttpRequest'
+        method = None
+        try:
+            method = getattr(self.__action, method_name)
+        except AttributeError:
+            logging.warn('Requested method "%s" not found on this action.' % method_name)
+        
+        if not method:
+            self.error(405)
+            return
+        
+        getattr(self.__action, 'before')()
+        result = method(*(self._current_request_args if hasattr(self, '_current_request_args') else args))
+        getattr(self.__action, 'after')()
 
-                self.__action.lang = self.request.lang
-                
-                output = self.request.get('output')
-                
-                if output == 'json' or (result == Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
-                    del self.__action.is_ajax
-                    del self.__action.lang                                          
-                    context = self.__action._get_context()
-                    logging.debug('Context data for JSON Serialize : %s' % context)
-                    self.response.headers['Content-type'] = 'application/json'
-                    self.response.out.write(encode(context))
-                elif output == 'html' or result is not None:
-                    template_path = self._find_template(result)
-                    if template_path:
-                        context = self.__action._get_context()
-                        context['base'] = '%s%s' % (TEMPLATES_PATH, '/_base/default.html' if not self.__action.is_ajax else '/_base/ajax.html')
-                        self.response.out.write(template.render(template_path, context))
-                    logging.debug('Current result : %s' % result)
-                else:
-                    logging.debug('Has no result.')
-            else:
-                self.error(405)
+        self.__action.lang = self.request.lang
+        
+        output = self.request.get('output')
+        
+        if output == 'json' or (result == Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
+            del self.__action.is_ajax
+            del self.__action.lang                                          
+            context = self.__action._get_context()
+            logging.debug('Context data for JSON Serialize : %s' % context)
+            self.response.headers['Content-type'] = 'application/json'
+            self.response.out.write(encode(context))
+        elif output == 'html' or result is not None:
+            template_path = self._find_template(result)
+            if template_path:
+                context = self.__action._get_context()
+                context['base'] = '_base/default.html' if not self.__action.is_ajax else '_base/ajax.html'
+                self.response.out.write(loader.get_template(template_path).render(template.context.Context(context)))
+            logging.debug('Current result : %s' % result)
+        else:
+            logging.debug('Has no result.')
+            
+    def handle_exception(self, e, debug):
+        self.response.set_status(500, e)
+        if debug:
+            print e
+        raise
     
     def _find_template(self, result_name):
         if result_name.startswith('/'):
-            return '%s%s' % (TEMPLATES_PATH, result_name)
-        result = [TEMPLATES_PATH, self.__action.__module__.replace('%s.' % ACTION_PACKAGE, '')]
+            return result_name
+        result = [self.__action.__module__.replace('%s.' % ACTION_PACKAGE, '')]
         action_class = self.__action.__class__.__name__
         if action_class is not 'Index':
             result.append(action_class.lower())
@@ -121,7 +130,7 @@ class Controller(webapp.RequestHandler):
         if result_name is not '' and result_name != Action.Result.HTML:
             result.append(result_name) 
 
-        return '%s%s' % (os.path.sep.join(result), TEMPLATES_SUFFIX)
+        return '%s%s' % (os.path.sep.join(result), TEMPLATE_SUFFIX)
 
     def _import_action(self, action_name, action_class='Index'):
         module_name = '%s.%s' % (ACTION_PACKAGE, action_name)
@@ -210,11 +219,11 @@ class Action(object):
         """Trigger method after execute request"""
         pass    
             
-    def __init__(self, request, response, context = {}):
+    def __init__(self, request, response, context = None):
         """Initializes this with the given Request and Response."""
         self.request = request
         self.response = response
-        self.__context = context
+        self.__context = context if context is not None else {}
             
     def __setattr__(self, attr, value, DEFAULT=[]):
         if self._is_context_key(attr) :
