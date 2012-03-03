@@ -1,10 +1,10 @@
 from gettext import gettext as _
-from google.appengine.ext.webapp import template
+from django import template
 from datetime import datetime
 import time
 import types
 
-register = template.create_template_register()
+register = template.Library()
 
 @register.filter
 def quote(value):
@@ -14,11 +14,7 @@ def quote(value):
         return '"%s"' % value
     else:
         return value
-    
-@register.filter
-def date8601(value):
-    return time.strftime("%Y-%m-%dT%H:%M:%S", value.utctimetuple())    
-    
+
 @register.tag
 def js(value):
     return '<script type="text/javascript" src="%s"></script>' % value
@@ -45,15 +41,15 @@ def pretty_date(time):
 
     if day_diff == 0:
         if second_diff < 10:
-            return _("just now")
+            return _("Just now")
         if second_diff < 60:
             return str(second_diff) + _(" seconds ago")
         if second_diff < 120:
-            return  _("a minute ago")
+            return  _("About 1 minute ago")
         if second_diff < 3600:
             return str( second_diff / 60 ) + _(" minutes ago")
         if second_diff < 7200:
-            return _("an hour ago")
+            return _("An hour ago")
         if second_diff < 86400:
             return str( second_diff / 3600 ) + _(" hours ago")
     if day_diff == 1:
