@@ -1,4 +1,4 @@
-from action import rss
+from action import rss as rss_module
 from google.appengine.api import users
 from lib.controller import Action
 import logging
@@ -30,14 +30,15 @@ def login_required(method):
 			return method(*args)
 	return new
 
-def rss_available(method):
-	def forward(*args):
-		action = args[0]
-		if action.request.get('output') == Action.Result.RSS:
-			cls = getattr(rss, action.__class__.__name__)
-			result = getattr(cls(action.request, action.response, action._get_context()), 'get')(*args[1:])
-			action.response.headers['Content-type'] = 'text/xml'
-			result.write_xml(action.response.out, 'utf-8')
-		else:
-			return method(*args)
-	return forward
+def rss(rss_action_class):
+	def wrap(action_method):
+		def wrapped_f(*args):
+			action_class = args[0]
+			if action_class.request.get('output') == Action.Result.RSS:
+				result = getattr(rss_action_class(action_class.request, action_class.response, action_class._get_context()), 'get')(*args[1:])
+				action_class.response.headers['Content-type'] = 'text/xml'
+				result.write_xml(action_class.response.out, 'utf-8')
+			else:
+				return action_method(*args)
+		return wrapped_f
+	return wrap

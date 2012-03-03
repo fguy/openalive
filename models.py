@@ -294,26 +294,40 @@ class Article(AbstractArticle):
         self.title = bleach.clean(self.title)
         self.body = bleach.clean(self.body, tags=['p', 'span', 'div', 'strong', 'b', 'em', 'i', 'blockquote', 'sub', 'sup', 'img', 'iframe', 'br'], attributes=['style', 'title', 'src', 'frameborder', 'width', 'height', 'alt'], styles=['width', 'height', 'font-size', 'font-family', 'text-decoration', 'color', 'background-color', 'text-align', 'padding-left'])
         self.last_updated = datetime.datetime.now()
+
+        has_image = False
+        has_video = False
+        self.image = None
+        self.video = None
         
         soup = BeautifulSoup(self.body)
         img = soup.find('img')
+        
         if img and hasattr(img, 'src') and re.match('^http(s)?://', img['src'].lower()) is not None:
             self.image = img['src']
+            has_image = True
         
         iframes = soup.findAll('iframe')
         for item in iframes:
-            if re.match('^http(s)?://(.+\.)?youtube.com/', item['src'].lower()):
+            import sys
+            sys.stderr.write(item['src'])
+            if re.match('^http(s)?://(.+\.)?youtube.com/', 'http://www.youtube.com/embed/7RN2d0ZeSyo'.lower()) is not None:
                 if self.video is None:
                     self.video = item['src']
+                    has_video = True
             else:
                 item.decompose()
         
-        is_insert = not self.is_saved()
+        try:
+            previous = self.__class__.get(self.key())
+            is_insert = False
+        except db.NotSavedError:
+            is_insert = True
+
         diff = None
-        if not is_insert:
-            previous_body = self.__class__.get_by_id(self.key().id()).body
-            if previous_body != self.body:
-                diff = DIFFER.make_table(previous_body, self.body)
+        if not is_insert: 
+            if previous.body != self.body:
+                diff = DIFFER.make_table(previous.body, self.body)
         db.run_in_transaction_options(xg_on, super(Article, self).put)
         if is_insert:
             db.run_in_transaction_options(xg_on, self.author.increase_article_count)
@@ -321,6 +335,21 @@ class Article(AbstractArticle):
                 db.run_in_transaction_options(xg_on, item.increase_article_count)
         elif diff:
             db.run_in_transaction_options(xg_on, ArticleHistory(article=self, diff=diff).put)
+            
+        key_name = str(self.key().id())
+        if has_image:
+            ImageArticle.get_or_insert(key_name, article=self)
+        else:
+            found = ImageArticle.gql('WHERE article = :1', self).get()
+            if found != None:
+                found.delete()
+        if has_video:
+            VideoArticle.get_or_insert(key_name, article=self)
+        else:
+            found = VideoArticle.gql('WHERE article = :1', self).get()
+            if found != None:
+                found.delete()
+
         return self
         
     @classmethod
@@ -361,6 +390,19 @@ class Article(AbstractArticle):
     def to_dict(self):
         return {'id': self.key().id(), 'category': self.category.name, 'title': self.title, 'excerpt': self.get_excerpt(), 'author': {'email_hash': self.author.email_hash, 'nickname': self.author.nickname, 'id': self.author.key().id()}, 'comment_count': self.comment_count, 'like_count': self.like_count, 'hate_count': self.hate_count, 'created': self.created, 'last_updated': self.last_updated, 'image': self.image, 'video': self.video}
 
+class ImageArticle(db.Model):
+    article = db.ReferenceProperty(reference_class=Article, required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
+    
+    @classmethod
+    def get_list(cls, limit=20, offset=0):
+        q = cls.all()
+        q.order('-created')
+        return [item.article.to_dict() for item in q.fetch(limit, offset)]
+    
+class VideoArticle(ImageArticle):
+    pass
+
 class Comment(AbstractArticle):
     article = db.ReferenceProperty(reference_class=Article, required=True)
     parent_comment = db.SelfReferenceProperty()
@@ -373,7 +415,13 @@ class Comment(AbstractArticle):
     
     def save(self):
         self.body = bleach.linkify(bleach.clean(self.body).replace('\n','<br>\n'), parse_email=True, target='_blank')
-        is_insert = not self.is_saved()
+        
+        try:
+            self.__class__.get(self.key())
+            is_insert = False
+        except db.NotSavedError:
+            is_insert = True
+            
         db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
         if is_insert:
             self.sort_key = '%s%s' % (self.parent_comment.sort_key, base62_encode(self.key().id())) if self.parent_comment else '%s' % base62_encode(self.key().id())
@@ -465,7 +513,12 @@ class StarredCategory(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     
     def put(self):
-        is_insert = not self.is_saved()
+        try:
+            self.__class__.get(self.key())
+            is_insert = False
+        except db.NotSavedError:
+            is_insert = True
+            
         db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
         if is_insert:
             db.run_in_transaction_options(xg_on, self.category.increase_starred_count)

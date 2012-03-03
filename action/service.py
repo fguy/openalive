@@ -1,8 +1,9 @@
 from gettext import gettext as _
 from google.appengine.api import users
 from lib.controller import Action
-from lib.decorators import login_required, rss_available
+from lib.decorators import login_required, rss
 import models
+import action
 try: 
     import json
 except ImportError:
@@ -66,6 +67,7 @@ class Article(Action):
         return Action.Result.DEFAULT
     
 class Comment(Action):
+    @rss(action.rss.ArticleCommentList)
     def get(self, article_id):
         offset = int(self.request.get('offset'))
         self.comment_list = models.Comment.get_list(article=models.Article.get_by_id(int(article_id)), offset=offset)
@@ -114,7 +116,7 @@ class UserArticleList():
 class ArticleList(Action):
     LIST_PER_PAGE = 20
     
-    @rss_available
+    @rss(action.rss.CategoryArticleList)
     def get(self, category_name):
         page = int(self.request.get('page', 1))
         offset = (page - 1) * self.LIST_PER_PAGE
