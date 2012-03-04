@@ -1,0 +1,42 @@
+{% extends '_base/admin.html' %}
+	{% block content %}
+	<header class="page-header">
+	<h1>Category Admin</h1>
+	</header>
+	<ul class="span10 breadcrumb">
+		<li><a href="/admin/category/">Top Level</a></li>
+		{% for item in category.path %}
+			<li><span class="divider">/</span> <a href="/admin/category/{{ item }}">{{ item }}</a></li>
+		{% endfor %}		
+    </ul>		 
+	<span class="span3"">
+	<h4>Sub Categories</h4>
+	<ul class="nav nav-list well">
+	{% for item in list %}
+		<li><a href="/admin/category/{{ item.key.name }}">{{ item.name }}</a></li>
+	{% endfor %}
+	</ul>
+	</span>
+	<span class="span7">
+		<span class="span3">
+		{% if category %}
+		<form methpd="put" id="update">
+			<fieldset>
+				<legend>Edit Properties</legend>
+					{{ edit_form.as_p }}
+				<input type="submit" value="Save" />
+			</fieldset>
+		</form>
+		{% endif %}
+		</span>
+		<span class="span3">
+		<form method="post">
+			<fieldset>
+				<legend>Add New Category HERE</legend>
+					{{ new_form.as_p }}
+				<input type="submit" value="Add" />
+			</fieldset>
+		</form>
+		</span>
+	</span>
+{% endblock %}

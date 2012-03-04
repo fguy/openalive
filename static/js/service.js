@@ -5,6 +5,18 @@ $.ajaxSetup({
 		$("#loading").hide();
 	}
 });
+
+var getRss = function(url) {
+  new google.feeds.Feed("http://localhost:8080/service/article-list/%EC%A0%95%EC%B9%98?output=rss").load(function(data) {
+    if (!data.error) {
+    	console.log(data.feed);
+    	$(data.feed.entries).each(function(i, item) {
+    		console.log(item);
+    	});
+    }
+  });		
+}
+
 var models;
 var initializeModels = function() {
 	models || (models = {
@@ -281,6 +293,7 @@ var initializeModels = function() {
 			        cache: false,
 			        success: function(data) {
 			          self.current = data.article;
+			          self.current.tags = data.tags;
 			          self.render();
 			      	  $("#loading").hide();
 			      	  $().toastmessage("showSuccessToast", gettext("Updated."));

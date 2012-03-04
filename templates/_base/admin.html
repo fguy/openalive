@@ -1,0 +1,26 @@
+{% load i18n %}<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="utf-8" />
+    <title>{{title|default:"Open Alive" }} Admin</title>
+    {% block css %}
+        <link href="/static/css/bootstrap.css" rel="stylesheet">
+        <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+        <link href="/static/css/admin.css" rel="stylesheet">
+    {% endblock %}
+</head>
+<body>
+    <div id="loading"><i class="icon-refresh"></i> {% trans 'Loading...' %}</div>
+    <div id="container" class="container-fluid">{% block content %}{% endblock %}</div>
+    <hr>
+    {% include '_snippets/footer.html' %}
+    {% block jslib %}
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+            google.load("jquery", "1");
+        </script>
+        <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/i18n/js"></script>
+    {% endblock %}
+</body>
+</html>

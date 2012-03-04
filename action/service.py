@@ -32,12 +32,10 @@ class Article(Action):
         article.body = params['body']
         tag_string = params['tags']
         if tag_string:
-            tags = models.Tag.save_all(tag_string.split(','))
-            if article.tags:
-                models.Tag.decrease(list(set(article.tags)-set([item for item in tags])))
-            article.tags = tags
+            article.tags = models.Tag.save_all(tag_string.split(','))
         article.save()
         self.article = article
+        self.tags = models.Tag.get(article.tags)
         return Action.Result.DEFAULT
 
     @login_required

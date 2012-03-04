@@ -39,7 +39,9 @@
                 return hash;
             }
         },
-        encoder: encodeURIComponent
+        encoder: function(str) {
+        	return str;
+        }
     };
 
     var iframeWrapper = {

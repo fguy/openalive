@@ -1,10 +1,8 @@
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
-from lib import appengine_admin
 from lib.controller import Controller
 from models import Category
-import admin
 import webapp2
 
 categories = '|'.join(Category.get_all_categories())
@@ -17,6 +15,5 @@ if categories:
     Controller.url_mapping.append((ur'^/(%s)$' % categories, ('service', 'Category')))
 
 app = webapp2.WSGIApplication([
-                                      (r'^(/admin)(.*)$', appengine_admin.Admin),
                                       ('/.*', Controller)],
                                                                              debug=True)

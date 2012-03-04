@@ -1,20 +1,29 @@
 var HASH_PARAMS;
 $(function() {
+  if(location.pathname != "/") {
+    return;
+  }
   $("#nav .login-url").click(function() {
     var href = $(this).attr("href");
     var hashPart = encodeURIComponent(location.hash);
     $(this).attr("href", href.indexOf("&action=") > -1 ? href.replace("&action=", hashPart + "&action=") : href + hashPart);
-    return true;
-  });
-  
-  if(location.pathname != "/") {
-    return;
+    return true;  	
+    //localStorage && location.hash && localStorage.setItem("lastHash", location.hash.substring(1));
+    //return true;
+  });  
+  if(localStorage && localStorage.hasOwnProperty("lastHash")) {
+  	var lastHash = localStorage.getItem("lastHash");
+  	if(lastHash) {
+  		localStorage.removeItem("lastHash");
+  		$.history.load(lastHash);
+  	}
   }
 	$.history.init(function(hash) {
 		if (hash == "") {
 			$.history.load("!");
 			return;
 		}
+		hash = decodeURI(hash);
 		var idx = hash.indexOf("?");
     HASH_PARAMS = {};
     if (idx > -1) {

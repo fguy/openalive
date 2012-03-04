@@ -146,6 +146,12 @@ class Tag(db.Model):
                 result.append(tag.key())
         return result
     
+    @classmethod
+    def get_top_list(cls):
+        q = cls.all()
+        q.order('-count')
+        return q.fetch(DEFAULT_FETCH_COUNT)
+    
 class AbstractArticle(db.Model):
     author = db.ReferenceProperty(reference_class=User, required=True)
     body = db.TextProperty(required=True)
@@ -185,21 +191,15 @@ class Category(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     is_active = db.BooleanProperty(default=True)
     
+    _meta = None
+    
     def put(self):
-        self.name = bleach.clean(self.name)
-        self.key_name = self.name
-        
         if self.__class__.gql('WHERE __key__ != :1 AND name = :2 AND is_active = True', self.key(), self.name).get() if self.is_saved() else Category.gql('WHERE name = :1 AND is_active = True', self.name).get():
             raise BadValueError('Category name must be unique')
                 
-        previous = None
+        previous = self.__class__.get(self.key())
+        is_insert = not self.is_saved()
         
-        try:
-            previous = self.__class__.get(self.key())
-            is_insert = False
-        except db.NotSavedError:
-            is_insert = True
-            
         if (is_insert and self.parent_category) or (previous and previous.parent_category is not None):
             self.path = deepcopy(self.parent_category.path)
         elif self.parent_category:
@@ -239,7 +239,9 @@ class Category(db.Model):
     
     @classmethod
     def get_all_categories(cls):
-        return [item.name for item in cls.all().fetch(DEFAULT_FETCH_COUNT)]
+        q = cls.all()
+        q.filter('is_active =', True)
+        return [item.name for item in q.fetch(DEFAULT_FETCH_COUNT)]
     
     def increase_article_count(self):
         self.article_count += 1
@@ -287,7 +289,8 @@ class Article(AbstractArticle):
         [db.run_in_transaction_options(xg_on, item.delete) for item in ArticleHistory.gql('WHERE article = :1', self).fetch(DEFAULT_FETCH_COUNT)]
         db.run_in_transaction_options(xg_on, self.author.decrease_article_count)
         for item in self.category.get_path():
-            db.run_in_transaction_options(xg_on, item.decrease_article_count)            
+            db.run_in_transaction_options(xg_on, item.decrease_article_count)   
+        Tag.decrease(self.tags)        
         return self
     
     def save(self):
@@ -325,7 +328,8 @@ class Article(AbstractArticle):
             is_insert = True
 
         diff = None
-        if not is_insert: 
+        if not is_insert:
+            Tag.decrease(previous.tags)
             if previous.body != self.body:
                 diff = DIFFER.make_table(previous.body, self.body)
         db.run_in_transaction_options(xg_on, super(Article, self).put)
@@ -456,7 +460,7 @@ class Comment(AbstractArticle):
     def get_best(cls, article, limit=3, offset=0):
         q = cls.all()
         q.filter('article = ', article)
-        q.filter('like_count != ', 0)
+        q.filter('like_count > ', 1)
         q.order('-like_count')
         return [item.to_dict() for item in q.fetch(limit, offset)]
     

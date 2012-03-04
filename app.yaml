@@ -19,7 +19,7 @@ builtins:
 admin_console:
   pages:
   - name: Category Admin
-    url: /admin/Category/list/
+    url: /admin/category
 
 handlers: 
 - url: /static

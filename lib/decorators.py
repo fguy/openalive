@@ -36,8 +36,11 @@ def rss(rss_action_class):
 			action_class = args[0]
 			if action_class.request.get('output') == Action.Result.RSS:
 				result = getattr(rss_action_class(action_class.request, action_class.response, action_class._get_context()), 'get')(*args[1:])
-				action_class.response.headers['Content-type'] = 'text/xml'
-				result.write_xml(action_class.response.out, 'utf-8')
+				if hasattr(result, 'write_xml'):
+					action_class.response.headers['Content-type'] = 'text/xml'
+					result.write_xml(action_class.response.out, 'utf-8')
+				else:
+					action_class.response.set_status(404)
 			else:
 				return action_method(*args)
 		return wrapped_f

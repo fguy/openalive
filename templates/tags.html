@@ -1,0 +1,73 @@
+{% extends base %} 
+{% load i18n %} 
+{% block content %}
+<style>
+ul.weighted {
+ float: left;
+ display: block;
+ width: 280px;
+ overflow: auto;
+ padding: 20px;
+ margin: 0 10px 20px 0;
+ background-color: #fff;
+ border: 4px solid #aaa;
+ border-radius: 20px;
+ -moz-border-radius: 20px;
+}
+ul.weighted li {
+ display: inline;
+}
+ul.weighted li a {
+ margin: 2px;
+}
+canvas#gradient {
+ float: right;
+ border:1px solid #000;
+ margin: 2px 20px
+}
+#tag-canvas {
+border: 4px solid #AAA;
+border-radius: 20px
+}
+</style>
+<h1>Tags</h1>
+<div id="myCanvasContainer">
+<canvas width="560" height="300" id="tag-canvas"></canvas>
+</div>
+<div class="weighted" id="tags">
+	<ul>
+	{% for item in list %}
+		<li><a href="http://www.google.com" target="_blank" data-weight="{{ item.count }}" title="{{ item.content }}">{{ item.content.0 }}</a></li>
+	{% endfor %}
+	</ul>
+</div>
+{% endblock %}
+
+{% block jslib %}
+	{{ block.super }}
+	<script type="text/javascript" src="/static/js/jquery.tagcanvas.min.js"></script>
+	<script type="text/javascript">
+	$(function() {
+		$("#tag-canvas").tagcanvas({
+		    maxSpeed : 0.03,
+		    depth : 0.92,			
+		    textColour: '#00f',
+		    textHeight: 25,
+		    initial: [0.1,-0.1],
+		    outlineColour: "#ff9999",
+		    minBrightness: 0.2,
+			outlineThickness: 1,
+			weight: true,
+			weightMode: "size",
+			weightFrom: "data-weight",
+			hideTags: false,
+			shadow: "#ccf",
+			shadowBlur: 3,
+			reverse: true,
+			decel: 0.98,
+			pulsateTo: 0.6
+		}, 'tags') || $('#myCanvasContainer').hide();
+		// your other jQuery stuff here...
+	});
+	</script>	
+{% endblock %}
