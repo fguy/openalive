@@ -2,16 +2,25 @@ from gettext import gettext as _
 from google.appengine.api import users
 from lib.controller import Action
 from lib.decorators import login_required, rss
+from lib.recaptcha.client import captcha
 import models
 import action
+import settings
+
 try: 
     import json
 except ImportError:
     import simplejson as json
-
+    
 class Article(Action):
+    def _captcha_validation(self, challenge, response):
+        captcha_result = captcha.submit(challenge, response, settings.RECAPTCHA_PRIVATE_KEY, self.request.remote_addr)
+        if not captcha_result.is_valid:
+            raise Exception('Captcha code mismatch: %s' % captcha_result.error_code)
+
     @login_required
     def post(self, category_name):
+        self._captcha_validation(self.request.get('recaptcha_challenge_field'), self.request.get('recaptcha_response_field'))
         self.article = models.Article(
                        author=models.User.get_current(),
                        title=self.request.get('title'),
@@ -20,10 +29,13 @@ class Article(Action):
                        tags=models.Tag.save_all(self.request.get('tags').split(','))
                        ).save()
         return Action.Result.DEFAULT
+        
+        
     
     @login_required
     def put(self):
         params = json.loads(self.request.body)
+        self._captcha_validation(params['recaptcha_challenge_field'], params['recaptcha_response_field'])
         article_id = int(params['id'])
         article = models.Article.get_by_id(article_id)
         if article.author.user != users.get_current_user():

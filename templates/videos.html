@@ -1,0 +1,45 @@
+{% extends base %}
+{% load i18n %}
+{% block content %}
+    <ul class="thumbnails">
+    	{% for item in list %}
+    	<li class="span3">
+    		<div class="thumbnail">
+    			<a href="#video-player" class="video-item" data-video-id="{{ item.video|video_id }}" data-url="/#!/{{ item.category }}/{{ item.id }}"><img src="http://img.youtube.com/vi/{{ item.video|video_id }}/0.jpg" width="260"></a>
+    			<div class="caption">
+    				<h5><a href="/#!/{{ item.category }}/{{ item.id }}" class="article-item" title="{{ item.title }}"><span class="article-title">{{ item.title }}</span></a> <span class="comment-count">{% if item.comment_count > 0 %}({{ item.comment_count }}){% endif %}</span></h5>
+    				{% if item.excerpt %}
+    				<p>{{ item.excerpt }}</p>
+    				{% endif %}
+    			</div>
+    		</div>
+    	</li>
+    	{% endfor %}
+    </ul>
+	<div class="modal hide" id="video-player">
+	  <div class="modal-header">
+	    <a class="close" data-dismiss="modal">×</a>
+	    <h3 id="video-title"></h3>
+	  </div>
+	  <div class="modal-body">
+	    <iframe id="video-frame" width="450" height="338" frameborder="0" allowfullscreen></iframe>
+	  </div>
+	  <div class="modal-footer">
+	    <a href="#" class="btn" id="video-article-link">Read</a>
+	    <a href="#" class="btn" data-dismiss="modal">Close</a>
+	  </div>
+	</div>    
+{% endblock %}
+
+{% block jslib %}
+{{ block.super }}
+<script type="text/javascript">
+$(".video-item").live("click", function() {
+	$("#video-title").text(interpolate(gettext("A video of %s"), [$(this).parent().find(".article-item").attr("title")]));
+	$("#video-frame").attr("src", "http://www.youtube.com/embed/" + $(this).data("video-id"));
+	$("#video-article-link").attr("href", $(this).data("url"));
+	$("#video-player").modal('show');
+	return false;
+});
+</script>
+{% endblock %}

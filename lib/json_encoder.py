@@ -63,7 +63,7 @@ class GqlEncoder(json.JSONEncoder):
             return output
 
         elif isinstance(obj, datetime.datetime):
-            return time.strftime("%Y-%m-%dT%H:%M:%S", obj.utctimetuple())
+            return time.strftime("%Y-%m-%dT%H:%M:%SZ", obj.utctimetuple())
 
         elif isinstance(obj, time.struct_time):
             return list(obj)

@@ -1,6 +1,7 @@
 from gettext import gettext as _
 from django import template
 from datetime import datetime
+from lib.youtube import get_video_id
 import time
 import types
 
@@ -15,9 +16,20 @@ def quote(value):
     else:
         return value
 
-@register.tag
+@register.simple_tag
 def js(value):
-    return '<script type="text/javascript" src="%s"></script>' % value
+    static_path = '/static'
+    return '<script type="text/javascript" src="%s/%s"></script>' % (static_path, value)
+
+@register.simple_tag
+def css(value):
+    static_path = '/static'
+    return '<link href="%s/%s" rel="stylesheet">' % (static_path, value)
+
+@register.filter
+def video_id(url):
+    return get_video_id(url)
+    
 
 @register.filter
 def pretty_date(time):

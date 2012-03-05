@@ -46,7 +46,12 @@ var initializeModels = function() {
 		        if(data.current_category) { 
 		          var lastPos = data.current_category.path.length - 1; 
 		          $("#container .breadcrumb").append($(data.current_category.path).map(function(i, item) {
-		            return '<li' + (i == lastPos ? ' class="active"' : "") + '><a href="#!/' + item + '">' + gettext(item) + '</a> ' + (i != lastPos ? '<span class="divider">/</span>' : '') + '</li>'; 
+		            return formatString('<li{{ activeClass }}><a href="#!/{{ category }}">{{ categoryTranslated }}</a> {{ divider }}</li>', {
+		            	activeClass: i == lastPos ? ' class="active"' : "",
+		            	category: item,
+		            	categoryTranslated: gettext(item),
+		            	divider: i != lastPos ? '<span class="divider">/</span>' : ''
+		            }); 
 		          }).get().join(""));
 		          data.current_category.description ? $("#article-list caption").html(data.current_category.description) : $("#article-list caption").hide();
 		          models.Article.loadList(data.current_category.name, callback);
@@ -59,14 +64,20 @@ var initializeModels = function() {
 		    },
 		    decorateItem: function(item, isActive, isChild) {
 		      var me = models.User.getMe();
-		    	return '<li' + (isActive ? ' class="active"' : "") + '>\
-		    	          <a href="#!/' + item.name + '" title="' + item.name + '" class="category-link' + (isChild ? ' children' : "") + '">'
-	  	    	          + (isChild ? '<i class="icon-chevron-right"></i> ' : "") 
-	  	    	          + (me ? '<i class="icon-star icon-star-empty" title="' + gettext("Star") + '"></i>' : "") + '\
-	  	    	          <span class="category-title">' + gettext(item.name) + '</span> \
-	  	    	          <span class="article-count">(' + item.article_count + ')</span>\
+		    	return formatString('<li{{ activeClass }}>\
+		    	          <a href="#!/{{ name }}" title="{{ name }}" class="category-link{{ childClass }}">\
+		    							{{ childIcon }}\
+		    			 				{{ star }}\
+	  	    	          <span class="category-title">{{ nameTranslated }}</span> \
+	  	    	          <span class="article-count">({{ article_count }})</span>\
 		    	          </a>\
-	  	    	      </li>';
+	  	    	      </li>', $.extend(true, item, {
+	  	    	      	activeClass: isActive ? ' class="active"' : "",
+	  	    	      	childClass: isChild ? ' children' : "",
+	  	    	      	childIcon: isChild ? '<i class="icon-chevron-right"></i> ' : "",
+	  	    	      	star: me ? '<i class="icon-star icon-star-empty" title="' + gettext("Star") + '"></i>' : "",
+	  	    	        nameTranslated: gettext(item.name)
+	  	    	      }));
 		    },
 		    getCurrent: function() {
 		      return $("#sidebar .nav .active > .category-link").attr("title");
@@ -89,7 +100,10 @@ var initializeModels = function() {
 		      }).get().join(""));
 		    },
 		    decorateStarredItem: function(name) {
-		      return '<span class="label label-success"><a href="#!/' + name + '" title="' + name + '" class="category-link"><i class="icon-star icon-white" title="' + gettext("Unstar") + '"></i> <span class="category-title">' + gettext(name) + '</span></a></span> ';
+		      return formatString('<span class="label label-success"><a href="#!/{{ name }}" title="{{ name }}" class="category-link"><i class="icon-star icon-white" title="' + gettext("Unstar") + '"></i> <span class="category-title">{{ nameTranslated }}</span></a></span> ', {
+		      	name: name,
+		      	nameTranslated: gettext(name)
+		      });
 		    },
 		    markStarred: function(name, empty) {
 		      var place = $("#sidebar .category-link[title=" + name + "] .icon-star");
@@ -155,6 +169,7 @@ var initializeModels = function() {
 		      	var currentCategory = models.Category.getCurrent();
 		      	document.title = currentCategory;
 		      	self.hide();
+		      	callback && callback();
 		      	$.getJSON("/service/article-list/" + categoryName, {page: page}, function(data) {
 		      	  if(data.list.length == 0) { // no article in this category.
 		      	    $("#no-article").show().find(".current-category-name").text(currentCategory);
@@ -178,7 +193,6 @@ var initializeModels = function() {
 		              return false;
 		            }
 		          });
-		      		callback && callback(data);
 		      		$("#loading").hide();
 		      	});
 		      },
@@ -189,8 +203,8 @@ var initializeModels = function() {
 		        return HASH_PARAMS.page;
 		      },
 		      show: function(id) {
-		      	$("#article-list tbody .active").removeClass("active");
-		      	$("#article-list tbody tr:has(a[href*='/" + id + "'])").addClass("active");
+		      	$("#article-list tr.active").removeClass("active");
+		      	$("#article-list tr:has(a[href*='/" + id + "?'])").addClass("active");
 		      	$("#article-item-body").html('<div class="loading"><i class="icon-clock">' + gettext("Loading...") + "</div>");
 		      	$("#loading").show();
 		      	$.getJSON("/service/article/" + id, function(data) {
@@ -233,10 +247,21 @@ var initializeModels = function() {
 		      	});
 		      },
 		      render: function() {
-	      		$.each(self.current, function(k, v) {
-	      			$("#article-item-" + k).html(v);
-	      		});
-	      		$.each(models.Reputation.types, function(i, item) {
+		      	$("#article-item-title").text(self.current.title);
+		      	$("#article-item-body").html(self.current.body);
+		      	$("#article-item-author-avatar").html(models.User.getAvatar(self.current.author.email_hash, 100));
+		      	$("#article-item-author-nickname").text(self.current.author.nickname);
+		      	$("#article-item-author-joined").text(prettyDate(self.current.author.joined));
+		      	$("#article-item-created").attr("datetime", self.current.created).text(prettyDate(self.current.created));
+		      	if(self.current.created != self.current.last_updated) {
+		      		$("#article-item-last-updated").show().attr("datetime", self.current.last_updated).text(prettyDate(self.current.last_updated));
+		      	} else {
+		      		$("#article-item-last-updated").hide();
+		      	}
+	      		$("#article-item-tags").html($(self.current.tags).map(function(i, item) {
+	      			return '<li><i class="icon-tag"></i> <a href="/tags/' + item.content[0] + '">' + item.content[0] + '</a></li>';
+	      		}).get().join(""));
+	      		$(models.Reputation.types).each(function(i, item) {
 	      		  models.Reputation.renderUsers(item);
 	      		});
 		      },
@@ -246,6 +271,7 @@ var initializeModels = function() {
 		      showList: function() {
 		        $("#no-article").hide();
 		        $("#article-list, #article-pagination, #article-list caption:not(:empty)").show();
+		        self.resizeRow();
 		      },
 		      hide: function() {
 		      	self.current = null;
@@ -278,6 +304,7 @@ var initializeModels = function() {
 		      	  $("#loading").hide();
 		      	  $().toastmessage("showSuccessToast", gettext("Posted."));
 		      	  self.hide();
+		      	  self.resizeRow();
 		        }, "json");
 		      },
 		      put: function(form, callback) {
@@ -295,9 +322,11 @@ var initializeModels = function() {
 			          self.current = data.article;
 			          self.current.tags = data.tags;
 			          self.render();
+			          $("#article-list tbody .active").find(".article-excerpt").text(data.article.excerpt);
 			      	  $("#loading").hide();
 			      	  $().toastmessage("showSuccessToast", gettext("Updated."));
 			      	  ArticleEditor.close();
+			      	  self.resizeRow();
 			        },
 			        dataType: "json"
 			      });	      	
@@ -328,15 +357,33 @@ var initializeModels = function() {
 			      });
 		      },
 		      decorateRow: function(currentCategory, page, item) {
-		        return '<tr>\
-		          <td>' + item.category + '</td>\
-		          <td><a href="#!/' + currentCategory + '/' + item.id + '?page=' + page + '" class="article-item" title="' + item.title + '">' + item.title + '</a>' + (item.comment_count > 0 ? ' <span class="comment-count">(' + item.comment_count + ')</span>' : "") + '</td>\
-		          <td><a href="/user/' + item.author.id + '" class="user">' + models.User.getAvatar(item.author.email_hash, 16) +  ' <span class="nickname">' + item.author.nickname + '</span></td>\
-		          <td><span class="like-count count">' + item.like_count + '</span></td>\
-		          <td><time datetime="' + item.created + '">' + prettyDate(item.created) + '</time></td>\
-		        </tr>';
-		      }
+		        return formatString('<tr>\
+		          <td class="article-category">{{ category }}</td>\
+		          <td class="article-item">\
+			          <div class="article-item-wrapper">\
+			          	<a href="#!/{{ currentCategory }}/{{ id }}?page={{ page }}" class="article-title" title="{{ title }}">{{ title }}</a> {{ hasImage }}{{ hasVideo }}\
+			          	<span class="comment-count">{{ commentCount }}</span>\
+			          	<span class="article-excerpt">{{ excerpt }}</span>\
+			          </div>\
+		          </td>\
+		          <td class="article-user"><a href="/user/{{ author.id }}" class="user">{{ avatar }}<span class="nickname">{{ author.nickname }}</span></td>\
+		          <td class="article-likes"><span class="like-count count">{{ like_count }}</span></td>\
+		          <td class="article-date"><time datetime="{{ created }}">{{ prettyCreated }}</time></td>\
+		        </tr>', $.extend(true, item, {
+		        currentCategory: currentCategory,
+		        page: page,
+		        avatar: models.User.getAvatar(item.author.email_hash, 16),
+		        prettyCreated: prettyDate(item.created),
+		        hasVideo: item.video != null ? '<i class="icon-film"></i> ' : "",
+		        hasImage: item.image != null ? '<i class="icon-picture"></i> ' : "",
+		        commentCount: item.comment_count > 0 ? '(' + item.comment_count + ')' : ""
+		        }));
+		      },
+		      resizeRow: function() {
+				  	$("#article-list .article-item-wrapper").width(10).width($("#article-list .article-item").width());
+				  }
 		  }
+		  $(window).bind("resize", self.resizeRow);
 	    $("#btn-list-article").click(function() {
 	      var loc = "!/" + models.Category.getCurrent();
 	      var page = self.getCurrentPage();
@@ -345,6 +392,10 @@ var initializeModels = function() {
 	    });
 	
 		  $(".btn-post-article").click(function() {
+		  	if(!models.User.getMe()) {
+		  		$("#nav .login-url").click();
+		  		return;
+		  	}
 		  	$("#post-article-id").attr("disabled", "disabled");
 		  	ArticleEditor.open();
 		  })
@@ -406,7 +457,7 @@ var initializeModels = function() {
 	      return false;
 	    });
 		  
-		  $("#article-list tbody .article-item").live("click", function(event) {
+		  $("#article-list tbody .article-title").live("click", function(event) {
 		    $("#article-item #article-item-title").text($(this).attr("title"));
 		    return true;
 		  });
@@ -461,13 +512,26 @@ var initializeModels = function() {
 					  }).get().join("")).show();
 					},
 					decorateRow: function(item, isBest) {
-						return '<li id="comment-item-' + item.id + '" class="comment-item' + (isBest ? " comment-item-best" : "") + (item.parent_id ? " comment-item-children" : " comment-item-parent") + '">\
-  							<span><a href="/user/' + item.author.id + '" class="user">' + models.User.getAvatar(item.author.email_hash, 32) + '</a></span>\
-  							<span><a href="/user/' + item.author.id + '" class="user"><span class="nickname">' + item.author.nickname + '</span></a></span>\
-  							<span>' + item.body + '</span>\
-  							<time datetime="' + item.created + '">' + prettyDate(item.created) + '</time>'
-						    + (isBest ? "" : self._getButtons(item)) + 
-							'</li>';
+						return formatString('<li id="comment-item-{{ id }}{{ bestSuffix }}" class="comment-item{{ bestClass }}{{ class }}">\
+  							<span class="comment-avatar"><a href="/user/{{ author.id }}" class="user">{{ avatar }}</a></span>\
+								<div class="comment-content">\
+  								{{ buttons }}\
+	  							<span><a href="/user/{{ author.id }}" class="user"><span class="nickname">{{ author.nickname }}</span></a></span>\
+	  							<span>{{ body }}</span>\
+	  							<div>\
+	  								<time datetime="{{ created }}">{{ prettyCreated }}</time>\
+										{{ label }}\
+	  							</div>\
+	  						</div>\
+							 </li>', $.extend(true, item, {
+								 bestSuffix: isBest ? "-best" : "",
+								 bestClass: isBest ? " comment-item-best" : "",
+								 class: item.parent_id ? " comment-item-children" : " comment-item-parent",
+								 avatar: models.User.getAvatar(item.author.email_hash, 32),
+								 buttons: isBest ? "" : self._getButtons(item),
+								 prettyCreated: prettyDate(item.created),
+								 label: isBest ? ' <span class="label label-success">BEST</span>' : ""
+							 }));
 					},
 					_getButtons: function(item) {
             var me = models.User.getMe();
@@ -478,13 +542,14 @@ var initializeModels = function() {
                         <button class="btn-comment-like btn btn-reputation' + (item.liked ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Like') + '"' + (!me || isMine || item.hated ? ' disabled="disabled"' : "") + '><i class="icon-heart"></i> <span class="like-count count">' + item.like_count + '</span></button>\
                         <button class="btn-comment-hate btn btn-reputation' + (item.hated ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Hate') + '"' + (!me || isMine || item.liked ? ' disabled="disabled"' : "") + '><i class="icon-fire"></i> <span class="hate-count count">' + item.hate_count + '</span></button>\
                         ' + 
-                    (item.parent_id || !me ? "" : ' <button class="btn-comment-reply btn" data-comment-id="' + item.id + '" title="' + gettext('Reply') + '"><i class="icon-plus"></i> ' + gettext('Reply') + '</button>') +
+                    (item.parent_id || !me ? "" : ' <button class="btn-comment-reply btn" data-comment-id="' + item.id + '" title="' + gettext('Reply') + '"><i class="icon-comment"></i></button>') +
                   '</span>';
 					},
 					updateCount: function(amount) {
 		        var countDiv = $("#article-list tr.active .comment-count");
 		        if(countDiv.length > 0) {
-		          var count = parseInt(countDiv.text().match(/[0-9]+/)[0]) + amount;
+		        	var m = countDiv.text().match(/[0-9]+/);
+		          var count = (m ? parseInt(m[0]) : 0) + amount;
 		          countDiv.text("(" + count + ")");
 		          $("#article-item #article-item-comment_count").text(count);
 		        }
@@ -597,7 +662,10 @@ var initializeModels = function() {
 						return self.me;
 					},
 			    getAvatar: function(hash, size) {
-			      return '<img class="avatar ' + (size ? "avatar-" + size : "") + '" src=http://www.gravatar.com/avatar/' + hash + '?d=mm' + (size ? "&s=" + size : "") + '>';
+			      return formatString('<img class="avatar" src=http://www.gravatar.com/avatar/{{ hash }}?d=mm{{ sizeParam }}>', {
+			      	sizeParam: size ? "&s=" + size : "",
+			      	hash: hash
+			      });
 			    },
 			    show: function(url) {
 			      self.reset("article");
@@ -651,31 +719,39 @@ var initializeModels = function() {
 			    renderRow: function(type, item) {
 			      switch(type) {
 			      case "article":
-			        return '<li>\
+			        return formatString('<li>\
                 <div>\
-                  <h5><a href="/#!/' + item.category + '/' + item.id + '" class="title">'+ item.title + '</a></h5>\
-                  <span class="comment-count">(' + item.comment_count + ')</span>\
-                  <span class="category">' + item.category + '</span>\
-                  <span class="posted"><time datetime="' + item.created + '">' + prettyDate(item.created) + '</time></span>\
+                  <h5><a href="/#!/{{ category }}/{{ id }}" class="title">{{ title }}</a></h5>\
+                  <span class="comment-count">({{ comment_count }})</span>\
+                  <span class="category">{{ category }}</span>\
+                  <span class="posted"><time datetime="{{ created }}">{{ prettyCreated }}</time></span>\
                 </div>\
-                <p class="excerpt"><a href="/#!/' + item.category + '/' + item.id + '" class="title">' + item.excerpt + '</a></p>\
-              </li>';
+                <p class="excerpt"><a href="/#!/{{ category }}/{{ id }}" class="title">{{ excerpt }}</a></p>\
+              </li>', $.extend(true, item, {
+              	prettyCreated: prettyDate(item.created)
+              }));
 			      case "comment":
-			        return '<li>\
+			        return formatString('<li>\
                 <div>\
-                  <h5><a href="/#!/' + item.article.category + '/' + item.article.id + '" class="title">'+ item.article.title + '</a></h5>\
-                  <span class="category">' + item.article.category + '</span>' + 
-                  (item.like_count > 0 ? '<span class="like-count"><i class="icon-heart"></i> ' + item.like_count + '</span>' : "") +
-                  (item.hate_count > 0 ? '<span class="hate-count"><i class="icon-fire"></i> ' + item.hate_count + '</span>' : "") +
-                  '<span class="posted"><time datetime="' + item.created + '">' + prettyDate(item.created) + '</time></span>\
+                  <h5><a href="/#!/{{ article.category }}/{{ article.id }}" class="title">{{ article.title }}</a></h5>\
+                  <span class="category">{{ article.category }}</span>\
+			        		{{ likeCount }}\
+			        		{{ hateCount }}\
+                  <span class="posted"><time datetime="{{ created }}">{{ prettyCreated }}</time></span>\
                 </div>\
-                <p class="body">' + item.body + '</p>\
-              </li>';
+                <p class="body">{{ body }}</p>\
+              </li>', $.extend(true, item, {
+              	likeCount: item.like_count > 0 ? '<span class="like-count"><i class="icon-heart"></i> ' + item.like_count + '</span>' : "",
+              	hateCount: item.hate_count > 0 ? '<span class="hate-count"><i class="icon-fire"></i> ' + item.hate_count + '</span>' : "",
+              	prettyCreated: prettyDate(item.created)
+              }));
 			      case "change":
-			        return '<li>\
-			          <span class="nickname">' + item.nickname + '</span>\
-			          <span class="changed"><time datetime="' + item.changed + '">' + prettyDate(item.changed) + '</time></span>\
-			        </li>';
+			        return formatString('<li>\
+			          <span class="nickname">{{ nickname }}</span>\
+			          <span class="changed"><time datetime="{{ changed }}">{{ prettyChanged }}</time></span>\
+			        </li>', $.extend(true, item, {
+			        	prettyChanged: prettyDate(item.changed)
+			        }));
 			      }
 			    },
 			    changed: function(user) {
@@ -794,7 +870,7 @@ var initializeModels = function() {
 			  }
 			  wrapperDiv.show();
 	      var rendered = $(users).map(function(i, item) {
-	        return '<a href="/user/' + item.id + '" class="user">' + models.User.getAvatar(item.email_hash, 16) + ' <span class="nickname">' + item.nickname + "</span></a> ";
+	        return '<a href="/user/' + item.id + '" class="user">' + models.User.getAvatar(item.email_hash, 16) + '<span class="nickname">' + item.nickname + "</span></a> ";
 	      });
 	      var output = rendered.get().join(",");
 	      
@@ -804,7 +880,7 @@ var initializeModels = function() {
 	        var diff = totalCount - count;
 	        output += interpolate(ngettext(' and <a href="' + link + '" class="more-users">%s</a> more ', ' and <a href="' + link + '" class="more-users">%s</a> others ', diff), [diff]);
 	      }
-	      output += ngettext(type + "s this article.", type + " this article.", count);
+	      output += ngettext(type + "s this.", type + " this.", count);
 	      $("#" + type + "s").html(output);
 			}
 		}

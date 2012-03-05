@@ -2,6 +2,7 @@ from copy import deepcopy
 from google.appengine.api import users, datastore
 from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.ext import db
+from django.utils.html import strip_tags
 from lib import bleach
 from lib.BeautifulSoup import BeautifulSoup
 from lib.base62 import base62_encode
@@ -25,7 +26,6 @@ class User(db.Model):
     like_count = db.IntegerProperty(default=0)
     hate_count = db.IntegerProperty(default=0)    
     email_hash = db.StringProperty()
-    signature = db.TextProperty()
     
     def nickname_exists(self, nickname):
         return User.gql('WHERE user != :1 AND nickname = :2', self, nickname).get() != None
@@ -92,7 +92,7 @@ class User(db.Model):
         q = Article.all()
         q.filter('author = ', User.get_current() if user is None else user)
         q.order('-%s' % orderby)
-        return [{'id': item.key().id(), 'category': item.category.name, 'title': item.title, 'excerpt': item.get_excerpt(), 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated} for item in q.fetch(limit, offset)]
+        return [{'id': item.key().id(), 'category': item.category.name, 'title': item.title, 'excerpt': item.excerpt, 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated} for item in q.fetch(limit, offset)]
 
     @classmethod
     def get_comment_list(cls, user=None, limit=20, offset=0, orderby='created'):
@@ -279,11 +279,8 @@ class Article(AbstractArticle):
     last_updated = db.DateTimeProperty()
     image = db.URLProperty()
     video = db.URLProperty()
+    excerpt = db.StringProperty(default='', multiline=True)
     
-    def get_excerpt(self):
-        body = bleach.clean(self.body, strip=True)
-        return '%s...' % body[:253] if len(body) > 253 else body
-        
     def delete(self):
         db.run_in_transaction_options(xg_on, super(self.__class__, self).delete)
         [db.run_in_transaction_options(xg_on, item.delete) for item in ArticleHistory.gql('WHERE article = :1', self).fetch(DEFAULT_FETCH_COUNT)]
@@ -306,29 +303,27 @@ class Article(AbstractArticle):
         soup = BeautifulSoup(self.body)
         img = soup.find('img')
         
-        if img and hasattr(img, 'src') and re.match('^http(s)?://', img['src'].lower()) is not None:
+        if img and hasattr(img, 'src') and re.search('tiny_mce/plugins/emoticons', img['src'].lower()) is None:
             self.image = img['src']
             has_image = True
         
         iframes = soup.findAll('iframe')
         for item in iframes:
-            import sys
-            sys.stderr.write(item['src'])
-            if re.match('^http(s)?://(.+\.)?youtube.com/', 'http://www.youtube.com/embed/7RN2d0ZeSyo'.lower()) is not None:
+            if re.match('^http(s)?://(.+\.)?(youtube.com|youtu.be)/', item['src'].lower()) is not None:
                 if self.video is None:
                     self.video = item['src']
                     has_video = True
             else:
                 item.decompose()
         
-        try:
-            previous = self.__class__.get(self.key())
-            is_insert = False
-        except db.NotSavedError:
-            is_insert = True
-
+        is_insert = not self.is_saved()
+        
+        excerpt = strip_tags(self.body).strip()
+        self.excerpt = '%s...' % excerpt[:253] if len(excerpt) > 253 else excerpt        
+        
         diff = None
         if not is_insert:
+            previous = self.__class__.get(self.key())
             Tag.decrease(previous.tags)
             if previous.body != self.body:
                 diff = DIFFER.make_table(previous.body, self.body)
@@ -392,7 +387,7 @@ class Article(AbstractArticle):
         super(self.__class__, self).put()
         
     def to_dict(self):
-        return {'id': self.key().id(), 'category': self.category.name, 'title': self.title, 'excerpt': self.get_excerpt(), 'author': {'email_hash': self.author.email_hash, 'nickname': self.author.nickname, 'id': self.author.key().id()}, 'comment_count': self.comment_count, 'like_count': self.like_count, 'hate_count': self.hate_count, 'created': self.created, 'last_updated': self.last_updated, 'image': self.image, 'video': self.video}
+        return {'id': self.key().id(), 'category': self.category.name, 'title': self.title, 'excerpt': self.excerpt, 'author': {'email_hash': self.author.email_hash, 'nickname': self.author.nickname, 'id': self.author.key().id()}, 'comment_count': self.comment_count, 'like_count': self.like_count, 'hate_count': self.hate_count, 'created': self.created, 'last_updated': self.last_updated, 'image': self.image, 'video': self.video}
 
 class ImageArticle(db.Model):
     article = db.ReferenceProperty(reference_class=Article, required=True)
@@ -420,12 +415,8 @@ class Comment(AbstractArticle):
     def save(self):
         self.body = bleach.linkify(bleach.clean(self.body).replace('\n','<br>\n'), parse_email=True, target='_blank')
         
-        try:
-            self.__class__.get(self.key())
-            is_insert = False
-        except db.NotSavedError:
-            is_insert = True
-            
+        is_insert = not self.is_saved()
+                     
         db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
         if is_insert:
             self.sort_key = '%s%s' % (self.parent_comment.sort_key, base62_encode(self.key().id())) if self.parent_comment else '%s' % base62_encode(self.key().id())
@@ -517,12 +508,8 @@ class StarredCategory(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     
     def put(self):
-        try:
-            self.__class__.get(self.key())
-            is_insert = False
-        except db.NotSavedError:
-            is_insert = True
-            
+        is_insert = not self.is_saved()
+                    
         db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
         if is_insert:
             db.run_in_transaction_options(xg_on, self.category.increase_starred_count)

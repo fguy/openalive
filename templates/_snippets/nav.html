@@ -10,11 +10,11 @@
           <a class="brand" href="/#!/" class="home-link">{% trans 'Open Alive' %}</a>
           <nav id="nav" class="nav-collapse">
             <ul class="nav">
-              <li class="active"><a href="/#!/" class="home-link">{% trans 'Home' %}</a></li>
-              <li><a href="/tags">{% trans 'Tags' %}</a></li>
-              <li><a href="/images">{% trans 'Images' %}</a></li>
-              <li><a href="/videos">{% trans 'Videos' %}</a></li>
-              <li><a href="/about">{% trans 'About' %}</a></li>
+              <li{% ifequal request.path '/' %} class="active"{% endifequal %}><a href="/#!/" class="home-link">{% trans 'Home' %}</a></li>
+              <li{% ifequal request.path '/tags' %} class="active"{% endifequal %}><a href="/tags">{% trans 'Tags' %}</a></li>
+              <li{% ifequal request.path '/images' %} class="active"{% endifequal %}><a href="/images">{% trans 'Images' %}</a></li>
+              <li{% ifequal request.path '/videos' %} class="active"{% endifequal %}><a href="/videos">{% trans 'Videos' %}</a></li>
+              <li{% ifequal request.path '/about' %} class="active"{% endifequal %}><a href="/about">{% trans 'About' %}</a></li>
             </ul>
 		    <div class="btn-toolbar pull-right">
 				{% ifequal user None %}

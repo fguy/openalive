@@ -17,6 +17,7 @@ TEMPLATE_DIRS = (os.path.abspath('%s/../templates' % os.path.dirname(os.path.rea
 TEMPLATE_SUFFIX = '.html'
 LANG_MAP = {'ko' : ['ko-kr'], 'en' : ['en_US', 'en_GB'], 'ja' : [], 'fr' : [], 'es' : [], 'it' : [], 'ru' : [], 'th' : [], 'zh' : [], 'zh-CN' : [], 'zh-TW'  : []}
 LANG_COOKIE_NAME = 'django_language'
+NON_AJAX_CONTEXT_KEYS = ['is_ajax', 'lang', 'request', 'response']
 
 class Controller(webapp2.RequestHandler):
     url_mapping = []
@@ -88,18 +89,22 @@ class Controller(webapp2.RequestHandler):
             self.error(405)
             return
         
-        getattr(self.__action, 'before')()
-        result = method(*(self._current_request_args if hasattr(self, '_current_request_args') else args))
-        getattr(self.__action, 'after')()
+        try:
+            getattr(self.__action, 'before')()
+            result = method(*(self._current_request_args if hasattr(self, '_current_request_args') else args))
+            getattr(self.__action, 'after')()
+        except Exception as e:
+            self.handle_exception(e, self.request.app.debug)
 
         self.__action.lang = self.request.lang
         
         output = self.request.get('output')
         
         if output == 'json' or (result == Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
-            del self.__action.is_ajax
-            del self.__action.lang                                          
             context = self.__action._get_context()
+            for key in NON_AJAX_CONTEXT_KEYS:
+                if hasattr(self.__action, key):
+                    del context[key]
             logging.debug('Context data for JSON Serialize : %s' % context)
             self.response.headers['Content-type'] = 'application/json'
             self.response.out.write(encode(context))
@@ -259,6 +264,8 @@ class Action(object):
         self.__context = {}
                             
     def _get_context(self):
+        self.__context['request'] = self.request
+        self.__context['response'] = self.response
         return self.__context 
             
     class Result(object):

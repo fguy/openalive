@@ -93,6 +93,15 @@ var CommentEditor = (function() {
 				self.callback = callback;
 			}
 	}
+	var submit = function(event) {
+		if(!event.shiftKey && event.keyCode == 13) {
+			self.callback && self.callback();
+			event.preventDefault();
+			return false;
+		}
+		return true;
+	}
+	
 	$("textarea#post-comment").autoResize({
     onResize : function() {
         $(this).css({opacity:0.8});
@@ -102,14 +111,7 @@ var CommentEditor = (function() {
     },
     animateDuration : 0,
     extraSpace : 0
-	}).bind("keydown", function(event) {
-		if(!event.shiftKey && event.keyCode == 13) {
-			self.callback && self.callback();
-			event.preventDefault();
-			return false;
-		}
-		return true;
-	});
+	}).bind("keydown", submit).bind("keypress", submit);
 	
 	return self;
 })();

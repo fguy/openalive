@@ -194,7 +194,7 @@ msgstr "%(like_count)s회의 '좋아요' 받음."
 #: templates/user.html:25
 #, python-format
 msgid "Got %(hate_count)s hates."
-msgstr "%(hate_count)s회의 '좋아요' 받음."
+msgstr "%(hate_count)s회의 '싫어요' 받음."
 
 #: templates/user.html:29
 msgid "Signature"

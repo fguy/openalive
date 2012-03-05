@@ -25,22 +25,25 @@
           <article id="article-item">
             <header class="page-header">
               	<h2 id="article-item-title"></h2>
+              	<div id="article-item-author">
+              		<div id="article-item-author-avatar"></div>
+              		<div id="article-item-author-nickname"></div>
+              	</div>
+              	<time id="article-item-created"></time>
+              	<time id="article-item-last-updated"></time>
             </header>
           	<p id="article-item-body"></p>
+          	<ul id="article-item-tags"></ul>
           	<hr>
           </article>
           <div id="article-reputation">
-	          <div id="likes-wrapper"><i class="icon-heart"></i><span id="likes"></span></div>
-	          <div id="hates-wrapper"><i class="icon-fire"></i><span id="hates"></span></div>
-	          <ul id="subscriptions"></ul>
-	          <ul id="best-comments"></ul>             
+	          <div id="likes-wrapper"><i class="icon-heart icon-blue"></i><span id="likes"></span></div>
+	          <div id="hates-wrapper"><i class="icon-fire icon-blue"></i><span id="hates"></span></div>
+	          <ul id="best-comments"></ul>          
 	          <ul id="comments">
 	          	<li id="comment-load-more" class="load-more"><button id="btn-comment-load" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show Previous' %}">{% trans 'Show Previous' %}</button></li>
 	          	{% if user %}
-	          	<li id="comment-input" class="well">
-		          	<div><img src="http://www.gravatar.com/avatar/{{ user.email_hash }}?d=mm&s=32" class="avatar"></div>
-		          	<div><textarea rows="1" id="post-comment"></textarea></div>
-	          	</li>
+	          	<li id="comment-input"><textarea rows="1" id="post-comment"></textarea></li>
 	          	{% endif %}
 	          </ul>
           </div>
@@ -106,15 +109,16 @@
   	google.load("feeds", "1");	
 	var RECAPTCHA_PUBLIC_KEY = "6LdU1M0SAAAAAIlUgA9SIgB4mri-A_9Y6Ht7oTGA";
 	</script>
-	<script type="text/javascript" src="/static/js/jquery.tagsinput.min.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.toastmessage.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.history.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.pagination.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.scrollTo-min.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.autoresize.min.js"></script>
-	<script type="text/javascript" src="/static/tiny_mce/jquery.tinymce.js"></script>
-	<script type="text/javascript" src="/static/js/pretty.js"></script>
-	<script type="text/javascript" src="/static/js/editor.js"></script>
-	<script type="text/javascript" src="/static/js/service.js"></script>
-	<script type="text/javascript" src="/static/js/hash-url.js"></script>    
+	{% js 'js/jquery.tagsinput.min.js' %}
+	{% js 'js/jquery.toastmessage.js' %}
+	{% js 'js/jquery.history.js' %}
+	{% js 'js/jquery.pagination.js' %}
+	{% js 'js/jquery.scrollTo-min.js' %}
+	{% js 'js/jquery.autoresize.min.js' %}
+	{% js 'tiny_mce/jquery.tinymce.js' %}
+	{% js 'js/template.js' %}
+	{% js 'js/pretty.js' %}
+	{% js 'js/editor.js' %}
+	{% js 'js/service.js' %}
+	{% js 'js/hash-url.js' %}    
 {% endblock %}

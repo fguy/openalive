@@ -37,7 +37,7 @@ border-radius: 20px
 <div class="weighted" id="tags">
 	<ul>
 	{% for item in list %}
-		<li><a href="http://www.google.com" target="_blank" data-weight="{{ item.count }}" title="{{ item.content }}">{{ item.content.0 }}</a></li>
+		<li><a href="/tags/{{ item.content.0 }}" target="_blank" data-weight="{{ item.count }}" title="{{ item.content|join:', ' }}">{{ item.content.0 }}</a></li>
 	{% endfor %}
 	</ul>
 </div>

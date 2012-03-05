@@ -14,7 +14,8 @@ if __name__ == '__main__':
                 po = polib.pofile(os.path.join(DIR_PATH, 'conf', 'locale', lang, 'LC_MESSAGES', f))
                 po.metadata['Content-Type'] = 'text/plain; charset=utf-8'
                 for entry in po.untranslated_entries():
-                    entry.msgstr = translate('en', lang, entry.msgid)
-                    print ('"%s" translated into %s' % (entry.msgid, entry.msgstr)).encode('utf8')
+                    if entry.msgid.find('%s') == -1:
+                        entry.msgstr = translate('en', lang, entry.msgid)
+                        print ('"%s" translated into %s' % (entry.msgid, entry.msgstr)).encode('utf8')
                 po.save()
                 print 'Language "%s" %d percent tlanslated in %s' % (lang, po.percent_translated(), f)

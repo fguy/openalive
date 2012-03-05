@@ -4,12 +4,12 @@ $(function() {
     return;
   }
   $("#nav .login-url").click(function() {
-    var href = $(this).attr("href");
-    var hashPart = encodeURIComponent(location.hash);
-    $(this).attr("href", href.indexOf("&action=") > -1 ? href.replace("&action=", hashPart + "&action=") : href + hashPart);
-    return true;  	
-    //localStorage && location.hash && localStorage.setItem("lastHash", location.hash.substring(1));
-    //return true;
+//    var href = $(this).attr("href");
+//    var hashPart = encodeURIComponent(location.hash);
+//    $(this).attr("href", href.indexOf("&action=") > -1 ? href.replace("&action=", hashPart + "&action=") : href + hashPart);
+//    return true;  	
+    localStorage && location.hash && localStorage.setItem("lastHash", location.hash.substring(1));
+    return true;
   });  
   if(localStorage && localStorage.hasOwnProperty("lastHash")) {
   	var lastHash = localStorage.getItem("lastHash");

@@ -2,6 +2,9 @@ body {
 	padding-top: 60px;
 	padding-bottom: 40px;
 }
+.icon-blue {
+background-image: url("../img/glyphicons-halflings-blue.png");
+}
 
 .sidebar-nav {
 	padding: 9px 0;
@@ -85,24 +88,135 @@ body {
 	color: #FFF
 }
 
-#article-list .avatar {
+#article-list th {
+	white-space: nowrap
+}
+
+#article-list .article-item {
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	vertical-align: middle;
+}
+
+#article-list .article-item-wrapper {
+	width: 300px;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+#article-list .article-excerpt {
+	color: #AAA;
+}
+
+.user .avatar {
 	vertical-align: middle;
 	margin-bottom: .25em;
 	margin-right: 6px;
 }
 
-#article-item,#article-reputation {
+.user .nickname {
+	font-weight: bold
+}
+
+.user {
+	white-space: nowrap
+}
+time {
+	white-space: nowrap
+}
+
+#article-list .comment-count {
+	font-weight: bold
+}
+
+#article-list .article-category {
+	white-space: nowrap;
+	margin: 5px 0;
+}
+#article-list .article-likes {
+	text-align: center
+}
+
+#article-item, #article-reputation {
 	display: none
 }
 
-#comments {
+#article-item-body {
+	min-height: 180px;
+}
+
+#best-comments, #comments {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
 }
 
-#post-comment {
+#best-comments {
+	
+}
+
+#best-comments li, #comments li, #likes-wrapper, #hates-wrapper {
+	border-bottom: 1px solid #D2D9E7;
+	background-color: #EDEFF4;
+	margin-top: 1px;
+	padding: 5px 5px 4px;
+}
+
+#best-comments li {
+	background-color: #EFC;
+	border-color: #AC9;
+}
+
+
+#best-comments .comment-item, #comments .comment-item {
+	border-left: 2px solid #A8B2CE;
+	clear: both;
+	display: table;
 	width: 100%
+}
+
+#best-comments .comment-avatar, #comments .comment-avatar {
+	display: table-cell;
+	width: 40px;
+}
+
+#best-comments .comment-content, #comments .comment-content {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#best-comments .comment-content time, #comments .comment-content time {
+	color: gray;
+}
+
+#comments .comment-btns {
+	float: right;
+	margin: 0 0 5px 0;
+	white-space: nowrap;
+	text-align: right;
+}
+
+#comments .comment-item-children {
+	padding-left: 40px;
+	background-repeat: no-repeat;
+	background-position: 22px 16px;
+	background-image: url(data:image/gif;base64,R0lGODlhCQAKAJECAHCl4XGm4v///wAAACH5BAEAAAIALAAAAAAJAAoAAAIUTIQppskIEjjoTWpwvjo/94ENlBQAOw==);
+}
+
+#article-item-tags {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#article-item-tags li {
+	display: inline;
+	margin-right: 1em;
+}
+
+#post-comment {
+	width: 98%
 }
 
 .pagination {
@@ -156,7 +270,7 @@ body {
 }
 
 #article-btns {
-	margin-bottom: 16px;
+	margin: 16px 0;
 	clear: both;
 	float: left;
 	width: 100%;
@@ -207,4 +321,8 @@ iframe {
 #user-info .load-more, #user-info .user-info-tab {
 	z-index: 6001;
 	display: none
+}
+
+#video-player .modal-body {
+	text-align: center
 }
