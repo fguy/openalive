@@ -21,7 +21,7 @@
                     <a class="btn btn-primary login-url" href="{{login_url}}"><i class="icon-arrow-right icon-white"></i> {% trans 'Login' %}</a>
                 {% else %}
 					<div class="btn-group">
-					    <button class="btn btn-primary user"><i class="icon-user icon-white"></i> <span class="nickname">{{ user.nickname }}</span></button>
+					    <button class="btn btn-primary user"><i class="icon-user icon-white"></i> <span class="nickname">{{ user.nickname|safe }}</span></button>
 					    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
 						<ul class="dropdown-menu">
 						    <li><a href="/user/me" class="user">{% trans 'My Profile' %}</a></li>

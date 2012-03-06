@@ -12,7 +12,7 @@
 	<div class="span2"><a href="http://www.gravatar.com/{{ user.email_hash }}" class="url" target="_blank"><img class="avatar photo" src="http://www.gravatar.com/avatar/{{ user.email_hash }}?d=mm&s=160" alt="{{ user.nickname }}"></a></div>
 	<dl class="span2">
 		<dt>{% trans 'Nickname' %}</dt>
-		<dd class="n"><span class="nickname">{{ user.nickname }}</span> 
+		<dd class="n"><span class="nickname">{{ user.nickname|safe }}</span> 
 			<span class="user-btns">{% if is_me %}<a href="#change-user-dialog" class="btn" id="change-user" data-toggle="modal">{% trans 'Change' %}</a>{% endif %}</span></dd>
 		<dt>{% trans 'Joined' %}</dt>
 		<dd><time datetime="{{ user.joined|date:'c' }}">{{ user.joined|pretty_date }}</time></dd>
@@ -31,13 +31,13 @@
 		{% endif %}
 	</dl>
 </div>
-<ul id="user-articles" class="user-info-tab">
+<ul id="user-articles" class="user-info-tab hide">
 	<li class="load-more"><button class="btn" data-type="article" data-callback="load" data-source="/user/articles/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
 </ul>
-<ul id="user-comments" class="user-info-tab">
+<ul id="user-comments" class="user-info-tab hide">
 	<li class="load-more"><button class="btn" data-type="comment" data-callback="load" data-source="/user/comments/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
 </ul>
-<ul id="user-changes" class="user-info-tab">
+<ul id="user-changes" class="user-info-tab hide">
     <li class="load-more"><button class="btn" data-type="change" data-callback="load" data-source="/user/changes/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
 </ul>
 {% if is_me %}

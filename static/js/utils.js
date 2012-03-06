@@ -1,9 +1,3 @@
-var ternary = function(condition, resultTrue, resultFalse) {
-	if (!resultFalse) {
-		resultFalse = "";
-	}
-	return condition ? resultTrue : resultFalse;
-}
 var formatString = (function() {
 	var replacer = function(context) {
 		return function(s) {
@@ -55,3 +49,27 @@ var formatString = (function() {
 				replacer(context));
 	}
 })();
+
+var showModalWindow = function(options) {
+  var context = $.extend({
+    id: "modal-window",
+    title: "",
+    body: "",
+  }, options);
+  $(formatString('\
+  <div class="modal" id="{{ id }}">\
+  <div class="modal-header">\
+    <a class="close" data-dismiss="modal">×</a>\
+    <h3>{{ title }}</h3>\
+  </div>\
+  <div class="modal-body">\
+      {{ body }}\
+  </div>\
+  <div class="modal-footer">\
+      <a href="#" class="btn" data-dismiss="modal">Close</a>\
+  </div>\
+  </div>\
+  ', context)).modal().on("hidden", function() {
+    $(this).remove();
+  });
+}

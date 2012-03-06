@@ -1,0 +1,12 @@
+{% extends base %}
+{% load i18n %}
+{% block content %}
+    <ul id="user-list">
+    {% for item in user_list %}
+        <li>
+        <a href="/user/{{ item.id }}" class="user"><img class="avatar photo" src="http://www.gravatar.com/avatar/{{ item.email_hash }}?d=mm&s=50" alt="{{ item.nickname }}"></a>
+        <a href="/user/{{ item.id }}" class="user">{{ item.nickname|safe }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

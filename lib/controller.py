@@ -127,10 +127,13 @@ class Controller(webapp2.RequestHandler):
             
     def handle_exception(self, e, debug):
         self.response.set_status(500, e)
+        if debug:
+            import sys
+            sys.stderr.write(e)
     
     def _find_template(self, result_name):
         if result_name.startswith('/'):
-            return result_name
+            return result_name[1:]
         result = [self.__action.__module__.replace('%s.' % ACTION_PACKAGE, '')]
         action_class = self.__action.__class__.__name__
         if action_class is not 'Index':

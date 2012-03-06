@@ -389,3 +389,16 @@ iframe {
 	background-color: #0063DC;
 }
 
+#user-list {
+	margin: 0;
+	padding: 0;
+	list-style-type:none;
+}
+#user-list li {
+	margin: 0;
+	padding: 4px;
+	border-bottom: 1px solid #eee
+}
+#user-list li .avatar {
+	padding: 0;
+}

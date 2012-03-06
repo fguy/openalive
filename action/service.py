@@ -162,8 +162,8 @@ class Reputation(Action):
         return Action.Result.DEFAULT    
     
     def get(self, obj_id):
-        self.list = models.Reputation.get_list(obj_id=int(obj_id), reputation=self.reputation, offset=int(self.request.get('offset', 0)))
-        return Action.Result.DEFAULT
+        self.user_list = models.Reputation.get_list(obj_id=int(obj_id), reputation=self.reputation, offset=int(self.request.get('offset', 0)), limit=int(self.request.get('limit', 1000)))
+        return '/users.html'
     
 class Like(Reputation):
     reputation = 'like'

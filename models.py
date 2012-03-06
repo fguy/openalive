@@ -1,3 +1,4 @@
+from gettext import gettext as _
 from copy import deepcopy
 from google.appengine.api import users, datastore
 from google.appengine.api.datastore_errors import BadValueError
@@ -32,7 +33,7 @@ class User(db.Model):
     
     def change_nickname(self, nickname):
         db.run_in_transaction_options(xg_on, UserNicknameHistory(user=self, nickname=bleach.clean(self.nickname)).put)
-        self.nickname = nickname
+        self.nickname = bleach.clean(nickname)
         db.run_in_transaction_options(xg_on, self.put)
         
     @classmethod
@@ -152,6 +153,13 @@ class Tag(db.Model):
         q.order('content')
         return q.fetch(DEFAULT_FETCH_COUNT)
     
+    @classmethod
+    def get_article_list(cls, tag, limit=20, offset=0):
+        tag = cls.gql('WHERE content = :1', tag).get()
+        if tag:
+            return [item.to_dict() for item in Article.gql('WHERE tags = :1', tag.key()).fetch(limit, offset)]
+        return []
+    
 class AbstractArticle(db.Model):
     author = db.ReferenceProperty(reference_class=User, required=True)
     body = db.TextProperty(required=True)
@@ -195,7 +203,7 @@ class Category(db.Model):
     
     def put(self):
         if self.__class__.gql('WHERE __key__ != :1 AND name = :2 AND is_active = True', self.key(), self.name).get() if self.is_saved() else Category.gql('WHERE name = :1 AND is_active = True', self.name).get():
-            raise BadValueError('Category name must be unique')
+            raise BadValueError(_('Category name must be unique'))
                 
         previous = self.__class__.get(self.key())
         is_insert = not self.is_saved()
@@ -208,7 +216,7 @@ class Category(db.Model):
             self.path = []
         self.path.append(self.name)
         if self.parent_category and self.path == self.parent_category.path:
-            raise BadValueError('Can not reference recursively.')        
+            raise BadValueError(_('Can not reference recursively.'))        
         super(Category, self).put()
         
     def delete(self):
@@ -408,6 +416,8 @@ class Comment(AbstractArticle):
     sort_key = db.StringProperty(required=False) # to sort comments
     
     def delete(self):
+        if self.__class__.gql('WHERE parent_comment = :1', self).count(2) > 0:
+            raise Exception(_('Can not delete if the comment has replies.'))
         db.run_in_transaction_options(xg_on, super(self.__class__, self).delete)
         db.run_in_transaction_options(xg_on, self.article.decrease_comment_count)
         db.run_in_transaction_options(xg_on, self.author.decrease_comment_count)

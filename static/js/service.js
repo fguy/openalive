@@ -260,7 +260,10 @@ var initializeModels = function() {
 		      		$("#article-item-last-updated").hide();
 		      	}
 	      		$("#article-item-tags").html($(self.current.tags).map(function(i, item) {
-	      			return '<li><i class="icon-tag"></i> <a href="/tags/' + item.content[0] + '" class="tag-item">' + item.content[0] + '</a></li>';
+	      			return formatString('<li><i class="icon-tag"></i> <a href="/tags/{{ primaryTag }}" class="tag-item" rel="tooltip" title="{{ tag }}">{{ primaryTag }}</a></li>', {
+	      			  primaryTag: item.content[0],
+	      			  tag: item.content.join(",")
+	      			});
 	      		}).get().join(""));
 	      		$(models.Reputation.types).each(function(i, item) {
 	      		  models.Reputation.renderUsers(item);
@@ -815,6 +818,18 @@ var initializeModels = function() {
 			$("#change-user-submit").live("click", function() {
 			  $($(this).data("form")).submit();
 			});
+			$("a.more-users").live("click", function() {
+			  $("#loading").show();
+			  var title = $(this).data("window-title");
+			  $.get($(this).attr("href"), function(html) {
+	        showModalWindow({
+	          title: title ? title : gettext("People"),
+	          body: html
+	        });
+	        $("#loading").hide();
+			  }, "html");
+			  return false;
+			})
 		  return self;
 		})(),
 		
@@ -875,9 +890,10 @@ var initializeModels = function() {
 	      if(count < totalCount) {
 	        var diff = totalCount - count;
 	        var context = {
-	        		link: formatString("/service/{{ type }}/{{ id }}", {type: type, id: article.id})
+	        		link: formatString("/service/{{ type }}/{{ id }}", {type: type, id: article.id}),
+	        		title: type == "like" ? gettext("People who likes this") : gettext("People who hates this") 
 	        }
-	        output += interpolate(ngettext(formatString(' and <a href="{{ link }}" class="more-users" rel="tooltip">%s more</a> ', context), formatString(' and <a href="{{ link }}" class="more-users" rel="tooltip">%s others</a> ', context), diff), [diff]);
+	        output += interpolate(ngettext(formatString(' and <a href="{{ link }}" class="more-users" rel="tooltip" data-window-title="{{ title }}">%s more</a> ', context), formatString(' and <a href="{{ link }}" class="more-users" rel="tooltip" data-window-title="{{ title }}">%s others</a> ', context), diff), [diff]);
 	      }
 	      output += ngettext(type + "s this.", type + " this.", count);
 	      $("#" + type + "s").html(output);
@@ -889,16 +905,16 @@ var initializeModels = function() {
 	      			data = JSON.parse($.ajax({
 		      			type: "GET",
 		      			url: url,
-		      			data: {offset: 5},
+		      			data: {offset: 5, output: "json", limit: 100},
 		      			async: false,
 		      			dataType: "json"
-		      		}).responseText).list;
+		      		}).responseText).user_list;
 	      			$(this).data("others", data);
 	      		}
 	      		
 	      		return $(data).map(function(i, item) {
 	      			return item.nickname;
-	      		}).get().join(", ");
+	      		}).get().join("<br>");
 	      	}
 	      });
 			}
