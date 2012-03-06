@@ -16,18 +16,20 @@ class Article(Action):
     def _captcha_validation(self, challenge, response):
         captcha_result = captcha.submit(challenge, response, settings.RECAPTCHA_PRIVATE_KEY, self.request.remote_addr)
         if not captcha_result.is_valid:
-            raise Exception('Captcha code mismatch: %s' % captcha_result.error_code)
+            self.response.set_status(500, 'Captcha code mismatch: %s' % captcha_result.error_code)
+            return False
+        return True
 
     @login_required
     def post(self, category_name):
-        self._captcha_validation(self.request.get('recaptcha_challenge_field'), self.request.get('recaptcha_response_field'))
-        self.article = models.Article(
-                       author=models.User.get_current(),
-                       title=self.request.get('title'),
-                       body=self.request.get('body'),
-                       category=models.Category.get_by_name(category_name),
-                       tags=models.Tag.save_all(self.request.get('tags').split(','))
-                       ).save()
+        if self._captcha_validation(self.request.get('recaptcha_challenge_field'), self.request.get('recaptcha_response_field')):
+            self.article = models.Article(
+                           author=models.User.get_current(),
+                           title=self.request.get('title'),
+                           body=self.request.get('body'),
+                           category=models.Category.get_by_name(category_name),
+                           tags=models.Tag.save_all(self.request.get('tags').split(','))
+                           ).save()
         return Action.Result.DEFAULT
         
         

@@ -149,7 +149,7 @@ class Tag(db.Model):
     @classmethod
     def get_top_list(cls):
         q = cls.all()
-        q.order('-count')
+        q.order('content')
         return q.fetch(DEFAULT_FETCH_COUNT)
     
 class AbstractArticle(db.Model):

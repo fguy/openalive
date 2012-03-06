@@ -1,7 +1,7 @@
 $.ajaxSetup({
 	error:function(jqXHR, textStatus, errorThrown) {
-		var errorMessage = $.trim($(jqXHR.responseText).text());
-		$().toastmessage("showErrorToast", gettext(errorMessage.substring(errorMessage.lastIndexOf("\n"))));
+		var errorMessage = jqXHR.responseText;
+		$().toastmessage("showErrorToast", errorMessage ? errorMessage : gettext("An error occurred."));
 		$("#loading").hide();
 	}
 });
@@ -68,15 +68,14 @@ var initializeModels = function() {
 		    	          <a href="#!/{{ name }}" title="{{ name }}" class="category-link{{ childClass }}">\
 		    							{{ childIcon }}\
 		    			 				{{ star }}\
-	  	    	          <span class="category-title">{{ nameTranslated }}</span> \
+	  	    	          <span class="category-title">{% trans name %}</span> \
 	  	    	          <span class="article-count">({{ article_count }})</span>\
 		    	          </a>\
 	  	    	      </li>', $.extend(true, item, {
 	  	    	      	activeClass: isActive ? ' class="active"' : "",
 	  	    	      	childClass: isChild ? ' children' : "",
 	  	    	      	childIcon: isChild ? '<i class="icon-chevron-right"></i> ' : "",
-	  	    	      	star: me ? '<i class="icon-star icon-star-empty" title="' + gettext("Star") + '"></i>' : "",
-	  	    	        nameTranslated: gettext(item.name)
+	  	    	      	star: me ? '<i class="icon-star icon-star-empty" title="' + gettext("Star") + '"></i>' : ""
 	  	    	      }));
 		    },
 		    getCurrent: function() {
@@ -100,9 +99,8 @@ var initializeModels = function() {
 		      }).get().join(""));
 		    },
 		    decorateStarredItem: function(name) {
-		      return formatString('<span class="label label-success"><a href="#!/{{ name }}" title="{{ name }}" class="category-link"><i class="icon-star icon-white" title="' + gettext("Unstar") + '"></i> <span class="category-title">{{ nameTranslated }}</span></a></span> ', {
-		      	name: name,
-		      	nameTranslated: gettext(name)
+		      return formatString('<span class="label label-success"><a href="#!/{{ name }}" title="{{ name }}" class="category-link"><i class="icon-star icon-white" title="{% trans "Unstar" %}"></i> <span class="category-title">{% trans name %}</span></a></span> ', {
+		      	name: name
 		      });
 		    },
 		    markStarred: function(name, empty) {
@@ -259,7 +257,7 @@ var initializeModels = function() {
 		      		$("#article-item-last-updated").hide();
 		      	}
 	      		$("#article-item-tags").html($(self.current.tags).map(function(i, item) {
-	      			return '<li><i class="icon-tag"></i> <a href="/tags/' + item.content[0] + '">' + item.content[0] + '</a></li>';
+	      			return '<li><i class="icon-tag"></i> <a href="/tags/' + item.content[0] + '" class="tag-item">' + item.content[0] + '</a></li>';
 	      		}).get().join(""));
 	      		$(models.Reputation.types).each(function(i, item) {
 	      		  models.Reputation.renderUsers(item);
@@ -368,12 +366,11 @@ var initializeModels = function() {
 		          </td>\
 		          <td class="article-user"><a href="/user/{{ author.id }}" class="user">{{ avatar }}<span class="nickname">{{ author.nickname }}</span></td>\
 		          <td class="article-likes"><span class="like-count count">{{ like_count }}</span></td>\
-		          <td class="article-date"><time datetime="{{ created }}">{{ prettyCreated }}</time></td>\
+		          <td class="article-date"><time datetime="{{ created }}">{{ created|prettyDate }}</time></td>\
 		        </tr>', $.extend(true, item, {
 		        currentCategory: currentCategory,
 		        page: page,
 		        avatar: models.User.getAvatar(item.author.email_hash, 16),
-		        prettyCreated: prettyDate(item.created),
 		        hasVideo: item.video != null ? '<i class="icon-film"></i> ' : "",
 		        hasImage: item.image != null ? '<i class="icon-picture"></i> ' : "",
 		        commentCount: item.comment_count > 0 ? '(' + item.comment_count + ')' : ""
@@ -519,7 +516,7 @@ var initializeModels = function() {
 	  							<span><a href="/user/{{ author.id }}" class="user"><span class="nickname">{{ author.nickname }}</span></a></span>\
 	  							<span>{{ body }}</span>\
 	  							<div>\
-	  								<time datetime="{{ created }}">{{ prettyCreated }}</time>\
+	  								<time datetime="{{ created }}">{{ created|prettyDate }}</time>\
 										{{ label }}\
 	  							</div>\
 	  						</div>\
@@ -529,7 +526,6 @@ var initializeModels = function() {
 								 class: item.parent_id ? " comment-item-children" : " comment-item-parent",
 								 avatar: models.User.getAvatar(item.author.email_hash, 32),
 								 buttons: isBest ? "" : self._getButtons(item),
-								 prettyCreated: prettyDate(item.created),
 								 label: isBest ? ' <span class="label label-success">BEST</span>' : ""
 							 }));
 					},
@@ -724,12 +720,10 @@ var initializeModels = function() {
                   <h5><a href="/#!/{{ category }}/{{ id }}" class="title">{{ title }}</a></h5>\
                   <span class="comment-count">({{ comment_count }})</span>\
                   <span class="category">{{ category }}</span>\
-                  <span class="posted"><time datetime="{{ created }}">{{ prettyCreated }}</time></span>\
+                  <span class="posted"><time datetime="{{ created }}">{{ created|prettyDate }}</time></span>\
                 </div>\
                 <p class="excerpt"><a href="/#!/{{ category }}/{{ id }}" class="title">{{ excerpt }}</a></p>\
-              </li>', $.extend(true, item, {
-              	prettyCreated: prettyDate(item.created)
-              }));
+              </li>', item);
 			      case "comment":
 			        return formatString('<li>\
                 <div>\
@@ -737,21 +731,18 @@ var initializeModels = function() {
                   <span class="category">{{ article.category }}</span>\
 			        		{{ likeCount }}\
 			        		{{ hateCount }}\
-                  <span class="posted"><time datetime="{{ created }}">{{ prettyCreated }}</time></span>\
+                  <span class="posted"><time datetime="{{ created }}">{{ created|prettyDate }}</time></span>\
                 </div>\
                 <p class="body">{{ body }}</p>\
               </li>', $.extend(true, item, {
               	likeCount: item.like_count > 0 ? '<span class="like-count"><i class="icon-heart"></i> ' + item.like_count + '</span>' : "",
-              	hateCount: item.hate_count > 0 ? '<span class="hate-count"><i class="icon-fire"></i> ' + item.hate_count + '</span>' : "",
-              	prettyCreated: prettyDate(item.created)
+              	hateCount: item.hate_count > 0 ? '<span class="hate-count"><i class="icon-fire"></i> ' + item.hate_count + '</span>' : ""
               }));
 			      case "change":
 			        return formatString('<li>\
 			          <span class="nickname">{{ nickname }}</span>\
-			          <span class="changed"><time datetime="{{ changed }}">{{ prettyChanged }}</time></span>\
-			        </li>', $.extend(true, item, {
-			        	prettyChanged: prettyDate(item.changed)
-			        }));
+			          <span class="changed"><time datetime="{{ changed }}">{{ changed|prettyDate }}</time></span>\
+			        </li>', item);
 			      }
 			    },
 			    changed: function(user) {

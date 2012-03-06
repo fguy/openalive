@@ -95,7 +95,14 @@ class Controller(webapp2.RequestHandler):
             getattr(self.__action, 'after')()
         except Exception as e:
             self.handle_exception(e, self.request.app.debug)
-
+            
+        status = self.response._get_status()
+        if not status.startswith('200'):
+            message = self.response._get_status_message()
+            if message:
+                self.response.write(status)
+            return
+        
         self.__action.lang = self.request.lang
         
         output = self.request.get('output')
@@ -120,9 +127,6 @@ class Controller(webapp2.RequestHandler):
             
     def handle_exception(self, e, debug):
         self.response.set_status(500, e)
-        if debug:
-            print e
-        raise
     
     def _find_template(self, result_name):
         if result_name.startswith('/'):
