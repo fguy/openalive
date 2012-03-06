@@ -198,7 +198,7 @@ time {
 
 #comments .comment-btns {
 	float: right;
-	margin: 0 0 5px 0;
+	margin: 0 0 0 5px;
 	white-space: nowrap;
 	text-align: right;
 }
@@ -220,6 +220,27 @@ time {
 #article-item-tags li {
 	display: inline;
 	margin-right: 1em;
+}
+
+#article-item-meta {
+	border: 1px solid #eee;
+	float: right
+}
+
+#article-item-meta .avatar {
+	border:1px solid #ccc;
+	padding: 5px;
+	background-color: white;
+}
+
+#article-item-meta time {
+	color: gray
+}
+
+#article-item-author-avatar {
+	margin: 0 auto;
+	text-align:center;
+	display: table;
 }
 
 #post-comment {

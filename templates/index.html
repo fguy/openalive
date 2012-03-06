@@ -24,13 +24,13 @@
         <div id="content" class="span9">
           <article id="article-item">
             <header class="page-header">
-              	<h2 id="article-item-title"></h2>
-              	<div id="article-item-author">
+              	<div id="article-item-meta" class="well">
               		<div id="article-item-author-avatar"></div>
               		<div id="article-item-author-nickname"></div>
-              	</div>
-              	<time id="article-item-created"></time>
-              	<time id="article-item-last-updated"></time>
+	              	<div id="article-item-created"><i class="icon-pencil"></i> <time title="{% trans 'Written Date' %}"></time></div>
+	              	<div id="article-item-last-updated"><i class="icon-edit"></i> <time title="{% trans 'Last Modified' %}"></time></div>              		
+              	</div>            
+              	<h2 id="article-item-title"></h2>
             </header>
           	<p id="article-item-body"></p>
           	<ul id="article-item-tags"></ul>

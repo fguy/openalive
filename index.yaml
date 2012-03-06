@@ -69,6 +69,13 @@ indexes:
   - name: created
     direction: desc
 
+- kind: Reputation
+  properties:
+  - name: obj_id
+  - name: reputation
+  - name: created
+    direction: desc
+
 - kind: User
   properties:
   - name: nickname

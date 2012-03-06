@@ -162,7 +162,7 @@ class Reputation(Action):
         return Action.Result.DEFAULT    
     
     def get(self, obj_id):
-        self.count = models.Reputation.get_list(int(obj_id), self.reputation)
+        self.list = models.Reputation.get_list(obj_id=int(obj_id), reputation=self.reputation, offset=int(self.request.get('offset', 0)))
         return Action.Result.DEFAULT
     
 class Like(Reputation):

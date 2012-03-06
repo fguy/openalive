@@ -46,10 +46,9 @@ var initializeModels = function() {
 		        if(data.current_category) { 
 		          var lastPos = data.current_category.path.length - 1; 
 		          $("#container .breadcrumb").append($(data.current_category.path).map(function(i, item) {
-		            return formatString('<li{{ activeClass }}><a href="#!/{{ category }}">{{ categoryTranslated }}</a> {{ divider }}</li>', {
+		            return formatString('<li{{ activeClass }}><a href="#!/{{ category }}">{{ category|gettext }}</a> {{ divider }}</li>', {
 		            	activeClass: i == lastPos ? ' class="active"' : "",
 		            	category: item,
-		            	categoryTranslated: gettext(item),
 		            	divider: i != lastPos ? '<span class="divider">/</span>' : ''
 		            }); 
 		          }).get().join(""));
@@ -68,7 +67,7 @@ var initializeModels = function() {
 		    	          <a href="#!/{{ name }}" title="{{ name }}" class="category-link{{ childClass }}">\
 		    							{{ childIcon }}\
 		    			 				{{ star }}\
-	  	    	          <span class="category-title">{% trans name %}</span> \
+	  	    	          <span class="category-title">{{ name|gettext }}</span> \
 	  	    	          <span class="article-count">({{ article_count }})</span>\
 		    	          </a>\
 	  	    	      </li>', $.extend(true, item, {
@@ -99,7 +98,7 @@ var initializeModels = function() {
 		      }).get().join(""));
 		    },
 		    decorateStarredItem: function(name) {
-		      return formatString('<span class="label label-success"><a href="#!/{{ name }}" title="{{ name }}" class="category-link"><i class="icon-star icon-white" title="{% trans "Unstar" %}"></i> <span class="category-title">{% trans name %}</span></a></span> ', {
+		      return formatString('<span class="label label-success"><a href="#!/{{ name }}" title="{{ name }}" class="category-link"><i class="icon-star icon-white" title="' + gettext("Unstar") + '"></i> <span class="category-title">{{ name|gettext }}</span></a></span> ', {
 		      	name: name
 		      });
 		    },
@@ -247,12 +246,16 @@ var initializeModels = function() {
 		      render: function() {
 		      	$("#article-item-title").text(self.current.title);
 		      	$("#article-item-body").html(self.current.body);
-		      	$("#article-item-author-avatar").html(models.User.getAvatar(self.current.author.email_hash, 100));
-		      	$("#article-item-author-nickname").text(self.current.author.nickname);
+		      	$("#article-item-author-avatar").html(formatString('<a href="/user/{{ authorId }}" class="user">{{ thumbnail }}</a>', {
+		      		authorId: self.current.author.id,
+		      		original: models.User.getAvatar(self.current.author.email_hash, null, true),
+		      		thumbnail: models.User.getAvatar(self.current.author.email_hash, 100)
+		      	}));
+		      	$("#article-item-author-nickname").html(formatString('<a href="/user/{{ author.id }}" class="user"><span class="nickname">{{ author.nickname }}</span></a>', self.current));
 		      	$("#article-item-author-joined").text(prettyDate(self.current.author.joined));
-		      	$("#article-item-created").attr("datetime", self.current.created).text(prettyDate(self.current.created));
+		      	$("#article-item-created time").attr("datetime", self.current.created).text(prettyDate(self.current.created));
 		      	if(self.current.created != self.current.last_updated) {
-		      		$("#article-item-last-updated").show().attr("datetime", self.current.last_updated).text(prettyDate(self.current.last_updated));
+		      		$("#article-item-last-updated").show().find("time").attr("datetime", self.current.last_updated).text(prettyDate(self.current.last_updated));
 		      	} else {
 		      		$("#article-item-last-updated").hide();
 		      	}
@@ -364,7 +367,7 @@ var initializeModels = function() {
 			          	<span class="article-excerpt">{{ excerpt }}</span>\
 			          </div>\
 		          </td>\
-		          <td class="article-user"><a href="/user/{{ author.id }}" class="user">{{ avatar }}<span class="nickname">{{ author.nickname }}</span></td>\
+		          <td class="article-user"><a href="/user/{{ author.id }}" class="user">{{ avatar }}<span class="nickname">{{ author.nickname }}</span></a></td>\
 		          <td class="article-likes"><span class="like-count count">{{ like_count }}</span></td>\
 		          <td class="article-date"><time datetime="{{ created }}">{{ created|prettyDate }}</time></td>\
 		        </tr>', $.extend(true, item, {
@@ -657,11 +660,14 @@ var initializeModels = function() {
 					getMe: function() {
 						return self.me;
 					},
-			    getAvatar: function(hash, size) {
-			      return formatString('<img class="avatar" src=http://www.gravatar.com/avatar/{{ hash }}?d=mm{{ sizeParam }}>', {
+			    getAvatar: function(hash, size, noTag) {
+			    	
+		    		var src = formatString("http://www.gravatar.com/avatar/{{ hash }}?d=mm{{ sizeParam }}",{
 			      	sizeParam: size ? "&s=" + size : "",
-			      	hash: hash
-			      });
+					    hash: hash
+					  });
+
+			      return !noTag ? formatString('<img class="avatar" src="{{ src }}">', {src: src}) : src;
 			    },
 			    show: function(url) {
 			      self.reset("article");
@@ -863,16 +869,38 @@ var initializeModels = function() {
 	      var rendered = $(users).map(function(i, item) {
 	        return '<a href="/user/' + item.id + '" class="user">' + models.User.getAvatar(item.email_hash, 16) + '<span class="nickname">' + item.nickname + "</span></a> ";
 	      });
-	      var output = rendered.get().join(",");
+	      var output = rendered.get().join(", ");
 	      
 	      var totalCount = article[type + "_count"];
 	      if(count < totalCount) {
-	        var link = "/users/" + type + "d/" + article.id;
 	        var diff = totalCount - count;
-	        output += interpolate(ngettext(' and <a href="' + link + '" class="more-users">%s</a> more ', ' and <a href="' + link + '" class="more-users">%s</a> others ', diff), [diff]);
+	        var context = {
+	        		link: formatString("/service/{{ type }}/{{ id }}", {type: type, id: article.id})
+	        }
+	        output += interpolate(ngettext(formatString(' and <a href="{{ link }}" class="more-users" rel="tooltip">%s more</a> ', context), formatString(' and <a href="{{ link }}" class="more-users" rel="tooltip">%s others</a> ', context), diff), [diff]);
 	      }
 	      output += ngettext(type + "s this.", type + " this.", count);
 	      $("#" + type + "s").html(output);
+	      $("#" + type + "s-wrapper a[rel=tooltip]").tooltip({
+	      	title: function() {
+	      		var url = $(this).attr("href");
+	      		var data = $(this).data("others");
+	      		if(!data) {
+	      			data = JSON.parse($.ajax({
+		      			type: "GET",
+		      			url: url,
+		      			data: {offset: 5},
+		      			async: false,
+		      			dataType: "json"
+		      		}).responseText).list;
+	      			$(this).data("others", data);
+	      		}
+	      		
+	      		return $(data).map(function(i, item) {
+	      			return item.nickname;
+	      		}).get().join(", ");
+	      	}
+	      });
 			}
 		}
 	});

@@ -1,7 +1,9 @@
 {% extends base %} 
 {% load i18n %} 
 {% block content %}
-<h1>Tags</h1>
+<header class="page-header">
+<h1>Tag Cloud</h1>
+</header>
 <ul id="tag-cloud">
 {% for item in list %}
 	<li><a href="/tags/{{ item.content.0 }}" data-count="{{ item.count }}" target="_blank" title="{{ item.content|join:', ' }}" style="font-size: {% widthratio item.count max 40 %}px">{{ item.content.0 }}</a></li>

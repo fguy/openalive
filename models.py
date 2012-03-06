@@ -487,9 +487,9 @@ class Reputation(db.Model):
         db.run_in_transaction_options(xg_on, getattr(obj.author, 'increase_' + self.reputation + '_count'))
     
     @classmethod
-    def get_list(cls, obj_id, limit=None, reputation=None):
+    def get_list(cls, obj_id, limit=None, offset=0, reputation=None):
         q = cls.gql('WHERE obj_id = :1 AND reputation = :2 ORDER BY created DESC', obj_id, reputation) if reputation is not None else cls.gql('WHERE obj_id = :1 ORDER BY created DESC', obj_id)
-        return [{'id': item.user.key().id(), 'nickname': item.user.nickname, 'email_hash': item.user.email_hash, 'type': item.reputation} for item in q.fetch(DEFAULT_FETCH_COUNT if limit is None else limit)]
+        return [{'id': item.user.key().id(), 'nickname': item.user.nickname, 'email_hash': item.user.email_hash, 'type': item.reputation} for item in q.fetch(DEFAULT_FETCH_COUNT if limit is None else limit, offset)]
     
     @classmethod
     def get_one(cls, obj_id, reputation):

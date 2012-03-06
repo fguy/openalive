@@ -43,7 +43,7 @@ if (typeof jQuery != "undefined") {
 	};
 	// Update time periodically. 
 	setInterval(function() {
-		jQuery("time[datetime]").each(function() {
+		jQuery("time:visible[datetime]").each(function() {
 			jQuery(this).text(prettyDate(jQuery(this).attr("datetime")));
 		});
 	}, 20000);	
