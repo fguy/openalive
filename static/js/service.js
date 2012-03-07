@@ -24,9 +24,9 @@ var initializeModels = function() {
 		  var self = {
 		    starred: [],
 		    select: function(name, callback) {
-		    	$("#loading").show();
+		    	$("#starred-wrapper, #sidebar-wrapper, #loading").show();
 		      if(self.getCurrent() == name) {
-		        models.Article.loadList(name, callback);
+		        models.Article.loadList('category', name, callback);
 		        return;
 		      }
 		      models.Article.hideList();
@@ -53,13 +53,15 @@ var initializeModels = function() {
 		            }); 
 		          }).get().join(""));
 		          data.current_category.description ? $("#article-list caption").html(data.current_category.description) : $("#article-list caption").hide();
-		          models.Article.loadList(data.current_category.name, callback);
+		          $(".btn-post-article").show();
+		          models.Article.loadList("category", data.current_category.name, callback);
 		        } else {
 		        	$("#article-list caption").empty();
 		        	$("#loading, #no-article, .btn-post-article").hide();
 		        	models.Article.hide();
 		        }
 		      });
+		      self.loadStarred();
 		    },
 		    decorateItem: function(item, isActive, isChild) {
 		      var me = models.User.getMe();
@@ -132,7 +134,6 @@ var initializeModels = function() {
 		      });
 		    }
 		  }
-		  self.loadStarred();
 	
 	    $("#sidebar .nav .icon-star, #starred .icon-star").live("click", function() {
 	      $(this).hasClass("icon-star-empty") ? models.Category.star($(this).parent().attr("title")) : models.Category.unstar($(this).parent().attr("title"));
@@ -153,39 +154,50 @@ var initializeModels = function() {
 		Article: (function() {
 		  var self = {
 		  		current: null,
-		      loadList: function(categoryName, callback) {
-		        $("#loading, #article-btns, .btn-post-article").show();
+		  		currentType: null,
+		      loadList: function(type, name, callback) {
+		      	self.currentType = {
+		      			name: type,
+		      			model: models[type.charAt(0).toUpperCase() + type.slice(1)],
+		      			sign: type == "category" ? "!" : type
+		      	}
+		      	
+		        $("#loading, #article-btns").show();
 		      	var page = self.getCurrentPage();
 		      	page || (page = 1);
-		      	if($("#article-list").data("category") == categoryName && $("#article-list").data("page") == page) {
+		      	if($("#article-list").data(type) == name && $("#article-list").data("page") == page) {
 		      	  self.showList();
 		      		callback && callback();
 		      		$("#no-article, #loading").hide();
 		      		return;
 		      	}
-		      	var currentCategory = models.Category.getCurrent();
-		      	document.title = currentCategory;
+		      	var currentTypeValue = self.currentType.model.getCurrent();
+		      	document.title = currentTypeValue;
 		      	self.hide();
 		      	callback && callback();
-		      	$.getJSON("/service/article-list/" + categoryName, {page: page}, function(data) {
+		      	$.getJSON(formatString("/{{ type }}/article-list/{{ name }}", {type: type, name: name}), {page: page}, function(data) {
 		      	  if(data.list.length == 0) { // no article in this category.
-		      	    $("#no-article").show().find(".current-category-name").text(currentCategory);
+		      	    $("#no-article").show().find(".current-name").text(currentTypeValue);
 		      	    $("#loading").hide();
 		      	    self.hideList();
 		      	    return;
 		      	  }
 		      	  $("#no-article").hide();
 		      		$("#article-list tbody").html($(data.list).map(function(i, item) {
-		      			return self.decorateRow(currentCategory, page, item);
+		      			return self.decorateRow(currentTypeValue, page, item);
 		      		}).get().join(""));
-		      		$("#article-list").data("category", categoryName).data("page", page);
+		      		$("#article-list").data(type, name).data("page", page);
 		      		self.showList();
 		      		$("#article-pagination").pagination(data.count, {
 		            items_per_page : 20,
 		            current_page : page - 1, // zero base
 		            callback : function(pageSelected) {
 		              if (pageSelected > -1) {
-		              	$.history.load("!/" + categoryName + "?page=" + (pageSelected + 1));
+		              	$.history.load(formatString("{{ type }}/{{ name }}?page={{ page }}", {
+		              		type: self.currentType.sign,
+		              	  name: name,
+		              	  page: pageSelected + 1
+		              	}));
 		              }
 		              return false;
 		            }
@@ -201,7 +213,7 @@ var initializeModels = function() {
 		      },
 		      show: function(id) {
 		      	$("#article-list tr.active").removeClass("active");
-		      	$("#article-list tr:has(a[href*='/" + id + "?'])").addClass("active");
+		      	$(formatString("#article-list tr:has(a[href*='/{{ id }}?'])", {id: id})).addClass("active");
 		      	$("#article-item-body").html('<div class="loading"><i class="icon-clock">' + gettext("Loading...") + "</div>");
 		      	$("#loading").show();
 		      	$.getJSON("/service/article/" + id, function(data) {
@@ -260,7 +272,7 @@ var initializeModels = function() {
 		      		$("#article-item-last-updated").hide();
 		      	}
 	      		$("#article-item-tags").html($(self.current.tags).map(function(i, item) {
-	      			return formatString('<li><i class="icon-tag"></i> <a href="/tags/{{ primaryTag }}" class="tag-item" rel="tooltip" title="{{ tag }}">{{ primaryTag }}</a></li>', {
+	      			return formatString('<li><i class="icon-tag"></i> <a href="/#tag/{{ primaryTag }}" class="tag-item" rel="tooltip" title="{{ tag }}">{{ primaryTag }}</a></li>', {
 	      			  primaryTag: item.content[0],
 	      			  tag: item.content.join(",")
 	      			});
@@ -344,8 +356,10 @@ var initializeModels = function() {
 			        success: function() {
 			        	$().toastmessage("showSuccessToast", gettext("Deleted."));
 			          $("#article-list tr.active").remove();
-			          var currentCategory = models.Category.getCurrent();
-			        	$.history.load("!/" + currentCategory);
+			        	$.history.load(formatString("{{ sign }}/{{ value }}", {
+			        		sign: self.currentType.sign,
+			        		value: self.currentType.model.getCurrent()
+			        	}));
 			          $("#loading").hide();
 		            $(self.current.category.path).each(function(i, item) {
 		              var countDiv = $("#sidebar .category-link[title=" + item + "] .article-count");
@@ -365,7 +379,7 @@ var initializeModels = function() {
 		          <td class="article-category">{{ category }}</td>\
 		          <td class="article-item">\
 			          <div class="article-item-wrapper">\
-			          	<a href="#!/{{ currentCategory }}/{{ id }}?page={{ page }}" class="article-title" title="{{ title }}">{{ title }}</a> {{ hasImage }}{{ hasVideo }}\
+			          	<a href="#{{ type }}/{{ currentTypeValue }}/{{ id }}?page={{ page }}" class="article-title" title="{{ title }}">{{ title }}</a> {{ hasImage }}{{ hasVideo }}\
 			          	<span class="comment-count">{{ commentCount }}</span>\
 			          	<span class="article-excerpt">{{ excerpt }}</span>\
 			          </div>\
@@ -374,7 +388,8 @@ var initializeModels = function() {
 		          <td class="article-likes"><span class="like-count count">{{ like_count }}</span></td>\
 		          <td class="article-date"><time datetime="{{ created }}">{{ created|prettyDate }}</time></td>\
 		        </tr>', $.extend(true, item, {
-		        currentCategory: currentCategory,
+		        type: self.currentType.sign,
+		        currentTypeValue: self.currentType.model.getCurrent(),
 		        page: page,
 		        avatar: models.User.getAvatar(item.author.email_hash, 16),
 		        hasVideo: item.video != null ? '<i class="icon-film"></i> ' : "",
@@ -388,7 +403,7 @@ var initializeModels = function() {
 		  }
 		  $(window).bind("resize", self.resizeRow);
 	    $("#btn-list-article").click(function() {
-	      var loc = "!/" + models.Category.getCurrent();
+	      var loc = formatString("{{ type }}/{{ value }}", {type: self.currentType.sign, value: self.currentType.model.getCurrent()});
 	      var page = self.getCurrentPage();
 	      page > 1 && (loc += '?page=' + page);
 	      $.history.load(loc)
@@ -446,9 +461,8 @@ var initializeModels = function() {
 	        
 	        $("#loading").hide();
 	      };
-	      var id = models.Article.getCurrent().id;
 	      $("#loading").show();
-	      models.Reputation[action]('Article', id, callback);
+	      models.Reputation[action]('Article', self.current.id, callback);
 	    });
 	    $("#btn-post-article-submit").click(function() {
 	    	$("#post-article-id").attr("disabled") ? self.post($("#post-article-form")) : self.put($("#post-article-form"));
@@ -831,6 +845,27 @@ var initializeModels = function() {
 			  return false;
 			})
 		  return self;
+		})(),
+		
+		Tag: (function() {
+			var self = {
+				current: null,
+				getCurrent: function() {
+					return self.current;
+				},
+				select: function(name, callback) {
+					self.current = name;
+					$("#starred-wrapper, #sidebar-wrapper, .btn-post-article").hide();
+	        $("#container .breadcrumb li:gt(0)").remove();
+	        $("#container .breadcrumb li:eq(0) .divider").show();
+          $("#container .breadcrumb").append(formatString('<li><a href="/tags">{{ label }}</a> <span class="divider">/</span></li> <li>{{ tag }}</li>', {
+          	label: gettext("Tags"), 
+          	tag: gettext(name)
+          }));
+          models.Article.loadList('tag', name, callback);
+				}	
+			}
+			return self;
 		})(),
 		
 		Subscription: {

@@ -346,8 +346,12 @@ iframe {
 	z-index: 0
 }
 
+#user-info {
+	z-index: 1051;
+}
+
 #user-info .load-more,#user-info .user-info-tab {
-	z-index: 6001;
+	z-index: 1051;
 	display: none
 }
 

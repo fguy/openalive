@@ -55,12 +55,12 @@ var ArticleEditor = (function() {
   }
   var open = function() {
   	initialized ? transferFieldValues() :init();
-  	
-    if (!models.Category.getCurrent()) {
+  	var edit = isEdit();
+    if (!edit && !models.Category.getCurrent()) {
       $().toastmessage("showWarningToast", gettext("No category selected."));
       return false;
     }
-    $("#post-article-current-path").text(isEdit() ? gettext("Home") + " / " + models.Article.getCurrent().category.path.join(" / ") : models.Category.getCurrentPath());
+    $("#post-article-current-path").text(edit ? gettext("Home") + " / " + models.Article.getCurrent().category.path.join(" / ") : models.Category.getCurrentPath());
     div.modal();
     return false;
   }

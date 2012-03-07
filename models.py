@@ -154,11 +154,12 @@ class Tag(db.Model):
         return q.fetch(DEFAULT_FETCH_COUNT)
     
     @classmethod
+    def get_by_name(cls, tag_name):
+        return cls.gql('WHERE content = :1', tag_name).get()
+    
+    @classmethod
     def get_article_list(cls, tag, limit=20, offset=0):
-        tag = cls.gql('WHERE content = :1', tag).get()
-        if tag:
-            return [item.to_dict() for item in Article.gql('WHERE tags = :1', tag.key()).fetch(limit, offset)]
-        return []
+        return [item.to_dict() for item in Article.gql('WHERE tags = :1', tag.key()).fetch(limit, offset)]
     
 class AbstractArticle(db.Model):
     author = db.ReferenceProperty(reference_class=User, required=True)
