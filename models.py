@@ -1,9 +1,9 @@
-from gettext import gettext as _
 from copy import deepcopy
+from django.utils.html import strip_tags, strip_entities
+from gettext import gettext as _
 from google.appengine.api import users, datastore
 from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.ext import db
-from django.utils.html import strip_tags
 from lib import bleach
 from lib.BeautifulSoup import BeautifulSoup
 from lib.base62 import base62_encode
@@ -122,7 +122,8 @@ class Tag(db.Model):
     
     @classmethod
     def normalize(cls, tag):
-        normalized = TAG_NORMALIZE_PATTERN.sub(u'', tag)
+        tag = strip_entities(bleach.clean(tag))
+        normalized = TAG_NORMALIZE_PATTERN.sub(u'', tag).lower()
         return [tag, normalized] if tag != normalized else [tag]
     
     @classmethod
@@ -555,3 +556,11 @@ class Subscription(db.Model):
     @classmethod
     def is_subscribed(cls, article):
         return cls.gql('WHERE user = :1 AND article = :2', User.get_current(), article).get() is not None
+    
+    @classmethod
+    def get_one(cls, article):
+        user = User.get_current()
+        if not user:
+            return None
+        return cls.gql('WHERE article=:1 AND user=:2', article, user).get()
+    

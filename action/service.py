@@ -153,6 +153,23 @@ class Reputation(Action):
         self.user_list = models.Reputation.get_list(obj_id=int(obj_id), reputation=self.reputation, offset=int(self.request.get('offset', 0)), limit=int(self.request.get('limit', 1000)))
         return '/users.html'
     
+    
+class Subscription(Action):
+    @login_required
+    def post(self, article_id):
+        article = models.Article.get_by_id(int(article_id))
+        models.Subscription(keys_name = article_id, article=article, user=models.User.get_current()).put()
+        return Action.Result.DEFAULT
+    
+    @login_required
+    def delete(self, article_id):
+        article = models.Article.get_by_id(int(article_id))
+        subscription = models.Subscription.get_one(article)
+        if subscription.user.user != users.get_current_user():
+            raise users.NotAllowedError(_('You did not give an reputation for this.'))
+        subscription.delete()
+        return Action.Result.DEFAULT        
+    
 class Like(Reputation):
     reputation = 'like'
 

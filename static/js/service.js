@@ -22,13 +22,15 @@ var initializeModels = function() {
 	models || (models = {
 		Category : (function() {
 		  var self = {
+		    current: null,
 		    starred: [],
 		    select: function(name, callback) {
-		    	$("#starred-wrapper, #sidebar-wrapper, #loading").show();
+		    	$("#starred-wrapper, #sidebar-wrapper, #loading, .btn-post-article").show();
 		      if(self.getCurrent() == name) {
 		        models.Article.loadList('category', name, callback);
 		        return;
 		      }
+		      self.current = name;
 		      models.Article.hideList();
 		      $.getJSON("/service/category/" + name, function(data) {
 		        $("#container .breadcrumb li:gt(0)").remove();
@@ -52,7 +54,7 @@ var initializeModels = function() {
 		            	divider: i != lastPos ? '<span class="divider">/</span>' : ''
 		            }); 
 		          }).get().join(""));
-		          data.current_category.description ? $("#article-list caption").html(data.current_category.description) : $("#article-list caption").hide();
+		          data.current_category.description ? $("#article-list caption").html(data.current_category.description).show() : $("#article-list caption").hide();
 		          $(".btn-post-article").show();
 		          models.Article.loadList("category", data.current_category.name, callback);
 		        } else {
@@ -61,7 +63,6 @@ var initializeModels = function() {
 		        	models.Article.hide();
 		        }
 		      });
-		      self.loadStarred();
 		    },
 		    decorateItem: function(item, isActive, isChild) {
 		      var me = models.User.getMe();
@@ -80,7 +81,7 @@ var initializeModels = function() {
 	  	    	      }));
 		    },
 		    getCurrent: function() {
-		      return $("#sidebar .nav .active > .category-link").attr("title");
+		      return self.current;
 		    },
 		    getCurrentPath: function() {
 		      return $.trim($("#container .breadcrumb").text().replace(/\//g, " / "))
@@ -89,7 +90,7 @@ var initializeModels = function() {
 		      $("#loading").show();
 		      $.getJSON("/service/starred-category", function(data) {
 		        self.renderStarred(data.starred_category_list);
-		        $("#starred-wrapper").toggle(data.starred_category_list.length > 0);
+		        $("#starred-wrapper").toggle($("#sidebar-wrapper").is(":visible") && data.starred_category_list.length > 0);
 		        $("#loading").hide();
 		      });
 		    },
@@ -134,7 +135,7 @@ var initializeModels = function() {
 		      });
 		    }
 		  }
-	
+		  self.loadStarred();
 	    $("#sidebar .nav .icon-star, #starred .icon-star").live("click", function() {
 	      $(this).hasClass("icon-star-empty") ? models.Category.star($(this).parent().attr("title")) : models.Category.unstar($(this).parent().attr("title"));
 	      return false;
@@ -154,23 +155,22 @@ var initializeModels = function() {
 		Article: (function() {
 		  var self = {
 		  		current: null,
-		  		currentType: null,
-		      loadList: function(type, name, callback) {
-		      	self.currentType = {
-		      			name: type,
-		      			model: models[type.charAt(0).toUpperCase() + type.slice(1)],
-		      			sign: type == "category" ? "!" : type
-		      	}
-		      	
+		  		currentType: {name:"", model:null, sign:""},
+		      loadList: function(type, name, callback) {	      	
 		        $("#loading, #article-btns").show();
 		      	var page = self.getCurrentPage();
 		      	page || (page = 1);
-		      	if($("#article-list").data(type) == name && $("#article-list").data("page") == page) {
+		      	if(self.currentType.name == type && $("#article-list").data(type) == name && $("#article-list").data("page") == page) {
 		      	  self.showList();
 		      		callback && callback();
 		      		$("#no-article, #loading").hide();
 		      		return;
 		      	}
+
+	          self.currentType.name = type;
+	          self.currentType.model = models[type.charAt(0).toUpperCase() + type.slice(1)];
+	          self.currentType.sign = type == "category" ? "!" : type; 
+	           
 		      	var currentTypeValue = self.currentType.model.getCurrent();
 		      	document.title = currentTypeValue;
 		      	self.hide();
@@ -220,15 +220,17 @@ var initializeModels = function() {
 		      		if(!data.article) {
 		      			return;
 		      		}
-		      		document.title = data.article.title + " - " + data.article.category.name;
 		      		self.current = data.article;
+		      		self.current.titleDecoded =  $("<div/>").html(data.article.title).text();
 		      		self.current.tags = data.tags;
 		      		self.current["liked-users"] = data["liked-users"];
 		      		self.current["hated-users"] = data["hated-users"];
 		      		self.current["subscribed-users"] = data["subscribed-users"];
+		      		
+		      		document.title = self.current.titleDecoded + " - " + data.article.category.name;
 		      		self.render();
 		      		$("#article-btns .btn-read").show();
-		      		$("#article-btns .btn-reputation, #article-btns .btn-follow").hide();
+		      		$("#article-btns .btn-reputation, #article-btns .btn-subscribe").hide();
 		      		var me = models.User.getMe();
 		      		if(!me || data.article.author.email_hash != me.email_hash) { // don't show for mine
 			      		var reputationFound = false;
@@ -241,7 +243,7 @@ var initializeModels = function() {
 			      		});
 			      		reputationFound || $("#btn-like-article, #btn-hate-article").show();
 			      		$("#article-btns .btn-edit").hide();
-			      		data.subscribed ? $("#btn-unfollow-article").show() :  $("#btn-follow-article").show();
+			      		data.subscribed ? $("#btn-unsubscribe-article").show() :  $("#btn-subscribe-article").show();
 		      		} else {
 		      			$("#article-btns .btn-edit").show();
 		      		}
@@ -256,7 +258,7 @@ var initializeModels = function() {
 		      	});
 		      },
 		      render: function() {
-		      	$("#article-item-title").text(self.current.title);
+		      	$("#article-item-title").html(self.current.title);
 		      	$("#article-item-body").html(self.current.body);
 		      	$("#article-item-author-avatar").html(formatString('<a href="/user/{{ authorId }}" class="user">{{ thumbnail }}</a>', {
 		      		authorId: self.current.author.id,
@@ -420,7 +422,7 @@ var initializeModels = function() {
 	    $("#btn-edit-article").click(function() {
 	    	var form = $("#post-article-form");
 	    	$("#post-article-id").removeAttr("disabled").val(self.current.id);
-	    	$("#post-article-title").val(self.current.title);
+	    	$("#post-article-title").val(self.current.titleDecoded);
 	    	$("#post-article-body").val(self.current.body);
 	    	$("#post-article-tags").val($(self.current.tags).map(function(i, item) {
 	    		return item.content[0];
@@ -854,11 +856,12 @@ var initializeModels = function() {
 					return self.current;
 				},
 				select: function(name, callback) {
+				  models.Category.current = null;
 					self.current = name;
 					$("#starred-wrapper, #sidebar-wrapper, .btn-post-article").hide();
 	        $("#container .breadcrumb li:gt(0)").remove();
 	        $("#container .breadcrumb li:eq(0) .divider").show();
-          $("#container .breadcrumb").append(formatString('<li><a href="/tags">{{ label }}</a> <span class="divider">/</span></li> <li>{{ tag }}</li>', {
+          $("#container .breadcrumb").append(formatString('<li><a href="/tags"><i class="icon-tags icon-blue"></i>{{ label }}</a> <span class="divider">/</span></li> <li><i class="icon-tag"></i>{{ tag }}</li>', {
           	label: gettext("Tags"), 
           	tag: gettext(name)
           }));
@@ -868,14 +871,41 @@ var initializeModels = function() {
 			return self;
 		})(),
 		
-		Subscription: {
-		  subscribe: function(id) {
-		    
-		  },
-		  unsubscribe: function(id) {
-		    
-		  }
-		},
+		Subscription: (function(){
+		  var self = {
+  		  subscribe: function(btn) {
+          $.post("/service/subscription/" + models.Article.getCurrent().id, function() {
+            btn.hide();
+            btn.parent().find("#btn-unsubscribe-article").show();
+            $().toastmessage("showSuccessToast", gettext("Subscribed"));
+            $("#loading").hide();            
+          });
+  		  },
+  		  unsubscribe: function(btn) {
+          $.ajax({
+            type: "DELETE",
+            url: "/service/subscription/" + models.Article.getCurrent().id,
+            cache: false,
+            success: function() {
+              btn.hide();
+              btn.parent().find("#btn-subscribe-article").show();         
+              $().toastmessage("showSuccessToast", gettext("Canceled your subscription"));
+              $("#loading").hide();
+            },
+            dataType: "json"
+          });  		    
+  		  }
+		  };
+		  $(".btn-subscribe").click(function() {
+        var btn = $(this);
+        if(btn.attr("disabled")) {
+          return;
+        } 
+        $("#loading").show();
+        self[btn.attr("id") == "btn-subscribe-article" ? "subscribe" : "unsubscribe"](btn);
+		  });
+		  return self;
+		})(),
 		
 		Reputation: {
 			types: ['like','hate'],

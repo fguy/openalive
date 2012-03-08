@@ -53,7 +53,7 @@
 	        <div class="control-group">
 	          <label class="control-label" for="change-user-input">{% trans 'Nickname' %}</label>
 	          <div class="controls">
-	            <input type="text" class="input-xlarge" name="nickname" id="change-user-nickname" value="{{ user.nickname }}">
+	            <input type="text" class="input-xlarge" name="nickname" id="change-user-nickname" value="{{ user.nickname|safe }}">
 	          </div>
 	        </div>
 	      </fieldset>

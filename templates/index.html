@@ -4,9 +4,7 @@
       <div class="row-fluid">
         <div class="span3">
           <ul class="breadcrumb">
-            <li>
-              <a href="#!/" class="home-link">{% trans 'Home' %}</a> <span class="divider" style="display:none">/</span>
-            </li>
+            <li><a href="#!/" class="home-link"><i class="icon-home icon-blue"></i>{% trans 'Home' %}</a> <span class="divider" style="display:none">/</span></li>
           </ul>
           {% if user %}
           <div id="starred-wrapper">
@@ -55,8 +53,8 @@
           		<button id="btn-unlike-article" class="btn btn-reputation btn-info btn-read"><i class="icon-heart icon-white"></i> {% trans 'Unlike' %}</button>
           		<button id="btn-hate-article" class="btn btn-reputation btn-read"><i class="icon-fire"></i> {% trans 'Hate' %}</button>
           		<button id="btn-unhate-article" class="btn btn-reputation btn-info btn-read"><i class="icon-fire icon-white"></i> {% trans 'Unhate' %}</button>          		
-          		<button id="btn-follow-article" class="btn btn-follow btn-read"><i class="icon-eye-open"></i> {% trans 'Follow' %}</button>
-          		<button id="btn-unfollow-article" class="btn btn-follow btn-info btn-read"><i class="icon-eye-close"></i> {% trans 'Unfollow' %}</button>
+          		<button id="btn-subscribe-article" class="btn btn-subscribe btn-read"><i class="icon-eye-open"></i> {% trans 'Follow' %}</button>
+          		<button id="btn-unsubscribe-article" class="btn btn-subscribe btn-info btn-read"><i class="icon-eye-close"></i> {% trans 'Unfollow' %}</button>
           		{% endif %}
           	</div>          
           	{% if user %}
@@ -69,8 +67,8 @@
           </div>
           <div id="no-article">
 			<div class="hero-unit">
-			  <h1>No article in <span class="current-name"></span> yet.</h1>
-			  <p>Be a first person</p>
+			  <h1>{% blocktrans with '<span class="current-name"></span>' as holder %}Nothing in {{ holder }} yet.{% endblocktrans %}</h1>
+			  <p>{% trans 'Be a first person' %}</p>
 			  <p>
 			    <button class="btn-post-article btn btn-primary btn-large"><i class="icon-pencil icon-white"></i> {% trans 'New Post' %}</button>
 			  </p>
