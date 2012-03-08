@@ -4,6 +4,7 @@ from datetime import datetime
 from lib.youtube import get_video_id
 import time
 import types
+import settings
 
 register = template.Library()
 
@@ -18,12 +19,12 @@ def quote(value):
 
 @register.simple_tag
 def js(value):
-    static_path = '/static'
+    static_path = settings.STATIC_ROOT
     return '<script type="text/javascript" src="%s/%s"></script>' % (static_path, value)
 
 @register.simple_tag
 def css(value):
-    static_path = '/static'
+    static_path = settings.STATIC_ROOT
     return '<link href="%s/%s" rel="stylesheet">' % (static_path, value)
 
 @register.filter

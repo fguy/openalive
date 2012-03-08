@@ -188,6 +188,7 @@ var initializeModels = function() {
 		      		}).get().join(""));
 		      		$("#article-list").data(type, name).data("page", page);
 		      		self.showList();
+		      		self.highlightActiveRow();
 		      		$("#article-pagination").pagination(data.count, {
 		            items_per_page : 20,
 		            current_page : page - 1, // zero base
@@ -211,9 +212,13 @@ var initializeModels = function() {
 		      getCurrentPage: function() {
 		        return HASH_PARAMS.page;
 		      },
-		      show: function(id) {
+		      highlightActiveRow: function(id) {
+		      	id || (id = self.current.id);
 		      	$("#article-list tr.active").removeClass("active");
-		      	$(formatString("#article-list tr:has(a[href*='/{{ id }}?'])", {id: id})).addClass("active");
+		      	$(formatString("#article-list tr:has(a[href*='/{{ id }}?'])", {id: id})).addClass("active");		      	
+		      },
+		      show: function(id) {
+		      	self.highlightActiveRow(id);
 		      	$("#article-item-body").html('<div class="loading"><i class="icon-clock">' + gettext("Loading...") + "</div>");
 		      	$("#loading").show();
 		      	$.getJSON("/service/article/" + id, function(data) {
@@ -340,7 +345,11 @@ var initializeModels = function() {
 			          self.current = data.article;
 			          self.current.tags = data.tags;
 			          self.render();
-			          $("#article-list tbody .active").find(".article-excerpt").text(data.article.excerpt);
+			          var activeRow = $("#article-list tbody tr.active");
+			          activeRow.find(".article-excerpt").text(data.article.excerpt);
+			          var title = activeRow.find(".article-title");
+			          title.attr("title", data.article.titleDecoded);
+			          title.text(data.article.titleDecoded);
 			      	  $("#loading").hide();
 			      	  $().toastmessage("showSuccessToast", gettext("Updated."));
 			      	  ArticleEditor.close();

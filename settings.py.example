@@ -1,5 +1,7 @@
 import os
 TEMPLATE_DIRS = (os.path.abspath('%s/templates' % os.path.dirname(os.path.realpath(__file__))),)
+DEV = os.environ['SERVER_SOFTWARE'].startswith('Development')
+STATIC_ROOT = '/static' if DEV else 'http://commondatastorage.googleapis.com/openalive'
 GOOGLE_SIMPLE_API_KEY=''
 DEPENSIO_API_KEY=''
 IMAGE_SHACK_API_KEY='' #http://code.google.com/p/imageshackapi/

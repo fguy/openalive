@@ -4,6 +4,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 from lib.controller import Controller
 from models import Category
 import webapp2
+import settings
 
 categories = '|'.join(Category.get_all_categories())
 Controller.url_mapping = [
@@ -14,6 +15,4 @@ Controller.url_mapping = [
 if categories:
     Controller.url_mapping.append((ur'^/(%s)$' % categories, ('service', 'Category')))
 
-app = webapp2.WSGIApplication([
-                                      ('/.*', Controller)],
-                                                                             debug=True)
+app = webapp2.WSGIApplication([('/.*', Controller)], debug=settings.DEV)

@@ -14,6 +14,8 @@ except ImportError:
     
 class Article(Action):
     def _captcha_validation(self, challenge, response):
+        if settings.DEV:
+            return True
         captcha_result = captcha.submit(challenge, response, settings.RECAPTCHA_PRIVATE_KEY, self.request.remote_addr)
         if not captcha_result.is_valid:
             self.response.set_status(500, 'Captcha code mismatch: %s' % captcha_result.error_code)

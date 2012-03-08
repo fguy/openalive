@@ -64,14 +64,14 @@
 		<py-run script="${django-admin}" pythonpath="${pythonpath}" dir="${src.dir}" failonerror="no">
 			<arg value="makemessages" />
 			<arg value="-a" />
-			<arg value="--ignore=lib/*"/>
+			<arg value="--ignore=lib/*" />
 		</py-run>
 		<py-run script="${django-admin}" pythonpath="${pythonpath}" dir="${src.dir}" failonerror="no">
 			<arg value="makemessages" />
 			<arg value="-d" />
 			<arg value="djangojs" />
 			<arg value="-a" />
-			<arg value="--ignore=lib/*"/>
+			<arg value="--ignore=lib/*" />
 		</py-run>
 		<py-run script="${src.dir}/bin/auto_translate.py" pythonpath="${pythonpath}" dir="${src.dir}" />
 	</target>
@@ -86,6 +86,12 @@
 		<delete>
 			<fileset dir="${src.dir}/conf/locale" includes="**/*/LC_MESSAGES/*" />
 		</delete>
+	</target>
+
+	<target name="deploy_static">
+		<exec executable="gsutil" dir=".">
+			<arg line="cp -R -a public-read static/* gs://${ant.project.name}" />
+		</exec>
 	</target>
 
 </project>
