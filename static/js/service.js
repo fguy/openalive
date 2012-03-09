@@ -258,7 +258,7 @@ var initializeModels = function() {
 		      		$("#article-item, #article-reputation").show();
 		      		$.scrollTo($("#article-item").position().top - 57, 100);
 		      		$("#loading, #article-list caption").hide();
-		      		$("#comments li:not(:last):not(:first)").remove();
+		      		$("#comments li:not(#comment-input):not(:first)").remove();
 		      		models.Comment.resetLoadedCount();
 		      		models.Comment.renderBest(data.best_comment_list);
 		      		models.Comment.render(data.comment_list);
