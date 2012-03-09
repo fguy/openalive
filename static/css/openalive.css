@@ -3,6 +3,10 @@ body {
 	padding-bottom: 40px;
 }
 
+.btn-full {
+	width: 100%
+}
+
 .icon-blue {
 	background-image: url("../img/glyphicons-halflings-blue.png");
 }
@@ -168,6 +172,10 @@ time {
 	background-color: #EDEFF4;
 	margin-top: 1px;
 	padding: 5px 5px 4px;
+}
+
+#comment-load-more {
+    background: none;
 }
 
 #best-comments li {
