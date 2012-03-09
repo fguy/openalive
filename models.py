@@ -431,7 +431,7 @@ class Comment(AbstractArticle):
                      
         db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
         if is_insert:
-            self.sort_key = '%s%s' % (self.parent_comment.sort_key, base62_encode(self.key().id())) if self.parent_comment else '%s' % base62_encode(self.key().id())
+            self.sort_key = ('%s%32s' % (self.parent_comment.sort_key, base62_encode(self.key().id()))).replace(' ','0') if self.parent_comment else '%s' % base62_encode(self.key().id())
             db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
             db.run_in_transaction_options(xg_on, self.article.increase_comment_count)
             db.run_in_transaction_options(xg_on, self.author.increase_comment_count)

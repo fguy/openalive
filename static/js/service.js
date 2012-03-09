@@ -213,9 +213,11 @@ var initializeModels = function() {
 		        return HASH_PARAMS.page;
 		      },
 		      highlightActiveRow: function(id) {
-		      	id || (id = self.current.id);
-		      	$("#article-list tr.active").removeClass("active");
-		      	$(formatString("#article-list tr:has(a[href*='/{{ id }}?'])", {id: id})).addClass("active");		      	
+		      	id || self.current && (id = self.current.id);
+		      	if(id) {
+  		      	$("#article-list tr.active").removeClass("active");
+  		      	$(formatString("#article-list tr:has(a[href*='/{{ id }}?'])", {id: id})).addClass("active");
+		      	}
 		      },
 		      show: function(id) {
 		      	self.highlightActiveRow(id);
