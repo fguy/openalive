@@ -9,8 +9,14 @@ class Index(Action):
         content_type = self.request.headers['Content-Type']
         if not content_type.lower().startswith('multipart/form-data'):
             raise Exception('Only accepts multipart form-data.')
-        boundary = content_type[content_type.index('=') + 1:]
-        part = MultipartParser(stream=self.request.body_file, boundary=boundary, charset='utf-8').get('fileupload')
+        
+        meta = {}
+        for item in content_type.split(';'):
+            if item.find('=') > -1:
+                pair = item.split('=')
+                meta[pair[0].strip()] = pair[1].replace('"', '').strip()
+                 
+        part = MultipartParser(stream=self.request.body_file, boundary=meta['boundary'], charset='utf-8' if not meta.has_key('charset') else meta['charset']).get('fileupload')
         if not part.content_type.lower().startswith('image/'):
             raise ValueError('This is not a image file.')
         datagen, headers = multipart_encode([('key', settings.IMAGE_SHACK_API_KEY), MultipartParam('fileupload', fileobj=part.file, filename=part.filename, filetype=part.content_type, filesize=part.size)])
