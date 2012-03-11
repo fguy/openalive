@@ -84,7 +84,7 @@ var ImageDialog = {
 };
 
 var ImageUpload = { 
-  uri : 'http://files.nicedit.com/',
+  uri : '/upload',
   requestInterval : false,
   id : 0,
   
@@ -95,48 +95,22 @@ var ImageUpload = {
 
   startUpload : function() {
     var myDoc = document.getElementById("uploadFrame").contentWindow.document;
-    myDoc.uploadForm.action = ImageUpload.uri + '?id=' + ImageUpload.id;
-    myDoc.uploadForm.APC_UPLOAD_PROGRESS.value = ImageUpload.id;
-    myDoc.uploadForm.style.display = 'none';
     myDoc.getElementById("status").innerHTML = '<img src="http://files.nicedit.com/ajax-loader.gif" style="float: right; margin-right: 40px;" /><strong>Uploading...</strong><br />Please wait';
-    myDoc.uploadForm.submit();
-    setTimeout(ImageUpload.makeRequest,ImageUpload.requestInterval);
-  },
-  
-  makeRequest : function() {
-    var s = document.createElement("SCRIPT");
-    s.type = 'text/javascript';
-    s.src = ImageUpload.uri + '?check=' + ImageUpload.id + '&rand=' + +Math.round(Math.random()*Math.pow(10,15)); 
-    s.onload = function() {
-      s.parentNode.removeChild(s);
-    }
-    document.getElementsByTagName('head')[0].appendChild(s);
-    if(ImageUpload.requestInterval) {
-      setTimeout(ImageUpload.makeRequest, ImageUpload.requestInterval);
-    }
-  }
+  	$(myDoc.uploadForm).hide().ajaxSubmit({
+  		url: ImageUpload.uri,
+    	dataType: "xml",
+    	iframe: true,
+    	success: function(data) {
+        document.forms[0].src.value = $("image_link", data).text();
+        ImageDialog.update();
+    	},
+    	error: function(jqXHR, textStatus, errorThrown) {
+        alert("There was an error uploading your image ("+textStatus+").");
+        tinyMCEPopup.close();    		
+    	}
+  	});    
+  },  
 };
-
-var nicUploadButton = {
-  statusCb : function(o) {
-    if(o.url) {
-      ImageUpload.requestInterval = false;
-      document.forms[0].src.value = o.url;
-      ImageDialog.update();
-    } else if(o.error) {
-      alert("There was an error uploading your image ("+o.error+").");
-      tinyMCEPopup.close();
-    } else if(o.noprogress) {
-      if(ImageUpload.uri.indexOf('http:') == -1 || ImageUpload.uri.indexOf(window.location.host) != -1) {
-        ImageUpload.requestInterval = false;
-      }
-    } 
-  }
-};
-//
-//nicUploadButton.statusCb = function(o) {
-//  nicUploadButton.lastPlugin.update(o);
-//}
 
 ImageDialog.preInit();
 tinyMCEPopup.onInit.add(ImageDialog.init, ImageDialog);

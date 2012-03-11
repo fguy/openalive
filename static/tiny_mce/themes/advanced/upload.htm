@@ -6,10 +6,10 @@
 <body>
         <form method="post" enctype="multipart/form-data" name="uploadForm">
         <div>
-            <input type="hidden" name="APC_UPLOAD_PROGRESS" />
-            <input name="nicImage" type="file" onchange="parent.ImageUpload.startUpload();" />
+            <input type="hidden" name="MAX_FILE_SIZE" value="5242880" />
+            <input name="fileupload" type="file" onchange="parent.ImageUpload.startUpload()"  accept="image/x-png, image/gif, image/jpeg" />
         </div>
-        <div style="position: absolute; margin-top:16px; margin-left: 160px;"><img src="http://imageshack.us/img/imageshack.png" width="30" style="float: left;" /><div style="float: left; margin-left: 5px; font-size: 10px;">Hosted by<br /><a href="http://www.imageshack.us/" target="_blank">ImageShack</a></div></div>
+        <div id="logo" style="position: absolute; margin-top:16px; margin-left: 160px;"><img src="http://imageshack.us/img/imageshack.png" width="30" style="float: left;" /><div style="float: left; margin-left: 5px; font-size: 10px;">Hosted by<br /><a href="http://www.imageshack.us/" target="_blank">ImageShack</a></div></div>
         </form>
         <div id="status" style="text-align:center;font-size:14px"></div>
 </body>

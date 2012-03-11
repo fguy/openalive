@@ -346,12 +346,13 @@ var initializeModels = function() {
 			        success: function(data) {
 			          self.current = data.article;
 			          self.current.tags = data.tags;
+			          self.current.titleDecoded =  $("<div/>").html(data.article.title).text();
 			          self.render();
 			          var activeRow = $("#article-list tbody tr.active");
 			          activeRow.find(".article-excerpt").text(data.article.excerpt);
 			          var title = activeRow.find(".article-title");
-			          title.attr("title", data.article.titleDecoded);
-			          title.text(data.article.titleDecoded);
+			          title.attr("title", self.current.titleDecoded);
+			          title.text(self.current.titleDecoded);
 			      	  $("#loading").hide();
 			      	  $().toastmessage("showSuccessToast", gettext("Updated."));
 			      	  ArticleEditor.close();

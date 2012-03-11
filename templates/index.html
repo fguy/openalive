@@ -70,7 +70,12 @@
 			  <h1>{% blocktrans with '<span class="current-name"></span>' as holder %}Nothing in {{ holder }} yet.{% endblocktrans %}</h1>
 			  <p>{% trans 'Be a first person' %}</p>
 			  <p>
+			  	{% if user %}
 			    <button class="btn-post-article btn btn-primary btn-large"><i class="icon-pencil icon-white"></i> {% trans 'New Post' %}</button>
+			    {% endif %}
+			    {% if not user %}
+			    <a class="btn btn-primary btn-large login-url" href="{{login_url}}"><i class="icon-arrow-right icon-white"></i> {% trans 'Login to Post' %}</a>
+			    {% endif %}
 			  </p>
 			</div>          
           </div>

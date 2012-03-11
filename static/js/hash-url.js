@@ -3,7 +3,7 @@ $(function() {
 	if (location.pathname != "/") {
 		return;
 	}
-	$("#nav .login-url").click(
+	$(".login-url").click(
 			function() {
 				// var href = $(this).attr("href");
 				// var hashPart = encodeURIComponent(location.hash);
