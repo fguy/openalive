@@ -18,7 +18,7 @@ class Article(Action):
             return True
         captcha_result = captcha.submit(challenge, response, settings.RECAPTCHA_PRIVATE_KEY, self.request.remote_addr)
         if not captcha_result.is_valid:
-            self.response.set_status(500, 'Captcha code mismatch: %s' % captcha_result.error_code)
+            self.response.set_status(412, _('Captcha code mismatch: %s' % captcha_result.error_code))
             return False
         return True
 

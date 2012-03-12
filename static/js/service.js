@@ -1,7 +1,21 @@
 $.ajaxSetup({
 	error:function(jqXHR, textStatus, errorThrown) {
 		var errorMessage = jqXHR.responseText;
-		$().toastmessage("showErrorToast", errorMessage ? errorMessage : gettext("An error occurred."));
+		var m = errorMessage.match(/^(\d{3}) (.*)/);
+		if(m) {
+			var code = parseInt(m[1]);
+			var message = m[2];
+			switch(code) {
+			case 412: //catcha failed
+				$("#captcha-error").show();
+				Recaptcha.reload();
+			default:
+				$().toastmessage("showErrorToast", message);
+			}
+ 		} else {
+ 			$().toastmessage("showErrorToast", errorMessage ? errorMessage : gettext("An error occurred."));
+ 		}
+
 		$("#loading").hide();
 	}
 });
@@ -426,6 +440,7 @@ var initializeModels = function() {
 	      var loc = formatString("{{ type }}/{{ value }}", {type: self.currentType.sign, value: self.currentType.model.getCurrent()});
 	      var page = self.getCurrentPage();
 	      page > 1 && (loc += '?page=' + page);
+	      $("#article-item-body").empty(); // to stop video.
 	      $.history.load(loc);
 	    });
 	

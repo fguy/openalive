@@ -13,13 +13,13 @@
 				    <div class="control-group">
 				      <label class="control-label" for="post-article-title">{% trans 'Title' %}</label>
 				      <div class="controls">
-				        <input type="text" class="input-xlarge" name="title" id="post-article-title">
+				        <input type="text" class="input-xlarge" name="title" id="post-article-title" maxlength="250">
 				      </div>
 				    </div>
 				    <div class="control-group">
 	                  <label class="control-label" for="post-article-body">{% trans 'Body' %}</label>
 	                  <div class="controls">
-	                    <textarea class="input-xlarge" name="body" id="post-article-body"></textarea>
+	                    <textarea class="input-xlarge" name="body" id="post-article-body" rows="20"></textarea>
 	                  </div>
 	                </div>
                     <div class="control-group">
@@ -33,6 +33,7 @@
                       <label class="control-label" for="recaptcha_response_field">{% trans 'Captcha' %}</label>
                       <div class="controls">
                         <div id="article-captcha"></div>
+                        <p id="captcha-error" class="help-block hide alert-error">{% trans 'You entered incorrect code. Please try again.' %}</p>
                       </div>
                     </div>
 				  </fieldset>

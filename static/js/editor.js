@@ -34,7 +34,13 @@ var ArticleEditor = (function() {
 	    defaultText : gettext("Add a tag"),
 	    interactive : true,
 	    removeWithBackspace : true,
-	    maxChars : 255
+	    onChange : function(input, val) {
+	    	if(input.val && input.val().split(",").length > 5) {
+	    		$().toastmessage("showWarningToast", gettext("You can enter 5 tags or less."));
+	    		input.removeTag(val);
+	    	}
+	    },
+	    maxChars : 50
 	  });
 	  // http://code.google.com/apis/recaptcha/docs/display.html
 	  Recaptcha.create(RECAPTCHA_PUBLIC_KEY, "article-captcha", {
@@ -70,11 +76,13 @@ var ArticleEditor = (function() {
   }
   var close = function() {
 	  div.modal("hide");
+	  $("#captcha-error").hide();
 	  $("#post-article-form")[0].reset();
 	  $("#post-article-tags").importTags("");
 	  Recaptcha.reload();
   }
   var reset = function() {
+  	$("#captcha-error").hide();
   	$("#post-article-title").val("");
   	$("#post-article-tags").val("").importTags("");
   	$("#post-article-body").val("");
