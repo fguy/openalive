@@ -30,7 +30,13 @@ def css(value):
 @register.filter
 def video_id(url):
     return get_video_id(url)
-    
+
+@register.filter
+def thumbnail(url):
+    if url.find('imageshack.us') == -1:
+        return url
+    pos = url.rfind('.')
+    return '%s.th%s' % (url[:pos], url[pos:])
 
 @register.filter
 def pretty_date(time):

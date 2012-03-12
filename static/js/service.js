@@ -25,7 +25,9 @@ var initializeModels = function() {
 		    current: null,
 		    starred: [],
 		    select: function(name, callback) {
-		    	$("#starred-wrapper, #sidebar-wrapper, #loading, .btn-post-article").show();
+		    	$("#nav li.active").removeClass("active");
+		    	$("#nav li:has(a.home-link)").addClass("active");
+		    	$("#sidebar-wrapper, #loading, .btn-post-article").show();
 		      if(self.getCurrent() == name) {
 		        models.Article.loadList('category', name, callback);
 		        return;
@@ -113,14 +115,17 @@ var initializeModels = function() {
 		    },
 		    star: function(name) {
 		      self.markStarred(name);
+		      $("#loading").show();
 		      $.post("/service/starred-category/" + name, function() {
 		        $("#starred").append(self.decorateStarredItem(name));
 		        self.starred.push(name);
 		        $("#starred-wrapper").toggle(self.starred.length > 0);
+		        $("#loading").hide();
 		      }, "json");
 		    },
 		    unstar: function(name) {
 		      self.markStarred(name, true);
+		      $("#loading").show();
 		      $.ajax({
 		        type: "DELETE",
 		        url: "/service/starred-category/" + name,
@@ -130,6 +135,7 @@ var initializeModels = function() {
 		          var needle = $.inArray(name, self.starred);
 		          needle != -1 && self.starred.splice(needle, 1);
 		          $("#starred-wrapper").toggle(self.starred.length > 0);
+		          $("#loading").hide();
 		        },
 		        dataType: "json"
 		      });
@@ -870,6 +876,8 @@ var initializeModels = function() {
 				select: function(name, callback) {
 				  models.Category.current = null;
 					self.current = name;
+		    	$("#nav li.active").removeClass("active");
+		    	$("#nav li:has(a[href='/tags'])").addClass("active");					
 					$("#starred-wrapper, #sidebar-wrapper, .btn-post-article").hide();
 	        $("#container .breadcrumb li:gt(0)").remove();
 	        $("#container .breadcrumb li:eq(0) .divider").show();

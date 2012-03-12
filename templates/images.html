@@ -1,24 +1,54 @@
 {% extends base %}
 {% load i18n %}
 {% block content %}
+	{% if list %}
     <ul class="thumbnails">
     	{% for item in list %}
-    	<li class="span3">
+    	<li class="span2">
     		<div class="thumbnail">
-    			<img src="{{ item.image }}" width="260" alt="{{ item.title }}" class="magnify">
+    			<a href="{{ item.image }}" class="image-zoom"><img src="{{ item.image|thumbnail }}" alt="{{ item.title }}" longdesc="/#!/{{ item.category }}/{{ item.id }}"></a>
     			<div class="caption">
     				<h5><a href="/#!/{{ item.category }}/{{ item.id }}" class="article-item" title="{{ item.title }}">{{ item.title }}</a> <span class="comment-count">{% if item.comment_count > 0 %}({{ item.comment_count }}){% endif %}</span></h5>
-    				{% if item.excerpt %}
-    				<p>{{ item.excerpt }}</p>
-    				{% endif %}
+    				<time datetime="{{ item.last_updated|date:'c' }}Z"><i class="icon-time"></i> {{ item.last_updated|pretty_date }}</time>
     			</div>
     		</div>
     	</li>
     	{% endfor %}
     </ul>
+	    {% ifequal list|length limit %}
+	    	<button id="btn-load-more" class="laod-more btn-full btn" data-offset="{{ list|length }}" data-url="/images" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button>
+	    {% endifequal %}
+    {% endif %}
+    {% if not list %}
+	<div class="hero-unit">
+	  <h1>{% trans 'No image posted yet.' %}</h1>
+	  <p>{% trans 'Image items will be show up when a user post an article with image.' %}</p>
+	</div>    
+    {% endif %}
+{% endblock %}
+{% block css %}
+	{{ block.super }}
+	{% css 'css/jquery.fancybox-1.3.4.css' %}
+	{% css 'css/jquery.toastmessage.css' %}
 {% endblock %}
 
 {% block jslib %}
-{{ block.super }}
-{% js 'js/jquery.magnifier.js' %}
+	{{ block.super }}
+	{% js 'js/pretty.js' %}
+	{% js 'js/utils.js' %}
+	{% js 'js/jquery.fancybox-1.3.4.pack.js' %}
+	{% js 'js/jquery.toastmessage.js' %}
+	<script type="text/javascript">
+	var ROW_TEMPLATE = '<li class="span2">\
+		<div class="thumbnail">\
+			<a href="{% templatetag openvariable %} image }}" class="image-zoom"><img src="{% templatetag openvariable %} image|thumbnail }}" alt="{% templatetag openvariable %} title }}" longdesc="/#!/{% templatetag openvariable %} category }}/{% templatetag openvariable %} id }}"></a>\
+			<div class="caption">\
+				<h5><a href="/#!/{% templatetag openvariable %} category }}/{% templatetag openvariable %} id }}" class="article-item" title="{% templatetag openvariable %} title }}">{% templatetag openvariable %} title }}</a> <span class="comment-count">{% templatetag openvariable %} commentCount }}</span></h5>\
+				<time datetime="{% templatetag openvariable %} last_updated }}"><i class="icon-time"></i> {% templatetag openvariable %} last_updated|prettyDate }}</time>\
+			</div>\
+		</div>\
+	</li>';
+	$(".thumbnail .image-zoom").fancybox();
+	</script>
+	{% js 'js/btn-load-more.js' %}
 {% endblock %}

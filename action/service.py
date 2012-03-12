@@ -67,7 +67,7 @@ class Article(Action):
         self.article = models.Article.get_by_id(article_id)
         if self.article:
             self.tags = models.Tag.get(self.article.tags)
-            self.comment_list = models.Comment.get_list(self.article)
+            self.comment_list = models.Comment.get_list(self.article, limit=5)
             self.best_comment_list = models.Comment.get_best(self.article)
         user = users.get_current_user()
         for item in models.Reputation.types:

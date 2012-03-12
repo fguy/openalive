@@ -32,6 +32,14 @@ var formatString = (function() {
 					return args[0].toUpperCase();
 				case "length":
 					return args[0].length;
+				case "thumbnail":
+					if(args[0].indexOf("imageshack.us") == -1) {
+						return args[0];
+					}
+					var pos = args[0].lastIndexOf(".");
+					return args[0].substring(0, pos) + ".th" + args[0].substring(pos);
+				case "videoId":
+			    return args[0].substring(args[0].lastIndexOf("/") + 1);
 				case "trans":
 					func = "gettext";
 				default:
@@ -45,7 +53,7 @@ var formatString = (function() {
 		}
 	}
 	return function(input, context) {
-		return input.replace(/\{\{ ([\w.'"]+)\|?(prettyDate|gettext|tans|lower|upper|length)? \}\}/g,
+		return input.replace(/\{\{ ([\w.'"]+)\|?(prettyDate|gettext|tans|lower|upper|length|thumbnail|videoId)? \}\}/g,
 				replacer(context));
 	}
 })();
@@ -55,13 +63,21 @@ var showModalWindow = function(options) {
     id: "modal-window",
     title: "",
     body: "",
+    header: "",
+    class: ""
   }, options);
+  
+  if(context.title) {
+  	context.header = formatString('\
+	  <div class="modal-header">\
+	    <a class="close" data-dismiss="modal">×</a>\
+	    <h3>{{ title }}</h3>\
+	  </div>', context);
+  }
+  
   $(formatString('\
-  <div class="modal" id="{{ id }}">\
-  <div class="modal-header">\
-    <a class="close" data-dismiss="modal">×</a>\
-    <h3>{{ title }}</h3>\
-  </div>\
+  <div class="modal {{ class }}" id="{{ id }}">\
+  {{ header }}\
   <div class="modal-body">\
       {{ body }}\
   </div>\

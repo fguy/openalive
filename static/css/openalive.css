@@ -421,3 +421,13 @@ iframe {
 	margin-right: 2px;
 	vertical-align: middle;
 }
+
+.thumbnails .thumbnail .image-zoom {
+	width: 100%;
+	text-align: center;
+	float: left;
+	margin: 4px 0
+}
+.thumbnails .thumbnail time {
+	color: gray
+}

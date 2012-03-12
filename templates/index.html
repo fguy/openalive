@@ -106,6 +106,13 @@
       </div>
 {% endblock %}
 
+
+{% block css %}
+	{{ block.super }}
+    {% css 'css/jquery.tagsinput.css' %}
+    {% css 'css/jquery.toastmessage.css' %}
+{% endblock %}
+
 {% block jslib %}
     {{ block.super }}
 	<script type="text/javascript">

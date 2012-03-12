@@ -1,6 +1,7 @@
 {% extends base %}
 {% load i18n %}
 {% block content %}
+	{% if list %}
     <ul class="thumbnails">
     	{% for item in list %}
     	<li class="span3">
@@ -8,9 +9,8 @@
     			<a href="#video-player" class="video-item" data-video-id="{{ item.video|video_id }}" data-url="/#!/{{ item.category }}/{{ item.id }}"><img src="http://img.youtube.com/vi/{{ item.video|video_id }}/0.jpg" width="260"></a>
     			<div class="caption">
     				<h5><a href="/#!/{{ item.category }}/{{ item.id }}" class="article-item" title="{{ item.title }}"><span class="article-title">{{ item.title }}</span></a> <span class="comment-count">{% if item.comment_count > 0 %}({{ item.comment_count }}){% endif %}</span></h5>
-    				{% if item.excerpt %}
     				<p>{{ item.excerpt }}</p>
-    				{% endif %}
+    				<time datetime="{{ item.last_updated|date:'c' }}Z"><i class="icon-time"></i> {{ item.last_updated|pretty_date }}</time>
     			</div>
     		</div>
     	</li>
@@ -28,18 +28,53 @@
 	    <a href="#" class="btn" id="video-article-link">Read</a>
 	    <a href="#" class="btn" data-dismiss="modal">Close</a>
 	  </div>
+	</div>
+	
+	{% ifequal list|length limit %}
+		<button id="btn-load-more" class="laod-more btn-full btn" data-offset="{{ list|length }}" data-url="/videos" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button>
+	{% endifequal %}
+
+	{% endif %}
+    {% if not list %}
+	<div class="hero-unit">
+	  <h1>{% trans 'No video posted yet.' %}</h1>
+	  <p>{% trans 'Items will be show up when a user post an article containing youtube video.' %}</p>
 	</div>    
+    {% endif %}	
+{% endblock %}
+
+{% block css %}
+	{{ block.super }}
+	{% css 'css/jquery.toastmessage.css' %}
 {% endblock %}
 
 {% block jslib %}
-{{ block.super }}
-<script type="text/javascript">
-$(".video-item").live("click", function() {
-	$("#video-title").text(interpolate(gettext("A video of %s"), [$(this).parent().find(".article-item").attr("title")]));
-	$("#video-frame").attr("src", "http://www.youtube.com/embed/" + $(this).data("video-id"));
-	$("#video-article-link").attr("href", $(this).data("url"));
-	$("#video-player").modal('show');
-	return false;
-});
-</script>
+	{{ block.super }}
+	{% js 'js/pretty.js' %}
+	{% js 'js/utils.js' %}
+	{% js 'js/jquery.toastmessage.js' %}
+	<script type="text/javascript">
+	
+	var ROW_TEMPLATE = '<li class="span3">\
+		<div class="thumbnail">\
+			<a href="#video-player" class="video-item" data-video-id="{% templatetag openvariable %} video|videoId }}" data-url="/#!/{% templatetag openvariable %} category }}/{% templatetag openvariable %} id }}"><img src="http://img.youtube.com/vi/{% templatetag openvariable %} video|videoId }}/0.jpg" width="260"></a>\
+			<div class="caption">\
+				<h5><a href="/#!/{% templatetag openvariable %} category }}/{% templatetag openvariable %} id }}" class="article-item" title="{% templatetag openvariable %} title }}">{% templatetag openvariable %} title }}</a> <span class="comment-count">{% templatetag openvariable %} commentCount }}</span></h5>\
+				<p>{% templatetag openvariable %} excerpt }}</p>\
+				<time datetime="{% templatetag openvariable %} last_updated }}"><i class="icon-time"></i> {% templatetag openvariable %} last_updated|prettyDate }}</time>\
+			</div>\
+		</div>\
+	</li>';
+	
+	$(".video-item").live("click", function() {
+		$("#video-title").text(interpolate(gettext("A video of %s"), [$(this).parent().find(".article-item").attr("title")]));
+		$("#video-frame").attr("src", "http://www.youtube.com/embed/" + $(this).data("video-id"));
+		$("#video-article-link").attr("href", $(this).data("url"));
+		$("#video-player").modal('show').on("hidden", function() {
+			$("#video-frame").attr("src", "");
+		});
+		return false;
+	});
+	</script>
+	{% js 'js/btn-load-more.js' %}
 {% endblock %}
