@@ -39,7 +39,8 @@ var formatString = (function() {
 					var pos = args[0].lastIndexOf(".");
 					return args[0].substring(0, pos) + ".th" + args[0].substring(pos);
 				case "videoId":
-			    return args[0].substring(args[0].lastIndexOf("/") + 1);
+					var idx = args[0].indexOf("?");
+			    return idx == -1 ? args[0].substring(args[0].lastIndexOf("/") + 1) : args[0].substring(args[0].lastIndexOf("/") + 1, idx);
 				case "trans":
 					func = "gettext";
 				default:

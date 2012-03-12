@@ -426,7 +426,7 @@ var initializeModels = function() {
 	      var loc = formatString("{{ type }}/{{ value }}", {type: self.currentType.sign, value: self.currentType.model.getCurrent()});
 	      var page = self.getCurrentPage();
 	      page > 1 && (loc += '?page=' + page);
-	      $.history.load(loc)
+	      $.history.load(loc);
 	    });
 	
 		  $(".btn-post-article").click(function() {
