@@ -20,19 +20,30 @@ $.ajaxSetup({
 	}
 });
 
-var getRss = function(url) {
-  new google.feeds.Feed("http://localhost:8080/service/article-list/%EC%A0%95%EC%B9%98?output=rss").load(function(data) {
-    if (!data.error) {
-    	console.log(data.feed);
-    	$(data.feed.entries).each(function(i, item) {
-    		console.log(item);
-    	});
-    }
-  });		
-}
-
 var models;
 var initializeModels = function() {
+	var getRss = function(uri, callback) {
+		if(location.host.indexOf('localhost') > -1 || location.host.indexOf("dev.") > -1) {
+			$.ajax({
+				url: uri,
+				data: {output: "rss_json_xml"},
+				dataType: "json",
+				success: function(data) {
+					callback(data);
+				}
+			});		
+		} else {
+			$.ajax({
+				url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&output=json_xml&callback=?&q=' + encodeURI(location.protocol + "//" + location.host + uri + "?output=rss"),
+				crossDomain: true,
+				dataType: "jsonp",
+				success: function(data) {
+					callback(data);
+				}
+			});
+		}
+	}
+	
 	models || (models = {
 		Category : (function() {
 		  var self = {
@@ -42,6 +53,7 @@ var initializeModels = function() {
 		    	$("#nav li.active").removeClass("active");
 		    	$("#nav li:has(a.home-link)").addClass("active");
 		    	$("#sidebar-wrapper, #loading, .btn-post-article").show();
+		    	name && $("#recent").hide();
 		      if(self.getCurrent() == name) {
 		        models.Article.loadList('category', name, callback);
 		        return;
@@ -153,6 +165,20 @@ var initializeModels = function() {
 		        },
 		        dataType: "json"
 		      });
+		    },
+		    showTopLevelRecent: function() {
+		    	$.getJSON("/category/top", function(data) {
+		    		$("#recent").show();
+		    		$(data.list).each(function(i, item) {
+		    			getRss("/feed/category/" + item, function(data) {
+		    				if(data.responseStatus != 200) {
+		    					return;
+		    				}
+		    				var feed = data.responseData.feed;
+		    				var xml = $(data.responseData.xmlString);
+		    			});
+		    		});
+		    	});
 		    }
 		  }
 		  self.loadStarred();
@@ -904,6 +930,7 @@ var initializeModels = function() {
 					$("#starred-wrapper, #sidebar-wrapper, .btn-post-article").hide();
 	        $("#container .breadcrumb li:gt(0)").remove();
 	        $("#container .breadcrumb li:eq(0) .divider").show();
+	        $("#recent").hide();
           $("#container .breadcrumb").append(formatString('<li><a href="/tags" class="tags-link"><i class="icon-tags icon-blue"></i>{{ label }}</a> <span class="divider">/</span></li> <li><i class="icon-tag"></i>{{ tag }}</li>', {
           	label: gettext("Tags"), 
           	tag: gettext(name)

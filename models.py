@@ -248,9 +248,16 @@ class Category(db.Model):
         return result
     
     @classmethod
-    def get_all_categories(cls):
+    def get_all(cls):
         q = cls.all()
         q.filter('is_active =', True)
+        return [item.name for item in q.fetch(DEFAULT_FETCH_COUNT)]
+    
+    @classmethod
+    def get_top_level(cls):
+        q = cls.all()
+        q.filter('is_active = ', True)
+        q.filter('parent_category = ', None)
         return [item.name for item in q.fetch(DEFAULT_FETCH_COUNT)]
     
     def increase_article_count(self):
@@ -360,7 +367,23 @@ class Article(AbstractArticle):
                 found.delete()
 
         return self
-        
+    
+    @classmethod
+    def get_best_list(cls, period, limit=20, offset=0):
+        q = cls.all()
+        delta = None
+        if period == 'weekly':
+            delta = datetime.timedelta(weeks = 1)
+        elif period == 'monthly':
+            delta = datetime.timedelta(days = 30)
+        elif period == 'quaterly':
+            delta = datetime.timedelta(days = 90)
+        else:
+            delta = datetime.timedelta(days = 1)
+        q.filter('created > ', datetime.datetime.now() - delta)
+        q.order('-like_count')
+        return [item.to_dict() for item in q.fetch(limit, offset)]
+    
     @classmethod
     def get_list(cls, category, limit=20, offset=0, orderby='created'):
         q = Category.all()

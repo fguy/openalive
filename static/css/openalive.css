@@ -363,6 +363,11 @@ iframe {
 	display: none
 }
 
+#video-player {
+	width: 670px;
+	margin-left: -335px
+}
+
 #video-player .modal-body {
 	text-align: center
 }

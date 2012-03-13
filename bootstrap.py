@@ -6,7 +6,7 @@ from models import Category
 import webapp2
 import settings
 
-categories = '|'.join(Category.get_all_categories())
+categories = '|'.join(Category.get_all())
 Controller.url_mapping = [
                           (r'^/([0-9]+)$', ('service', 'Article')),
                           (r'^/user/([0-9]+)$', ('user', 'Index')),

@@ -52,6 +52,7 @@ $(function() {
 			case "!":
 			case "category":
 				models.Category.select(tokens[0], callback);
+				tokens.length == 1 && !tokens[0] && models.Category.showTopLevelRecent();
 				break;
 			case "tag":
 				models.Tag.select(tokens[0], callback);

@@ -3,7 +3,9 @@ from django.utils import translation
 from django import template
 from django.template import loader
 from lib.json_encoder import encode
-import action
+from lib import PyRSS2Gen
+import json
+import datetime
 import logging
 import os
 import re
@@ -37,17 +39,17 @@ class Controller(webapp2.RequestHandler):
         super(self.__class__, self).initialize(request, response)
 
         action_module = None
-        action_class = None
+        action_instance = None
             
         if Controller.url_mapping:
             for regex, action_location in Controller.url_mapping:
                 m = re.match(regex, urllib.unquote_plus(request.path).decode('utf-8'))
                 if m:
-                    action_module, action_class = action_location
+                    action_module, action_instance = action_location
                     self._current_request_args = m.groups()
                     break
                     
-        if not action_module and not action_class: 
+        if not action_module and not action_instance: 
             '''supports 2 depth path'''
             path = request.path[1:].split('/')
             action_module = path[0]
@@ -58,14 +60,14 @@ class Controller(webapp2.RequestHandler):
             self._current_request_args = {}
             path_len = len(path)
             if path_len > 1:
-                action_class = ''.join([x.title() for x in path[1].split('-')])
+                action_instance = ''.join([x.title() for x in path[1].split('-')])
                 self._current_request_args = [urllib.unquote_plus(item).decode('utf-8') for item in path[2:]]
             else:
-                action_class = 'Index'
+                action_instance = 'Index'
             del path
         
-        logging.debug('Current action module : %s, class : %s' % (action_module, action_class))         
-        self._import_action(action_module, action_class)
+        logging.debug('Current action module : %s, class : %s' % (action_module, action_instance))         
+        self._import_action(action_module, action_instance)
 
     def _execute(self, method_name, *args):
         if not self.response:
@@ -107,7 +109,7 @@ class Controller(webapp2.RequestHandler):
         
         output = self.request.get('output')
         
-        if output == 'json' or (output != 'html' and result == Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
+        if output == Action.Result.JSON or (output != Action.Result.HTML and result == Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
             context = self.__action._get_context()
             for key in NON_AJAX_CONTEXT_KEYS:
                 if hasattr(self.__action, key):
@@ -115,7 +117,9 @@ class Controller(webapp2.RequestHandler):
             logging.debug('Context data for JSON Serialize : %s' % context)
             self.response.headers['Content-type'] = 'application/json'
             self.response.out.write(encode(context))
-        elif output == 'html' or result is not None:
+        elif result and output in [Action.Result.RSS, Action.Result.RSS_JSON, Action.Result.RSS_JSON_XML, Action.Result.RSS_XML]:
+            print_rss(output, result, self.__action)            
+        elif output == Action.Result.HTML or result is not None:
             template_path = self._find_template(result)
             if template_path:
                 context = self.__action._get_context()
@@ -129,7 +133,7 @@ class Controller(webapp2.RequestHandler):
         self.response.set_status(500, e)
         if debug:
             if not self.__action.is_ajax:
-                raise e
+                raise
             else:
                 sys.stderr.write(e)
     
@@ -139,16 +143,16 @@ class Controller(webapp2.RequestHandler):
         if result_name.startswith('/'):
             return result_name[1:]
         result = [self.__action.__module__.replace('%s.' % ACTION_PACKAGE, '')]
-        action_class = self.__action.__class__.__name__
-        if action_class is not 'Index':
-            result.append(action_class.lower())
+        action_instance = self.__action.__class__.__name__
+        if action_instance is not 'Index':
+            result.append(action_instance.lower())
                 
         if result_name is not '' and result_name != Action.Result.HTML:
             result.append(result_name) 
 
         return '%s%s' % (os.path.sep.join(result), TEMPLATE_SUFFIX)
 
-    def _import_action(self, action_name, action_class='Index'):
+    def _import_action(self, action_name, action_instance='Index'):
         module_name = '%s.%s' % (ACTION_PACKAGE, action_name)
         
         # Fast path: see if the module has already been imported.
@@ -159,7 +163,7 @@ class Controller(webapp2.RequestHandler):
             logging.debug('Newer import of %s' % module)
 
         try:
-            cls = getattr(module, action_class)
+            cls = getattr(module, action_instance)
             self.__action = cls(self.request, self.response)
         except Exception:
             import traceback
@@ -287,5 +291,34 @@ class Action(object):
         HTML = 'html'
         INPUT = 'input'
         RSS = 'rss'
-        RSSJSON = 'rssjson'
-        JSON = '__json__'
+        RSS_JSON = 'rss_json'
+        RSS_XML = 'rss_xml'
+        RSS_JSON_XML = 'rss_json_xml'
+        JSON = 'json'
+
+def print_rss(output, result, action_instance):
+    json_result = {'responseData': {}, 'responseDetails': None, 'responseStatus': 200}
+    if output in [Action.Result.RSS, Action.Result.RSS_JSON_XML, Action.Result.RSS_XML]:
+        feed = PyRSS2Gen.RSS2(
+                            title=result['title'],
+                            link=result['link'],
+                            description=result['description'],
+                            lastBuildDate=datetime.datetime.utcnow(),
+                            items=[PyRSS2Gen.RSSItem(
+                                                    title=item['title'],
+                                                    link=item['link'],
+                                                    description=item['content'],
+                                                    pubDate=item['publishedDate'],
+                                                    author=item['author'],
+                                                    categories=item['categories'],
+                                                    enclosure=PyRSS2Gen.Enclosure(url=item['enclosure']['url'], length=item['enclosure']['length'], type=item['enclosure']['type']) if item.has_key('enclosure') and item['enclosure'] else None
+                                                    ) for item in result['entries']],
+        )
+        if output == Action.Result.RSS:
+            action_instance.response.headers['Content-type'] = 'text/xml'    
+            feed.write_xml(action_instance.response.out, 'utf-8')
+            return
+        json_result['responseData']['xmlString'] = feed.to_xml(encoding='UTF-8')
+    if output in [Action.Result.RSS_JSON, Action.Result.RSS_JSON_XML]:
+        json_result['responseData']['feed'] = result
+    action_instance.response.out.write(json.dumps(json_result, default=lambda obj: obj.strftime('%a, %d %b %Y %H:%M:%S %z') if isinstance(obj, datetime.datetime) else None))    

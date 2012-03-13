@@ -4,7 +4,7 @@ from lib.controller import Action
 from lib.decorators import login_required, rss
 from lib.recaptcha.client import captcha
 import models
-import action
+from action import feed
 import settings
 
 try:
@@ -18,7 +18,7 @@ class Article(Action):
             return True
         captcha_result = captcha.submit(challenge, response, settings.RECAPTCHA_PRIVATE_KEY, self.request.remote_addr)
         if not captcha_result.is_valid:
-            self.response.set_status(412, _('Captcha code mismatch: %s' % captcha_result.error_code))
+            self.response.set_status(412, _('Captcha code mismatch: %s') % captcha_result.error_code)
             return False
         return True
 
@@ -81,7 +81,6 @@ class Article(Action):
         return Action.Result.DEFAULT
     
 class Comment(Action):
-    @rss(action.feed.ArticleCommentList)
     def get(self, article_id):
         offset = int(self.request.get('offset'))
         self.comment_list = models.Comment.get_list(article=models.Article.get_by_id(int(article_id)), offset=offset)

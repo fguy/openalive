@@ -67,7 +67,7 @@ var VideoDialog = {
     } else {
       var src = this.parseV(f.src.value);
       if(src) {
-        ed.execCommand('mceInsertContent', false, '<iframe type="text/html" frameborder="0" src="' + src + '?wmode=transparent" width="450" height="338"></iframe>', {skip_undo : 1});
+        ed.execCommand('mceInsertContent', false, '<iframe type="text/html" frameborder="0" src="' + src + '?wmode=opaque" width="640" height="360"></iframe>', {skip_undo : 1});
   //      ed.dom.setAttribs('__mce_tmp', args);
         //ed.dom.setAttrib('__mce_tmp', 'id', '');
         ed.undoManager.add();
