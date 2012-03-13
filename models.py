@@ -93,7 +93,7 @@ class User(db.Model):
         q = Article.all()
         q.filter('author = ', User.get_current() if user is None else user)
         q.order('-%s' % orderby)
-        return [{'id': item.key().id(), 'category': item.category.name, 'title': item.title, 'excerpt': item.excerpt, 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated} for item in q.fetch(limit, offset)]
+        return [{'id': item.key().id(), 'category': item.category.name, 'title': item.title, 'excerpt': item.excerpt, 'comment_count': item.comment_count, 'like_count': item.like_count, 'hate_count': item.hate_count, 'created': item.created, 'last_updated': item.last_updated, 'image': item.image, 'video': item.video} for item in q.fetch(limit, offset)]
 
     @classmethod
     def get_comment_list(cls, user=None, limit=20, offset=0, orderby='created'):

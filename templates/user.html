@@ -18,11 +18,11 @@
 		<dd><time datetime="{{ user.joined|date:'c' }}">{{ user.joined|pretty_date }}</time></dd>
 		<dt>{% trans 'Stats' %}</dt>
 		<dd>
-			<ul>
-				<li>{{ user.article_count }} {% trans 'articles' %}.</li>
-				<li>{{ user.comment_count }} {% trans 'comments' %}.</li>
-				<li>{% blocktrans with user.like_count as like_count %}Got {{ like_count }} likes.{% endblocktrans %}</li>
-				<li>{% blocktrans with user.hate_count as hate_count %}Got {{ hate_count }} hates.{% endblocktrans %}</li>
+			<ul class="unstyled">
+				<li><span class="badge">{{ user.article_count }}</span> {% trans 'articles' %}.</li>
+				<li><span class="badge">{{ user.comment_count }}</span> {% trans 'comments' %}.</li>
+				<li>{% blocktrans with user.like_count as like_count %}Got <span class="badge">{{ like_count }}</span> likes.{% endblocktrans %}</li>
+				<li>{% blocktrans with user.hate_count as hate_count %}Got <span class="badge">{{ hate_count }}</span> hates.{% endblocktrans %}</li>
 			</ul>
 		</dd>
 		{% if user.signature %}
@@ -31,14 +31,14 @@
 		{% endif %}
 	</dl>
 </div>
-<ul id="user-articles" class="user-info-tab hide">
-	<li class="load-more"><button class="btn" data-type="article" data-callback="load" data-source="/user/articles/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
+<ul id="user-articles" class="user-info-tab hide unstyled">
+	<li class="load-more"><button class="btn btn-full" data-type="article" data-callback="load" data-source="/user/articles/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
 </ul>
-<ul id="user-comments" class="user-info-tab hide">
-	<li class="load-more"><button class="btn" data-type="comment" data-callback="load" data-source="/user/comments/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
+<ul id="user-comments" class="user-info-tab hide unstyled">
+	<li class="load-more"><button class="btn btn-full" data-type="comment" data-callback="load" data-source="/user/comments/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
 </ul>
-<ul id="user-changes" class="user-info-tab hide">
-    <li class="load-more"><button class="btn" data-type="change" data-callback="load" data-source="/user/changes/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
+<ul id="user-changes" class="user-info-tab hide unstyled">
+    <li class="load-more"><button class="btn btn-full" data-type="change" data-callback="load" data-source="/user/changes/{{ id }}" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show More' %}">{% trans 'Show More' %}</button></li>
 </ul>
 {% if is_me %}
 <div id="change-user-dialog" class="modal hide fade">

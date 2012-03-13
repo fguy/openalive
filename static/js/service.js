@@ -757,7 +757,7 @@ var initializeModels = function() {
 			    	  	if(more) {
 			    	  		$().toastmessage("showNoticeToast", gettext("No more."));
 			    	  	} else {
-			    	  		html = '<li class="no-record">' + gettext("No record.") + '</li>';
+			    	  		html = '<li class="no-record"> <i class="icon-ban-circle"></i> ' + gettext("No record.") + '</li>';
 			    	  	}
 			    	  } else {
 			    	  	self._loadedOffset[type] += len;
@@ -773,23 +773,31 @@ var initializeModels = function() {
 			    renderRow: function(type, item) {
 			      switch(type) {
 			      case "article":
+			        var thumbnail;
+			        if(item.image) {
+			          thumbnail = getImageShackThumbnail(item.image);
+			        } else if(item.video) {
+			          thumbnail = formatString("http://img.youtube.com/vi/{{ videoId }}/1.jpg", {videoId: getYoutubeVideoId(item.video)});
+			        }
 			        return formatString('<li>\
                 <div>\
-                  <h5><a href="/#!/{{ category }}/{{ id }}" class="title">{{ title }}</a></h5>\
-                  <span class="comment-count">({{ comment_count }})</span>\
-                  <span class="category">{{ category }}</span>\
+			            <span class="category label label-info">{{ category }}</span>\
+                  <h4><a href="/#!/{{ category }}/{{ id }}" class="title">{{ title }}</a></h4>\
+                  <span class="comment-count badge">({{ comment_count }})</span>\
                   <span class="posted"><time datetime="{{ created }}">{{ created|prettyDate }}</time></span>\
                 </div>\
-                <p class="excerpt"><a href="/#!/{{ category }}/{{ id }}" class="title">{{ excerpt }}</a></p>\
-              </li>', item);
+                <p class="excerpt"><a href="/#!/{{ category }}/{{ id }}" class="title">{{ thumbnail }}{{ excerpt }}</a></p>\
+              </li>', $.extend(true, item, {
+                thumbnail: thumbnail ? formatString('<img src="{{ thumbnail }}">', {thumbnail: thumbnail}) : "" 
+              }));
 			      case "comment":
 			        return formatString('<li>\
                 <div>\
-                  <h5><a href="/#!/{{ article.category }}/{{ article.id }}" class="title">{{ article.title }}</a></h5>\
-                  <span class="category">{{ article.category }}</span>\
+			            <span class="category label label-info">{{ article.category }}</span>\
+                  <h4><a href="/#!/{{ article.category }}/{{ article.id }}" class="title">{{ article.title }}</a></h4>\
 			        		{{ likeCount }}\
 			        		{{ hateCount }}\
-                  <span class="posted"><time datetime="{{ created }}">{{ created|prettyDate }}</time></span>\
+                  <span class="posted badge"><time datetime="{{ created }}">{{ created|prettyDate }}</time></span>\
                 </div>\
                 <p class="body">{{ body }}</p>\
               </li>', $.extend(true, item, {
@@ -896,13 +904,25 @@ var initializeModels = function() {
 					$("#starred-wrapper, #sidebar-wrapper, .btn-post-article").hide();
 	        $("#container .breadcrumb li:gt(0)").remove();
 	        $("#container .breadcrumb li:eq(0) .divider").show();
-          $("#container .breadcrumb").append(formatString('<li><a href="/tags"><i class="icon-tags icon-blue"></i>{{ label }}</a> <span class="divider">/</span></li> <li><i class="icon-tag"></i>{{ tag }}</li>', {
+          $("#container .breadcrumb").append(formatString('<li><a href="/tags" class="tags-link"><i class="icon-tags icon-blue"></i>{{ label }}</a> <span class="divider">/</span></li> <li><i class="icon-tag"></i>{{ tag }}</li>', {
           	label: gettext("Tags"), 
           	tag: gettext(name)
           }));
           models.Article.loadList('tag', name, callback);
 				}	
 			}
+			$("a.tags-link").live("click", function() {
+			  $("#loading").show();
+			  $.get($(this).attr("href"), {output: "html"},function(html) {
+			    $("#loading").hide();
+			    showModalWindow({id: "tag-cloud-dialog", body: html});
+			  }, "html");
+			  return false;
+			});
+			$("#tag-cloud a").live("click", function() {
+			  $("#tag-cloud-dialog").modal("hide");
+			  return true;
+			});
 			return self;
 		})(),
 		

@@ -5,8 +5,8 @@ import models
 
 class ArticleList(Action):
     LIST_PER_PAGE = 20
-    
-    @rss(action.rss.CategoryArticleList)
+
+    @rss(action.feed.CategoryArticleList)
     def get(self, category_name):
         page = int(self.request.get('page', 1))
         offset = (page - 1) * self.LIST_PER_PAGE

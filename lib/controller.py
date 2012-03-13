@@ -107,7 +107,7 @@ class Controller(webapp2.RequestHandler):
         
         output = self.request.get('output')
         
-        if output == 'json' or (result == Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
+        if output == 'json' or (output != 'html' and result == Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:
             context = self.__action._get_context()
             for key in NON_AJAX_CONTEXT_KEYS:
                 if hasattr(self.__action, key):
@@ -128,10 +128,14 @@ class Controller(webapp2.RequestHandler):
     def handle_exception(self, e, debug):
         self.response.set_status(500, e)
         if debug:
-            import sys
-            sys.stderr.write(e)
+            if not self.__action.is_ajax:
+                raise e
+            else:
+                sys.stderr.write(e)
     
     def _find_template(self, result_name):
+        if not isinstance(result_name, str):
+            return None
         if result_name.startswith('/'):
             return result_name[1:]
         result = [self.__action.__module__.replace('%s.' % ACTION_PACKAGE, '')]
@@ -283,4 +287,5 @@ class Action(object):
         HTML = 'html'
         INPUT = 'input'
         RSS = 'rss'
+        RSSJSON = 'rssjson'
         JSON = '__json__'

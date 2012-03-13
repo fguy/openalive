@@ -33,14 +33,9 @@ var formatString = (function() {
 				case "length":
 					return args[0].length;
 				case "thumbnail":
-					if(args[0].indexOf("imageshack.us") == -1) {
-						return args[0];
-					}
-					var pos = args[0].lastIndexOf(".");
-					return args[0].substring(0, pos) + ".th" + args[0].substring(pos);
+				  return getImageshackThumbnail(args[0]);
 				case "videoId":
-					var idx = args[0].indexOf("?");
-			    return idx == -1 ? args[0].substring(args[0].lastIndexOf("/") + 1) : args[0].substring(args[0].lastIndexOf("/") + 1, idx);
+				  return getYoutubeVideoId(args[0]);
 				case "trans":
 					func = "gettext";
 				default:
@@ -89,4 +84,17 @@ var showModalWindow = function(options) {
   ', context)).modal().on("hidden", function() {
     $(this).remove();
   });
+}
+
+var getImageShackThumbnail = function(url) {
+  if(url.indexOf("imageshack.us") == -1) {
+    return url;
+  }
+  var pos = url.lastIndexOf(".");
+  return url.substring(0, pos) + ".th" + url.substring(pos);  
+}
+
+var getYoutubeVideoId = function(url) {
+  var idx = url.indexOf("?");
+  return idx == -1 ? url.substring(url.lastIndexOf("/") + 1) : url.substring(url.lastIndexOf("/") + 1, idx);  
 }

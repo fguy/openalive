@@ -132,7 +132,7 @@ time {
 	white-space: nowrap
 }
 
-#article-list .comment-count {
+.comment-count {
 	font-weight: bold
 }
 
@@ -175,7 +175,7 @@ time {
 }
 
 #comment-load-more {
-    background: none;
+	background: none;
 }
 
 #best-comments li {
@@ -201,7 +201,7 @@ time {
 }
 
 #best-comments .comment-content time,#comments .comment-content time {
-	color: gray;
+	color: #999;
 }
 
 #comments .comment-btns {
@@ -242,7 +242,7 @@ time {
 }
 
 #article-item-meta time {
-	color: gray
+	color: #999
 }
 
 #article-item-author-avatar {
@@ -379,6 +379,7 @@ iframe {
 }
 
 #tag-cloud li a:link {
+	white-space: nowrap;
 	margin: 0 10px;
 	color: #0063DC;
 	text-decoration: none;
@@ -417,7 +418,7 @@ iframe {
 	padding: 0;
 }
 
-#container .breadcrumb li i, #nav li i {
+#container .breadcrumb li i,#nav li i {
 	margin-right: 2px;
 	vertical-align: middle;
 }
@@ -428,6 +429,48 @@ iframe {
 	float: left;
 	margin: 4px 0
 }
+
 .thumbnails .thumbnail time {
-	color: gray
+	color: #999
+}
+
+#user-changes li,#user-comments li,#user-articles li {
+	padding: 4px;
+	clear: both;
+	margin-bottom: 1em;
+	border-bottom: 1px solid #eee
+}
+
+#user-changes li time,#user-comments li time,#user-articles li time {
+	color: #999;
+	margin-left: 5px
+}
+
+#user-changes li .nickname {
+	font-weight: bold
+}
+
+#user-articles li .excerpt img {
+	max-width: 85px;
+	margin: 5px 10px 5px 0;
+	float: left;
+}
+
+#user-comments li p,#user-articles li .excerpt {
+	padding-top: 10px;
+	display: inline-block;
+}
+
+#user-articles li .excerpt a {
+	color: #333
+}
+
+#user-comments li h4,#user-articles li h4 {
+	display: inline;
+}
+
+#user-changes .load-more,#user-comments .load-more, #user-articles .load-more {
+	padding: 0;
+	margin: 0;
+	border: none;
 }

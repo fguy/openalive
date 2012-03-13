@@ -11,7 +11,7 @@
           <nav id="nav" class="nav-collapse">
             <ul class="nav">
               <li{% ifequal request.path '/' %} class="active"{% endifequal %}><a href="/#!/" class="home-link"><i class="icon-home icon-white"></i>{% trans 'Home' %}</a></li>
-              <li{% ifequal request.path '/tags' %} class="active"{% endifequal %}><a href="/tags"><i class="icon-tags icon-white"></i>{% trans 'Tags' %}</a></li>
+              <li{% ifequal request.path '/tags' %} class="active"{% endifequal %}><a href="/tags" class="tags-link"><i class="icon-tags icon-white"></i>{% trans 'Tags' %}</a></li>
               <li{% ifequal request.path '/images' %} class="active"{% endifequal %}><a href="/images"><i class="icon-picture icon-white"></i>{% trans 'Images' %}</a></li>
               <li{% ifequal request.path '/videos' %} class="active"{% endifequal %}><a href="/videos"><i class="icon-film icon-white"></i>{% trans 'Videos' %}</a></li>
               <li{% ifequal request.path '/about' %} class="active"{% endifequal %}><a href="/about"><i class="icon-info-sign icon-white"></i>{% trans 'About' %}</a></li>

@@ -31,9 +31,6 @@ provided to further simplify usage.
   encode(input): Direct method to encode GQL objects as JSON.
 """
 
-
-
-
 class GqlEncoder(json.JSONEncoder):
     """Extends JSONEncoder to add support for GQL results and properties.
   

@@ -1,6 +1,8 @@
-from action import rss as rss_module
 from google.appengine.api import users
+from lib import PyRSS2Gen
 from lib.controller import Action
+import json
+import datetime
 import logging
 
 
@@ -32,13 +34,38 @@ def login_required(method):
 
 def rss(rss_action_class):
 	def wrap(action_method):
+		def get_enclosure(item):
+			if not item.has_key('mediaGroups') or len(item['mediaGroups']) == 0 or not item['mediaGroups'][0].has_key('contents') or len(item['mediaGroups'][0]['contents']) == 0:
+				return None
+			enclosure = item['mediaGroups'][0]['contents'][0]
+			return PyRSS2Gen.Enclosure(url = enclosure['url'], length = 10000, type = enclosure['medium'])
+			
 		def wrapped_f(*args):
 			action_class = args[0]
-			if action_class.request.get('output') == Action.Result.RSS:
+			output = action_class.request.get('output')
+			if output == Action.Result.RSS or output == Action.Result.RSSJSON:
 				result = getattr(rss_action_class(action_class.request, action_class.response, action_class._get_context()), 'get')(*args[1:])
-				if hasattr(result, 'write_xml'):
-					action_class.response.headers['Content-type'] = 'text/xml'
-					result.write_xml(action_class.response.out, 'utf-8')
+				if result:
+					if output == Action.Result.RSS:
+						feed = PyRSS2Gen.RSS2(
+						            			title = result['title'],
+						               			link = result['link'],
+						            	     	description = result['description'],
+						            	      	lastBuildDate = datetime.datetime.utcnow(),
+						            			items = [PyRSS2Gen.RSSItem(
+																		title=item['title'], 
+																		link=item['link'], 
+																		description=item['contentSnippet'], 
+																		pubDate=item['publishedDate'], 
+																		author=item['author'], 
+																		categories=item['categories'], 
+																		enclosure=get_enclosure(item)
+																		) for item in result['entries']],
+						)
+						action_class.response.headers['Content-type'] = 'text/xml'		
+						feed.write_xml(action_class.response.out, 'utf-8')
+					elif output == Action.Result.RSSJSON:
+						action_class.response.out.write(json.dumps(result, default=lambda obj: obj.strftime('%a, %d %b %Y %H:%M:%S 0000') if isinstance(obj, datetime.datetime) else None))
 				else:
 					action_class.response.set_status(404)
 			else:

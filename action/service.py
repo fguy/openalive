@@ -7,7 +7,7 @@ import models
 import action
 import settings
 
-try: 
+try:
     import json
 except ImportError:
     import simplejson as json
@@ -81,7 +81,7 @@ class Article(Action):
         return Action.Result.DEFAULT
     
 class Comment(Action):
-    @rss(action.rss.ArticleCommentList)
+    @rss(action.feed.ArticleCommentList)
     def get(self, article_id):
         offset = int(self.request.get('offset'))
         self.comment_list = models.Comment.get_list(article=models.Article.get_by_id(int(article_id)), offset=offset)
