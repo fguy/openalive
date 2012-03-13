@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-01 18:05-0800\n"
+"POT-Creation-Date: 2012-03-13 16:06-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
+#: static/js/btn-load-more.js:8
+msgid "No more."
+msgstr "Niente più."
+
 #: static/js/editor.js:32
 msgid "Add a tag"
 msgstr "Aggiungi un tag"
 
-#: static/js/editor.js:61
+#: static/js/editor.js:37
+msgid "You can enter 5 tags or less."
+msgstr "È possibile inserire 5 tag o meno."
+
+#: static/js/editor.js:67
 msgid "Home"
 msgstr "Casa"
 
@@ -33,49 +41,59 @@ msgstr "Prev"
 msgid "Next"
 msgstr "Prossimo"
 
-#: static/js/pretty.js:20
+#: static/js/pretty.js:24
 msgid " minutes ago"
 msgstr "minuti fa"
 
-#: static/js/pretty.js:21
+#: static/js/pretty.js:25
 #, fuzzy
 msgid "An hour ago"
 msgstr "1 ora fa"
 
-#: static/js/pretty.js:25
+#: static/js/pretty.js:28
 msgid " weeks ago"
 msgstr "settimane fa"
 
-#: static/js/service.js:182
-msgid "Loading..."
-msgstr "Caricamento in corso ..."
+#: static/js/pretty.js:30
+#, fuzzy
+msgid " years ago"
+msgstr "settimane fa"
 
-#: static/js/service.js:411
+#: static/js/service.js:407
+msgid "Posted."
+msgstr "Posted."
+
+#: static/js/service.js:434
+msgid "Updated."
+msgstr "Aggiornato."
+
+#: static/js/service.js:448
+msgid "Deleted."
+msgstr "Eliminato."
+
+#: static/js/service.js:584
 msgid "Please comment here..."
 msgstr "Si prega di commentare qui ..."
 
-#: static/js/service.js:463
+#: static/js/service.js:648
 #, fuzzy
 msgid "Delete"
 msgstr "Eliminato."
 
-#: static/js/service.js:490
-msgid "Posted."
-msgstr "Posted."
-
-#: static/js/service.js:505
-msgid "Deleted."
-msgstr "Eliminato."
-
-#: static/js/service.js:722
+#: static/js/service.js:925
 msgid "Nickname has been changed."
 msgstr "Nickname è stato modificato."
 
-#: static/js/service.js:792
-msgid " and <a href=\""
-msgid_plural " and <a href=\""
-msgstr[0] ""
-msgstr[1] ""
+#: static/js/service.js:1072
+msgid "People who likes this"
+msgstr "La gente che ama questo"
+
+#: static/js/service.js:1072
+msgid "People who hates this"
+msgstr "Le persone che odia questo"
+
+#~ msgid "Loading..."
+#~ msgstr "Caricamento in corso ..."
 
 #~ msgid "No category selected."
 #~ msgstr "Nessuna categoria selezionata."

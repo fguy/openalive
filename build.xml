@@ -28,7 +28,7 @@
 		<propertyregex property="tmp.pythonpath" input="${pydev_project.pydev_pathproperty.path}" regexp="," replace=":" />
 		<propertyregex property="pythonpath" input="${tmp.pythonpath}" regexp="..GOOGLE_APP_ENGINE." replace="${appengine.dir}" />
 		<propertyregex property="pythonpath" input="${pythonpath}" regexp="\/${ant.project.name}" replace="${src.dir}" override="true" />
-		<property name="django-admin" location="${appengine.dir}/lib/django_1_3/django/bin/django-admin.py" />
+		<property name="django-admin" location="${appengine.dir}/lib/django_1_2/django/bin/django-admin.py" />
 	</target>
 
 	<target name="run" depends="init">

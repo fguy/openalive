@@ -2,49 +2,71 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-01 18:06-0800\n"
+"POT-Creation-Date: 2012-03-13 16:06-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
-#: models.py:431
+#: models.py:208
+msgid "Category name must be unique"
+msgstr "Nombre de la categoría debe ser único"
+
+#: models.py:221
+msgid "Can not reference recursively."
+msgstr "No se puede referenciar de forma recursiva."
+
+#: models.py:445
+msgid "Can not delete if the comment has replies."
+msgstr "No se puede eliminar si el comentario tiene respuestas."
+
+#: models.py:509
 msgid "Can not give a reputation to your's."
 msgstr "No se puede dar una buena reputación a su yo."
 
-#: models.py:433
+#: models.py:511
 #, python-format
 msgid "You already gave a %s."
 msgstr "Usted ya ha dado un% s."
 
-#: action/service.py:26
+#: action/feed.py:14
+#, fuzzy, python-format
+msgid "%s Best Articles"
+msgstr "Publicar un artículo"
+
+#: action/service.py:21
+#, python-format
+msgid "Captcha code mismatch: %s"
+msgstr ""
+
+#: action/service.py:46
 msgid "Only the author can edit this article."
 msgstr "Sólo el autor puede editar este artículo."
 
-#: action/service.py:43
+#: action/service.py:61
 msgid "Only the author can delete this article."
 msgstr "Sólo el autor puede eliminar este artículo."
 
-#: action/service.py:87
+#: action/service.py:105
 #, fuzzy
 msgid "Only the author can delete this comment."
 msgstr "Sólo el autor puede eliminar este artículo."
 
-#: action/service.py:141
+#: action/service.py:149 action/service.py:170
 #, fuzzy
 msgid "You did not give an reputation for this."
 msgstr "No se puede dar una buena reputación a su yo."
 
-#: action/user.py:25
+#: action/user.py:28
 msgid "Already taken"
 msgstr "Ya me he ocupado"
 
@@ -56,91 +78,128 @@ msgstr "No se especifica."
 msgid "Korean"
 msgstr "Coreano"
 
-#: templates/index.html:8 templates/_snippets/nav.html:13
-msgid "Home"
-msgstr "Casa"
-
-#: templates/index.html:13
-msgid "Starred Categories"
-msgstr "Categorías favoritas"
-
-#: templates/index.html:18
-#, fuzzy
-msgid "Category Explorer"
-msgstr "Categoría"
-
-#: templates/index.html:20 templates/_base/default.html:28
-msgid "Loading..."
-msgstr "Cargando ..."
-
-#: templates/index.html:38 templates/user.html:35 templates/user.html.py:38
-#: templates/user.html:41
+#: templates/images.html:19 templates/index.html:43 templates/user.html:34
+#: templates/user.html.py:37 templates/user.html:40 templates/videos.html:34
 #, fuzzy
 msgid "loading..."
 msgstr "Cargando ..."
 
-#: templates/index.html:38
+#: templates/images.html:19 templates/user.html:34 templates/user.html.py:37
+#: templates/user.html:40 templates/videos.html:34
+msgid "Show More"
+msgstr "Mostrar más"
+
+#: templates/images.html:24
+msgid "No image posted yet."
+msgstr "No hay imagen de clientes por ahora."
+
+#: templates/images.html:25
+msgid "Image items will be show up when a user post an article with image."
+msgstr ""
+"Los elementos de imagen se mostrará cuando un usuario publique un artículo "
+"con la imagen."
+
+#: templates/index.html:7 templates/_snippets/nav.html:13
+msgid "Home"
+msgstr "Casa"
+
+#: templates/index.html:11
+msgid "Starred Categories"
+msgstr "Categorías favoritas"
+
+#: templates/index.html:16
+#, fuzzy
+msgid "Category Explorer"
+msgstr "Categoría"
+
+#: templates/index.html:18 templates/_base/admin.html:13
+#: templates/_base/default.html:17
+msgid "Loading..."
+msgstr "Cargando ..."
+
+#: templates/index.html:29
+msgid "Written Date"
+msgstr "Fecha escrita"
+
+#: templates/index.html:30
+msgid "Last Modified"
+msgstr "Última modificación"
+
+#: templates/index.html:43
 msgid "Show Previous"
 msgstr "Mostrar Anterior"
 
-#: templates/index.html:49
+#: templates/index.html:51
 msgid "List"
 msgstr "Lista"
 
-#: templates/index.html:51
+#: templates/index.html:53
 msgid "Like"
 msgstr "Como"
 
-#: templates/index.html:52
+#: templates/index.html:54
 msgid "Unlike"
 msgstr "A diferencia de"
 
-#: templates/index.html:53
+#: templates/index.html:55
 msgid "Hate"
 msgstr "Odio"
 
-#: templates/index.html:54
+#: templates/index.html:56
 msgid "Unhate"
 msgstr "Unhate"
 
-#: templates/index.html:55
+#: templates/index.html:57
 msgid "Follow"
 msgstr "Seguir"
 
-#: templates/index.html:56
+#: templates/index.html:58
 #, fuzzy
 msgid "Unfollow"
 msgstr "Seguir"
 
-#: templates/index.html:61
+#: templates/index.html:63
 msgid "Edit"
 msgstr "Editar"
 
-#: templates/index.html:62
+#: templates/index.html:64
 msgid "Delete"
 msgstr "Borrar"
 
-#: templates/index.html:63 templates/index.html.py:72
+#: templates/index.html:65 templates/index.html.py:75
 msgid "New Post"
 msgstr "Envíe un nuevo"
 
-#: templates/index.html:80
+#: templates/index.html:71
+#, python-format
+msgid "Nothing in %(holder)s yet."
+msgstr ""
+
+#: templates/index.html:72
+msgid "Be a first person"
+msgstr "Ser una persona primero"
+
+#: templates/index.html:78
+msgid "Login to Post"
+msgstr "Inicie sesión para enviar"
+
+#: templates/index.html:87
 msgid "Category"
 msgstr "Categoría"
 
-#: templates/index.html:81 templates/_snippets/post-article.html:14
+#: templates/index.html:88 templates/_snippets/post-article.html:14
 msgid "Title"
 msgstr "Título"
 
-#: templates/index.html:82
+#: templates/index.html:89
 msgid "Author"
 msgstr "Autor"
 
-#: templates/index.html:83
+#: templates/index.html:90
 msgid "Liked"
 msgstr "Me gustó"
 
-#: templates/index.html:84
+#: templates/index.html:91
 msgid "Date"
 msgstr "Fecha"
 
@@ -161,60 +220,79 @@ msgstr "Los comentarios publicados"
 msgid "Nickname Changes"
 msgstr "Cambios Apodo"
 
-#: templates/user.html:14 templates/user.html.py:54
+#: templates/user.html:14
+msgid ""
+"To create or modify your avatar, please do it on <a "
+"href=\"http://www.gravatar.com\" "
+"target=\"_blank\">http://www.gravatar.com</a> with your associated email "
+"account."
+msgstr ""
+"Para crear o modificar tu avatar, por favor hágalo en <a "
+"href=\"http://www.gravatar.com\" "
+"target=\"_blank\">http://www.gravatar.com</a> con su cuenta de correo "
+"electrónico asociada."
+
+#: templates/user.html:17 templates/user.html.py:53
 msgid "Nickname"
 msgstr "Apodo"
 
-#: templates/user.html:16
+#: templates/user.html:19
 msgid "Change"
 msgstr "Cambiar"
 
-#: templates/user.html:17
+#: templates/user.html:20
 msgid "Joined"
 msgstr "Unido"
 
-#: templates/user.html:19
+#: templates/user.html:22
 msgid "Stats"
 msgstr "Estadísticas"
 
-#: templates/user.html:22
+#: templates/user.html:25
 #, fuzzy
 msgid "articles"
 msgstr "Publicar un artículo"
 
-#: templates/user.html:23
+#: templates/user.html:26
 msgid "comments"
 msgstr "comentarios"
 
-#: templates/user.html:24
+#: templates/user.html:27
 #, python-format
-msgid "Got %(like_count)s likes."
-msgstr "Tienes% (like_count) s le gusta."
+msgid ""
+"Got <span class=\"badge\"><i class=\"icon-heart icon-white\"></i> "
+"%(like_count)s</span> likes."
+msgstr ""
 
-#: templates/user.html:25
+#: templates/user.html:28
 #, python-format
-msgid "Got %(hate_count)s hates."
-msgstr "Tienes% (hate_count) s odia."
+msgid ""
+"Got <span class=\"badge\"><i class=\"icon-fire icon-white\"></i> "
+"%(hate_count)s</span> hates."
+msgstr ""
 
-#: templates/user.html:29
-msgid "Signature"
-msgstr "Firma"
-
-#: templates/user.html:35 templates/user.html.py:38 templates/user.html:41
-msgid "Show More"
-msgstr "Mostrar más"
-
-#: templates/user.html:47
+#: templates/user.html:46
 msgid "New Nickname"
 msgstr "Nuevo apodo"
 
-#: templates/user.html:63
+#: templates/user.html:62
 msgid "Save changes"
 msgstr "Guardar los cambios"
 
-#: templates/user.html:64
+#: templates/user.html:63
 msgid "Close"
 msgstr "Cerrar"
+
+#: templates/videos.html:40
+msgid "No video posted yet."
+msgstr "No hay video publicado todavía."
+
+#: templates/videos.html:41
+msgid ""
+"Items will be show up when a user post an article containing youtube video."
+msgstr ""
+"Los productos que se muestran cuando un usuario publique un artículo que "
+"contenga vídeo de YouTube."
 
 #: templates/_snippets/nav.html:10
 msgid "Open Alive"
@@ -272,13 +350,26 @@ msgstr ""
 msgid "Captcha"
 msgstr "Captcha"
 
-#: templates/_snippets/post-article.html:42
+#: templates/_snippets/post-article.html:36
+msgid "You entered incorrect code. Please try again."
+msgstr "Ha introducido un código incorrecto. Por favor, inténtelo de nuevo."
+
+#: templates/_snippets/post-article.html:43
 msgid "POST"
 msgstr "POST"
 
-#: templates/_snippets/post-article.html:43
+#: templates/_snippets/post-article.html:44
 msgid "Cancel"
 msgstr "Cancelar"
+
+#~ msgid "Got %(like_count)s likes."
+#~ msgstr "Tienes% (like_count) s le gusta."
+
+#~ msgid "Got %(hate_count)s hates."
+#~ msgstr "Tienes% (hate_count) s odia."
+
+#~ msgid "Signature"
+#~ msgstr "Firma"
 
 #~ msgid "Categories"
 #~ msgstr "Categorías"

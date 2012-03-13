@@ -11,7 +11,7 @@
 				}
 				var div = $($(data.list).map(function(i, item) {
 					return formatString(ROW_TEMPLATE, $.extend(item, {
-						commentCount: item.comment_count > 0 ? formatString("({{ comment_count }})", item) : ""
+						commentCount: item.comment_count > 0 ? formatString('<span class="badge"><i class="icon-comment icon-white"></i> {{ comment_count }}</span>', item) : ""
 					}));
 				}).get().join("")).hide().appendTo("ul.thumbnails").slideDown();
 				$.fn.fancybox && div.find(".image-zoom").fancybox();

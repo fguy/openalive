@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-01 18:06-0800\n"
+"POT-Creation-Date: 2012-03-13 16:06-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
+#: static/js/btn-load-more.js:8
+msgid "No more."
+msgstr "もっとありません。"
+
 #: static/js/editor.js:32
 msgid "Add a tag"
 msgstr "タグを追加する"
 
-#: static/js/editor.js:61
+#: static/js/editor.js:37
+msgid "You can enter 5 tags or less."
+msgstr "あなたは、5タグ以下を入力することができます。"
+
+#: static/js/editor.js:67
 msgid "Home"
 msgstr "ホーム"
 
@@ -33,49 +41,59 @@ msgstr "前のページ"
 msgid "Next"
 msgstr "次の"
 
-#: static/js/pretty.js:20
+#: static/js/pretty.js:24
 msgid " minutes ago"
 msgstr "分前"
 
-#: static/js/pretty.js:21
+#: static/js/pretty.js:25
 #, fuzzy
 msgid "An hour ago"
 msgstr "1時間前"
 
-#: static/js/pretty.js:25
+#: static/js/pretty.js:28
 msgid " weeks ago"
 msgstr "週間前"
 
-#: static/js/service.js:182
-msgid "Loading..."
-msgstr "読み込み中..."
+#: static/js/pretty.js:30
+#, fuzzy
+msgid " years ago"
+msgstr "週間前"
 
-#: static/js/service.js:411
+#: static/js/service.js:407
+msgid "Posted."
+msgstr "投稿しました。"
+
+#: static/js/service.js:434
+msgid "Updated."
+msgstr "更新されます。"
+
+#: static/js/service.js:448
+msgid "Deleted."
+msgstr "削除されます。"
+
+#: static/js/service.js:584
 msgid "Please comment here..."
 msgstr "ここにコメントしてください..."
 
-#: static/js/service.js:463
+#: static/js/service.js:648
 #, fuzzy
 msgid "Delete"
 msgstr "削除されます。"
 
-#: static/js/service.js:490
-msgid "Posted."
-msgstr "投稿しました。"
-
-#: static/js/service.js:505
-msgid "Deleted."
-msgstr "削除されます。"
-
-#: static/js/service.js:722
+#: static/js/service.js:925
 msgid "Nickname has been changed."
 msgstr "ニックネームが変更されました。"
 
-#: static/js/service.js:792
-msgid " and <a href=\""
-msgid_plural " and <a href=\""
-msgstr[0] ""
-msgstr[1] ""
+#: static/js/service.js:1072
+msgid "People who likes this"
+msgstr "これを好む人々"
+
+#: static/js/service.js:1072
+msgid "People who hates this"
+msgstr "これを嫌う人"
+
+#~ msgid "Loading..."
+#~ msgstr "読み込み中..."
 
 #~ msgid "No category selected."
 #~ msgstr "にカテゴリが選択されていません。"

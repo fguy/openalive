@@ -9,7 +9,10 @@
 </ul>
 
 <div class="vcard row user-info-tab" id="user-profile">
-	<div class="span2"><a href="http://www.gravatar.com/{{ user.email_hash }}" class="url" target="_blank"><img class="avatar photo" src="http://www.gravatar.com/avatar/{{ user.email_hash }}?d=mm&s=160" alt="{{ user.nickname }}"></a></div>
+	<div class="span2">
+	   <a href="http://www.gravatar.com/{{ user.email_hash }}" class="url" target="_blank"><img class="avatar photo" src="http://www.gravatar.com/avatar/{{ user.email_hash }}?d=mm&s=160" alt="{{ user.nickname }}"></a>
+	   {% if is_me %}<p class="avatar-instruction">{% trans 'To create or modify your avatar, please do it on <a href="http://www.gravatar.com" target="_blank">http://www.gravatar.com</a> with your associated email account.' %}</p>{% endif %}
+	</div>
 	<dl class="span2">
 		<dt>{% trans 'Nickname' %}</dt>
 		<dd class="n"><span class="nickname">{{ user.nickname|safe }}</span> 
@@ -19,16 +22,12 @@
 		<dt>{% trans 'Stats' %}</dt>
 		<dd>
 			<ul class="unstyled">
-				<li><span class="badge">{{ user.article_count }}</span> {% trans 'articles' %}.</li>
-				<li><span class="badge">{{ user.comment_count }}</span> {% trans 'comments' %}.</li>
-				<li>{% blocktrans with user.like_count as like_count %}Got <span class="badge">{{ like_count }}</span> likes.{% endblocktrans %}</li>
-				<li>{% blocktrans with user.hate_count as hate_count %}Got <span class="badge">{{ hate_count }}</span> hates.{% endblocktrans %}</li>
+				<li><span class="badge"><i class="icon-pencil icon-white"></i> {{ user.article_count }}</span> {% trans 'articles' %}.</li>
+				<li><span class="badge"><i class="icon-comment icon-white"></i>  {{ user.comment_count }}</span> {% trans 'comments' %}.</li>
+				<li>{% blocktrans with user.like_count as like_count %}Got <span class="badge"><i class="icon-heart icon-white"></i> {{ like_count }}</span> likes.{% endblocktrans %}</li>
+				<li>{% blocktrans with user.hate_count as hate_count %}Got <span class="badge"><i class="icon-fire icon-white"></i> {{ hate_count }}</span> hates.{% endblocktrans %}</li>
 			</ul>
 		</dd>
-		{% if user.signature %}
-		<dt>{% trans 'Signature' %}</dt>
-		<dd class="note">{{ user.signature }}</dd>
-		{% endif %}
 	</dl>
 </div>
 <ul id="user-articles" class="user-info-tab hide unstyled">

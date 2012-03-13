@@ -3,7 +3,7 @@ from lib.controller import Action
 from models import User
 
 class Index(Action):
-    def get(self, category=None):
+    def get(self):
         user = users.get_current_user()
         if user:
             self.user = User.get_current()

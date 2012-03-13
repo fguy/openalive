@@ -8,7 +8,7 @@
     		<div class="thumbnail">
     			<a href="{{ item.image }}" class="image-zoom"><img src="{{ item.image|thumbnail }}" alt="{{ item.title }}" longdesc="/#!/{{ item.category }}/{{ item.id }}"></a>
     			<div class="caption">
-    				<h5><a href="/#!/{{ item.category }}/{{ item.id }}" class="article-item" title="{{ item.title }}">{{ item.title }}</a> <span class="comment-count">{% if item.comment_count > 0 %}({{ item.comment_count }}){% endif %}</span></h5>
+    				<h5><a href="/#!/{{ item.category }}/{{ item.id }}" class="article-item" title="{{ item.title }}">{{ item.title }}</a> <span class="comment-count">{% if item.comment_count > 0 %}<span class="badge"><i class="icon-comment icon-white"></i> {{ item.comment_count }}</span>{% endif %}</span></h5>
     				<time datetime="{{ item.last_updated|date:'c' }}Z"><i class="icon-time"></i> {{ item.last_updated|pretty_date }}</time>
     			</div>
     		</div>

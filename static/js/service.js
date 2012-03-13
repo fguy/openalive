@@ -26,7 +26,7 @@ var initializeModels = function() {
 		if(location.host.indexOf('localhost') > -1 || location.host.indexOf("dev.") > -1) {
 			$.ajax({
 				url: uri,
-				data: {output: "rss_json_xml"},
+				data: {output: "rss_json_xml", limit: 5},
 				dataType: "json",
 				success: function(data) {
 					callback(data);
@@ -34,7 +34,7 @@ var initializeModels = function() {
 			});		
 		} else {
 			$.ajax({
-				url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&output=json_xml&callback=?&q=' + encodeURI(location.protocol + "//" + location.host + uri + "?output=rss"),
+				url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&output=json_xml&callback=?&q=' + encodeURI(location.protocol + "//" + location.host + uri + "?limit=5&output=rss"),
 				crossDomain: true,
 				dataType: "jsonp",
 				success: function(data) {
@@ -167,15 +167,46 @@ var initializeModels = function() {
 		      });
 		    },
 		    showTopLevelRecent: function() {
+		      var div = $("#recent").empty().show();
+		      var template = '\
+		        <div class="span5">\
+		          <h3><a href="{{ link }}">{{ title }}</a></h3>\
+		          <ul class="unstyled"></ul>\
+		        </div>\
+		        ';
+		      var rowTemplate = '<li>\
+  		        <a href="/#!/{{ categories.0 }}"><span class="label label-info">{{ categories.0 }}</span></a> \
+  		        <a href="{{ link }}"><h4>{{ title }}</h4></a>\
+		          <time datetime="{{ pubDate }}">{{ pubDate|prettyDate }}</time>\
+		          <p><a href="{{ link }}">{{ thumbnail }}{{ contentSnippet }}</a></p>\
+		        </li>';
+		      
 		    	$.getJSON("/category/top", function(data) {
-		    		$("#recent").show();
 		    		$(data.list).each(function(i, item) {
 		    			getRss("/feed/category/" + item, function(data) {
 		    				if(data.responseStatus != 200) {
 		    					return;
 		    				}
 		    				var feed = data.responseData.feed;
-		    				var xml = $(data.responseData.xmlString);
+		    				var xml = $.parseXML(data.responseData.xmlString);
+		    				var panel = $(formatString(template, feed));
+		    				$("ul", panel).html($(feed.entries).map(function(i, item) {
+		    				  var enclosure = $(formatString("item:has(link:contains({{ link }})) enclosure", item), xml); // enclosure doesn't supported by google feed api.
+		    				  var thumbnail;
+		    				  if(enclosure.length > 0) {
+  		    				  var typeString = enclosure.attr("type").toLowerCase();
+  		              if(typeString.indexOf("image") == 0) {
+  		                thumbnail = getImageShackThumbnail(enclosure.attr("url"));
+  		              } else if(typeString.indexOf("video") == 0) {
+  		                thumbnail = formatString("http://img.youtube.com/vi/{{ videoId }}/1.jpg", {videoId: getYoutubeVideoId(enclosure.attr("url"))});
+  		              }
+		    				  }
+		    				  return formatString(rowTemplate, $.extend(item, {
+		    				    thumbnail: thumbnail ? formatString('<img src="{{ thumbnail }}">', {thumbnail: thumbnail}) : "",
+		    				    pubDate: ISODateString(new Date(Date.parse(item.publishedDate)))
+		    				  }));
+		    				}).get().join(""));
+		    				div.append(panel);
 		    			});
 		    		});
 		    	});
@@ -454,7 +485,7 @@ var initializeModels = function() {
 		        avatar: models.User.getAvatar(item.author.email_hash, 16),
 		        hasVideo: item.video != null ? '<i class="icon-film"></i> ' : "",
 		        hasImage: item.image != null ? '<i class="icon-picture"></i> ' : "",
-		        commentCount: item.comment_count > 0 ? '(' + item.comment_count + ')' : ""
+		        commentCount: item.comment_count > 0 ? '<span class="badge"><i class="icon-comment icon-white"></i> ' + item.comment_count + '</span>' : ""
 		        }));
 		      },
 		      resizeRow: function() {
@@ -809,7 +840,7 @@ var initializeModels = function() {
                 <div>\
 			            <span class="category label label-info">{{ category }}</span>\
                   <h4><a href="/#!/{{ category }}/{{ id }}" class="title">{{ title }}</a></h4>\
-                  <span class="comment-count badge">({{ comment_count }})</span>\
+                  <span class="comment-count badge">{{ comment_count }}</span>\
                   <span class="posted"><time datetime="{{ created }}">{{ created|prettyDate }}</time></span>\
                 </div>\
                 <p class="excerpt"><a href="/#!/{{ category }}/{{ id }}" class="title">{{ thumbnail }}{{ excerpt }}</a></p>\
@@ -823,12 +854,12 @@ var initializeModels = function() {
                   <h4><a href="/#!/{{ article.category }}/{{ article.id }}" class="title">{{ article.title }}</a></h4>\
 			        		{{ likeCount }}\
 			        		{{ hateCount }}\
-                  <span class="posted badge"><time datetime="{{ created }}">{{ created|prettyDate }}</time></span>\
+                  <span class="posted"><time datetime="{{ created }}">{{ created|prettyDate }}</time></span>\
                 </div>\
                 <p class="body">{{ body }}</p>\
               </li>', $.extend(true, item, {
-              	likeCount: item.like_count > 0 ? '<span class="like-count"><i class="icon-heart"></i> ' + item.like_count + '</span>' : "",
-              	hateCount: item.hate_count > 0 ? '<span class="hate-count"><i class="icon-fire"></i> ' + item.hate_count + '</span>' : ""
+              	likeCount: item.like_count > 0 ? '<span class="like-count badge"><i class="icon-heart icon-white"></i> ' + item.like_count + '</span>' : "",
+              	hateCount: item.hate_count > 0 ? '<span class="hate-count badge"><i class="icon-fire icon-white"></i> ' + item.hate_count + '</span>' : ""
               }));
 			      case "change":
 			        return formatString('<li>\

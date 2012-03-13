@@ -1,17 +1,21 @@
 {% extends base %}
 {% load i18n %}
 {% block content %}
+    <div class="hero-unit">
+        <h1>{% trans 'Open Alive' %}</h1>
+        <p>열린 채로 살아있는 소통의 장. 다음 아고라, 클리앙, 루리웹, 디씨인사이드등의 인터넷 게시판들을 사용하면서, 불편했던 점을 개선하고자 만들었습니다. 이 서비스에서 가장 중요한 가치는 <strong>표현의 자유</strong>입니다.</p>
+    </div>
     <ul>
+        <li>분류별 엄격한 제재가 없습니다. 여러분의 지성을 믿습니다.</li>
     	<li>금칙어가 없습니다.</li>
-    	<li>IP 주소를 기록하지 않으므로 어떠한 방법으로도 작성자 정보를 추적할 수 없습니다.</li>
-    	<li>
-    	다음 기준을 제외하고는 관리자가 글을 삭제하지 않습니다.
-    	<ul>
-    	   <li>과도한 광고성 글</li>
-    	   <li>음란물</li>
-    	</ul>
-    	
+    	<li><a href="http://www.google.com/transparencyreport/governmentrequests/" target="_blank">비교적 각국 정부의 간섭에서 자유로운 구글의 인증</a>을 사용하고, IP 주소를 기록하지 않는 등 작성자 정보를 보호하기 위해 노력합니다.</li>
+    	<li>다음 기준을 제외하고는 관리자가 글을 삭제하지 않습니다.
+	    	<ul>
+	    	   <li>의도적으로 반복 게재된 글</li>
+	    	   <li>과도한 광고성 글</li>
+	    	   <li>음란물</li>
+	    	</ul>    	
     	</li>
-    	
+    	<li>한 번 삭제된 글은 데이터베이스로부터 영구히 제거됩니다.</li>
     </ul>
 {% endblock %}

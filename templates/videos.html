@@ -8,7 +8,7 @@
     		<div class="thumbnail">
     			<a href="#video-player" class="video-item" data-video-id="{{ item.video|video_id }}" data-url="/#!/{{ item.category }}/{{ item.id }}"><img src="http://img.youtube.com/vi/{{ item.video|video_id }}/0.jpg" width="260"></a>
     			<div class="caption">
-    				<h5><a href="/#!/{{ item.category }}/{{ item.id }}" class="article-item" title="{{ item.title }}"><span class="article-title">{{ item.title }}</span></a> <span class="comment-count">{% if item.comment_count > 0 %}({{ item.comment_count }}){% endif %}</span></h5>
+    				<h5><a href="/#!/{{ item.category }}/{{ item.id }}" class="article-item" title="{{ item.title }}"><span class="article-title">{{ item.title }}</span></a> <span class="comment-count">{% if item.comment_count > 0 %}<span class="badge"><i class="icon-comment icon-white"></i> {{ item.comment_count }}</span>{% endif %}</span></h5>
     				<p>{{ item.excerpt }}</p>
     				<time datetime="{{ item.last_updated|date:'c' }}Z"><i class="icon-time"></i> {{ item.last_updated|pretty_date }}</time>
     			</div>
@@ -22,7 +22,7 @@
 	    <h3 id="video-title"></h3>
 	  </div>
 	  <div class="modal-body">
-	    <iframe id="video-frame" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+	    <iframe id="video-frame" width="640" height="390" frameborder="0" allowfullscreen></iframe>
 	  </div>
 	  <div class="modal-footer">
 	    <a href="#" class="btn" id="video-article-link">Read</a>

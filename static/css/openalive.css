@@ -350,6 +350,14 @@ time {
 	padding: 0
 }
 
+#user-profile .avatar-instruction {
+	background-color: #eee;
+	padding: 5px;
+	margin: 10px 10px 0 0;
+	font-size: 8pt;
+	line-height: 1.2
+}
+
 iframe {
 	z-index: 0
 }
@@ -365,7 +373,8 @@ iframe {
 
 #video-player {
 	width: 670px;
-	margin-left: -335px
+	margin-left: -335px;
+	max-height: 600px
 }
 
 #video-player .modal-body {
@@ -439,14 +448,15 @@ iframe {
 	color: #999
 }
 
-#user-changes li,#user-comments li,#user-articles li {
+#user-changes li,#user-comments li,#user-articles li, #recent li {
 	padding: 4px;
+	vertical-align: middle;
 	clear: both;
-	margin-bottom: 1em;
 	border-bottom: 1px solid #eee
 }
 
-#user-changes li time,#user-comments li time,#user-articles li time {
+#user-changes li time,#user-comments li time,#user-articles li time, #recent li time {
+	vertical-align: middle;
 	color: #999;
 	margin-left: 5px
 }
@@ -455,27 +465,46 @@ iframe {
 	font-weight: bold
 }
 
-#user-articles li .excerpt img {
+#user-articles li .excerpt img, #recent li p img {
 	max-width: 85px;
 	margin: 5px 10px 5px 0;
 	float: left;
 }
 
-#user-comments li p,#user-articles li .excerpt {
+#user-comments li p,#user-articles li .excerpt, #recent li p {
 	padding-top: 10px;
-	display: inline-block;
+	display: table;
 }
 
-#user-articles li .excerpt a {
+#user-articles li .excerpt a, #recent li p a {
 	color: #333
 }
 
-#user-comments li h4,#user-articles li h4 {
+#user-comments li h4,#user-articles li h4, #recent li h4 {
 	display: inline;
+	vertical-align: middle;
 }
 
 #user-changes .load-more,#user-comments .load-more, #user-articles .load-more {
 	padding: 0;
 	margin: 0;
 	border: none;
+}
+#recent {
+	display: none;
+}
+
+#recent h3 {
+	width: 100%;
+	background-color: gray;
+	padding: 2px 10px;
+	margin: 0;
+	border-radius: 0;
+	vertical-align: middle;
+	background-color: #eee;
+	border: 1px solid #ddd;
+}
+
+#recent h3 a {
+	color: #666;
 }
