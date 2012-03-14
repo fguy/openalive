@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block content %}
       <div class="row-fluid">
-        <div class="span3">
+        <div id="sidebar" class="span3">
           <ul class="breadcrumb">
             <li><a href="#!/" class="home-link"><i class="icon-home icon-blue"></i>{% trans 'Home' %}</a> <span class="divider" style="display:none">/</span></li>
           </ul>
@@ -12,14 +12,14 @@
 	        <nav id="starred"></nav>
 	      </div>
 	      {% endif %}
-	      <div id="sidebar-wrapper">
+	      <div id="category-explorer-wrapper">
 	        <h5><i class="icon-th-list"></i> {% trans 'Category Explorer' %}</h5>
-	        <nav id="sidebar" class="well sidebar-nav">
+	        <nav id="category-explorer" class="well category-explorer-nav">
 	          <ul class="nav nav-list"><li class="loading"><i class="icon-time"></i> {% trans 'Loading...' %}</li></ul>
 	        </nav><!--/.well -->
 	      </div>
         </div><!--/span-->
-        <div id="recent" class="span9">Recent</div>
+        <div id="recent" class="span9">{% trans 'Loading...' %}</div>
         <div id="content" class="span9">
           <article id="article-item">
             <header class="page-header">
@@ -131,5 +131,5 @@
 	{% js 'js/pretty.js' %}
 	{% js 'js/editor.js' %}
 	{% js 'js/service.js' %}
-	{% js 'js/hash-url.js' %}    
+	{% js 'js/hash-url.js?test' %}    
 {% endblock %}
