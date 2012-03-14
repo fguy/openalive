@@ -44,8 +44,7 @@ var ArticleEditor = (function() {
 	  });
 	  // http://code.google.com/apis/recaptcha/docs/display.html
 	  Recaptcha.create(RECAPTCHA_PUBLIC_KEY, "article-captcha", {
-	    theme : "clean",
-	    callback : Recaptcha.focus_response_field
+	    theme : "clean"
 	  });
 	  div.on("shown", function() {
 	    $("#post-article-title").focus();
