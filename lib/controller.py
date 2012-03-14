@@ -1,9 +1,11 @@
+from google.appengine.api import users
 from django.conf import settings
 from django.utils import translation
 from django import template
 from django.template import loader
 from lib.json_encoder import encode
 from lib import PyRSS2Gen
+from models import User
 import json
 import datetime
 import logging
@@ -244,6 +246,13 @@ class Action(object):
         self.request = request
         self.response = response
         self.__context = context if context is not None else {}
+        
+        user = users.get_current_user()
+        if user:
+            self.user = User.get_current()
+            self.logout_url = users.create_logout_url(self.request.uri)
+        else:
+            self.login_url = users.create_login_url(self.request.uri)  
             
     def __setattr__(self, attr, value, DEFAULT=[]):
         if self._is_context_key(attr) :
