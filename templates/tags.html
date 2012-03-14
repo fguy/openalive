@@ -6,7 +6,7 @@
 </header>
 <ul id="tag-cloud">
 {% for item in list %}
-	<li><a href="/#tag/{{ item.content.0 }}" data-count="{{ item.count }}" title="{{ item.content|join:', ' }}" style="font-size: {% widthratio item.count max 40 %}px">{{ item.content.0 }}</a></li>
+	<li><a href="/#tag/{{ item.content.0|urlencode }}" data-count="{{ item.count }}" title="{{ item.content|join:', ' }}" style="font-size: {% widthratio item.count max 40 %}px">{{ item.content.0 }}</a></li>
 {% endfor %}
 </ul>
 {% endblock %}

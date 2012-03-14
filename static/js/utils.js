@@ -49,7 +49,7 @@ var formatString = (function() {
 		}
 	}
 	return function(input, context) {
-		return input.replace(/\{\{ ([\w.'"]+)\|?(prettyDate|gettext|tans|lower|upper|length|thumbnail|videoId)? \}\}/g,
+		return input.replace(/\{\{ ([\w.'"]+)\|?(prettyDate|gettext|tans|lower|upper|length|thumbnail|videoId|encodeURI|encodeURIComponent|decodeURI|decodeURIComponent)? \}\}/g,
 				replacer(context));
 	}
 })();

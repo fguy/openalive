@@ -63,7 +63,7 @@ var initializeModels = function() {
 		      }
 		      self.current = name;
 		      models.Article.hideList();
-		      $.getJSON("/service/category/" + name, function(data) {
+		      $.getJSON("/service/category/" + encodeURI(name), function(data) {
 		        $("#container .breadcrumb li:gt(0)").remove();
 		        $("#container .breadcrumb li:eq(0) .divider").toggle(data.current_category != null);
 		        $("#category-explorer .nav").html($(data.category_list).map(function(i, item) {
@@ -145,7 +145,7 @@ var initializeModels = function() {
 		    star: function(name) {
 		      self.markStarred(name);
 		      $("#loading").show();
-		      $.post("/service/starred-category/" + name, function() {
+		      $.post("/service/starred-category/" + encodeURI(name), function() {
 		        $("#starred").append(self.decorateStarredItem(name));
 		        self.starred.push(name);
 		        $("#starred-wrapper").toggle(self.starred.length > 0);
@@ -157,7 +157,7 @@ var initializeModels = function() {
 		      $("#loading").show();
 		      $.ajax({
 		        type: "DELETE",
-		        url: "/service/starred-category/" + name,
+		        url: "/service/starred-category/" + encodeURI(name),
 		        cache: false,
 		        success: function() {
 		          $("#starred span:has(.category-link[title=" + name + "])").remove();
@@ -186,7 +186,7 @@ var initializeModels = function() {
 		      
 		    	$.getJSON("/category/top", function(data) {
 		    		$(data.list).each(function(i, item) {
-		    			getRss("/feed/category/" + item, function(data) {
+		    			getRss("/feed/category/" + encodeURI(item), function(data) {
 		    				if(data.responseStatus != 200) {
 		    					return;
 		    				}
@@ -246,7 +246,7 @@ var initializeModels = function() {
 		      		$("#no-article, #loading").hide();
 		      		return;
 		      	}
-
+		      	
 	          self.currentType.name = type;
 	          self.currentType.model = models[type.charAt(0).toUpperCase() + type.slice(1)];
 	          self.currentType.sign = type == "category" ? "!" : type; 
@@ -255,7 +255,7 @@ var initializeModels = function() {
 		      	document.title = currentTypeValue;
 		      	self.hide();
 		      	callback && callback();
-		      	$.getJSON(formatString("/{{ type }}/article-list/{{ name }}", {type: type, name: name}), {page: page}, function(data) {
+		      	$.getJSON(formatString("/{{ type }}/article-list/{{ name|encodeURI }}", {type: type, name: name}), {page: page}, function(data) {
 		      	  if(data.list.length == 0) { // no article in this category.
 		      	    $("#no-article").show().find(".current-name").text(currentTypeValue);
 		      	    $("#loading").hide();

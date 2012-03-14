@@ -119,12 +119,19 @@ class Controller(webapp2.RequestHandler):
             logging.debug('Context data for JSON Serialize : %s' % context)
             self.response.headers['Content-type'] = 'application/json'
             self.response.out.write(encode(context))
-        elif result and output in [Action.Result.RSS, Action.Result.RSS_JSON, Action.Result.RSS_JSON_XML, Action.Result.RSS_XML]:
+        elif result and output in [Action.Result.RSS, Action.Result.RSS_JSON, Action.Result.RSS_JSON_XML, Action.Result.RSS_XML]:              
             print_rss(output, result, self.__action)            
         elif output == Action.Result.HTML or result is not None:
             template_path = self._find_template(result)
             if template_path:
                 context = self.__action._get_context()
+                if not self.__action.is_ajax:
+                    user = users.get_current_user()
+                    if user:
+                        context['user'] = User.get_current()
+                        context['logout_url'] = users.create_logout_url(self.request.uri)
+                    else:
+                        context['login_url'] = users.create_login_url(self.request.uri)                
                 context['base'] = '_base/default.html' if not self.__action.is_ajax else '_base/ajax.html'
                 self.response.out.write(loader.get_template(template_path).render(template.context.Context(context)))
             logging.debug('Current result : %s' % result)
@@ -246,13 +253,6 @@ class Action(object):
         self.request = request
         self.response = response
         self.__context = context if context is not None else {}
-        
-        user = users.get_current_user()
-        if user:
-            self.user = User.get_current()
-            self.logout_url = users.create_logout_url(self.request.uri)
-        else:
-            self.login_url = users.create_login_url(self.request.uri)  
             
     def __setattr__(self, attr, value, DEFAULT=[]):
         if self._is_context_key(attr) :
