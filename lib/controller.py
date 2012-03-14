@@ -301,12 +301,12 @@ def print_rss(output, result, action_instance):
     if output in [Action.Result.RSS, Action.Result.RSS_JSON_XML, Action.Result.RSS_XML]:
         feed = PyRSS2Gen.RSS2(
                             title=result['title'],
-                            link=result['link'],
+                            link=urllib.quote(result['link'].encode('utf8'), '/:?=#'),
                             description=result['description'],
                             lastBuildDate=datetime.datetime.utcnow(),
                             items=[PyRSS2Gen.RSSItem(
                                                     title=item['title'],
-                                                    link=item['link'],
+                                                    link=urllib.quote(item['link'].encode('utf8'), '/:?=#'),
                                                     description=item['content'],
                                                     pubDate=item['publishedDate'],
                                                     author=item['author'],

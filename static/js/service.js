@@ -23,6 +23,7 @@ $.ajaxSetup({
 var models;
 var initializeModels = function() {
 	var getRss = function(uri, callback) {
+	  $("#loading").show();
 		if(location.host.indexOf('localhost') > -1 || location.host.indexOf("dev.") > -1) {
 			$.ajax({
 				url: uri,
@@ -30,15 +31,17 @@ var initializeModels = function() {
 				dataType: "json",
 				success: function(data) {
 					callback(data);
+					$("#loading").hide();
 				}
 			});		
 		} else {
 			$.ajax({
-				url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&output=json_xml&callback=?&q=' + encodeURI(location.protocol + "//" + location.host + uri + "?limit=5&output=rss"),
+				url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&output=json_xml&callback=?&q=' + encodeURIComponent(location.protocol + "//" + location.host + uri + "?limit=5&output=rss"),
 				crossDomain: true,
 				dataType: "jsonp",
 				success: function(data) {
 					callback(data);
+					$("#loading").hide();
 				}
 			});
 		}
