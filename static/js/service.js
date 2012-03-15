@@ -22,6 +22,12 @@ $.ajaxSetup({
 
 var models;
 var initializeModels = function() {
+  var RSS_BURNER_MAP = {
+      "http://openalive.appspot.com/feed/category/%ED%86%A0%EB%A1%A0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/wKwe",
+      "http://openalive.appspot.com/feed/category/%EC%A7%88%EB%AC%B8%EA%B3%BC%20%EB%8B%B5%EB%B3%80?limit=5&output=rss": "http://feeds.feedburner.com/appspot/vooV", 
+      "http://openalive.appspot.com/feed/category/%EC%A0%95%EB%B3%B4?limit=5&output=rss": "http://feeds.feedburner.com/appspot/TQcZ",
+      "http://openalive.appspot.com/feed/category/%EC%9D%B4%EC%95%BC%EA%B8%B0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/iVmL"      
+  }
 	var getRss = function(uri, callback) {
 	  $("#loading").show();
 		if(location.host.indexOf('localhost') > -1 || location.host.indexOf("dev.") > -1) {
@@ -35,8 +41,10 @@ var initializeModels = function() {
 				}
 			});		
 		} else {
+		  var url = location.protocol + "//" + location.host + uri + "?limit=5&output=rss";
+		  RSS_BURNER_MAP[url] && (url = RSS_BURNER_MAP[url]);
 			$.ajax({
-				url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&output=json_xml&callback=?&q=' + encodeURIComponent(location.protocol + "//" + location.host + uri + "?limit=5&output=rss"),
+				url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&output=json_xml&callback=?&q=' + encodeURIComponent(url),
 				crossDomain: true,
 				dataType: "jsonp",
 				success: function(data) {
