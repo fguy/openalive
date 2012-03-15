@@ -531,7 +531,9 @@ iframe {
 	}
 	
 	#content, #recent {
-		margin-left: 311px;
+	    position: relative;
+        left: 311px;
+        margin-left: 0;
 	}
 	
 	footer {
