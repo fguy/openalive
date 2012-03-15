@@ -1,6 +1,7 @@
+from action import feed
+from google.appengine.api import memcache
 from lib.controller import Action
 from lib.decorators import rss
-from action import feed
 import models
 
 class ArticleList(Action):
@@ -16,6 +17,11 @@ class ArticleList(Action):
         return Action.Result.DEFAULT  
 
 class Top(Action):
+    CACHE_KEY = 'category-top'
     def get(self):
-        self.list = models.Category.get_top_level()
+        result = memcache.get(self.CACHE_KEY)
+        if not result:
+            result = models.Category.get_top_level()
+            memcache.set(self.CACHE_KEY, result)
+        self.list = result
         return Action.Result.JSON

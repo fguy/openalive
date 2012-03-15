@@ -219,13 +219,16 @@ class Category(db.Model):
             self.path = []
         self.path.append(self.name)
         if self.parent_category and self.path == self.parent_category.path:
-            raise BadValueError(_('Can not reference recursively.'))        
+            raise BadValueError(_('Can not reference recursively.'))
+        if not previous.parent_category or not self.parent_category:
+            memcache.delete(action.category.Top.CACHE_KEY)                
         super(Category, self).put()
         memcache.delete(action.service.Category.CACHE_KEY)
         
-        
     def delete(self):
         children = self.__class__.all().filter('parent_category =', self).fetch(DEFAULT_FETCH_COUNT)
+        if not self.parent_category:
+            memcache.delete(action.category.Top.CACHE_KEY)        
         if children or self.article_count > 0 or self.starred_count > 0:
             [db.run_in_transaction_options(xg_on, item.delete) for item in children]
             self.is_active = False
@@ -233,7 +236,7 @@ class Category(db.Model):
         else:
             super(Category, self).delete()
         memcache.delete(action.service.Category.CACHE_KEY)
-            
+                    
     def get_path(self):
         return self.__class__.gql('WHERE name IN :1 AND is_active = True', self.path).fetch(DEFAULT_FETCH_COUNT)        
         
