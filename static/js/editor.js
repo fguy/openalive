@@ -1,8 +1,9 @@
 var ArticleEditor = (function() {
   var div = $("#post-article");
   var initialized = false;
+  var mobile = typeof(isMobile) != "undefined" && isMobile();
   var init = function() {
-	  $("textarea", div)
+	  !mobile && $("textarea", div)
 	      .tinymce(
 	          {
 	            // Location of TinyMCE script
@@ -71,7 +72,7 @@ var ArticleEditor = (function() {
   }
   var transferFieldValues = function() {
   	$("#post-article-tags").importTags($("#post-article-tags").val());
-  	tinyMCE.activeEditor.setContent($("#post-article-body").val());
+  	!mobile && tinyMCE.activeEditor.setContent($("#post-article-body").val());
   }
   var close = function() {
 	  div.modal("hide");
@@ -85,7 +86,7 @@ var ArticleEditor = (function() {
   	$("#post-article-title").val("");
   	$("#post-article-tags").val("").importTags("");
   	$("#post-article-body").val("");
-  	tinyMCE.activeEditor.setContent("");
+  	!mobile && tinyMCE.activeEditor.setContent("");
   }
   this.close = close;
   this.open = open;

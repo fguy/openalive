@@ -98,3 +98,7 @@ var getYoutubeVideoId = function(url) {
   var idx = url.indexOf("?");
   return idx == -1 ? url.substring(url.lastIndexOf("/") + 1) : url.substring(url.lastIndexOf("/") + 1, idx);  
 }
+
+var isMobile = function() {
+  return navigator.userAgent.match(/(alcatel|amoi|android|avantgo|blackberry|benq|cell|cricket|docomo|elaine|htc|iemobile|iphone|ipad|ipaq|ipod|j2me|java|midp|mini|mmp|mobi|motorola|nec-|nokia|palm|panasonic|philips|phone|sagem|sharp|sie-|smartphone|sony|symbian|t-mobile|telus|up\.browser|up\.link|vodafone|wap|webos|wireless|xda|xoom|zte)/i) != null
+}
