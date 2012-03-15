@@ -208,7 +208,7 @@ msgstr "프로필"
 #: templates/user.html:6
 #, fuzzy
 msgid "Posted Articles"
-msgstr "새 글 쓰기"
+msgstr "작성한 글"
 
 #: templates/user.html:7
 msgid "Posted Comments"
@@ -265,7 +265,7 @@ msgstr "<span class=\"badge\"><i class=\"icon-heart icon-white\"></i> %(like_cou
 msgid ""
 "Got <span class=\"badge\"><i class=\"icon-fire icon-white\"></i> "
 "%(hate_count)s</span> hates."
-msgstr "Got <span class=\"badge\"><i class=\"icon-fire icon-white\"></i> %(hate_count)s</span> 명이 \"싫어요\"."
+msgstr "<span class=\"badge\"><i class=\"icon-fire icon-white\"></i> %(hate_count)s</span> 명이 \"싫어요\"."
 
 #: templates/user.html:46
 msgid "New Nickname"
