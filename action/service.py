@@ -1,10 +1,10 @@
+from action import feed
 from gettext import gettext as _
-from google.appengine.api import users
+from google.appengine.api import users, memcache
 from lib.controller import Action
 from lib.decorators import login_required, rss
 from lib.recaptcha.client import captcha
 import models
-from action import feed
 import settings
 
 try:
@@ -127,12 +127,23 @@ class UserArticleList():
         return Action.Result.DEFAULT
     
 class Category(Action):
+    CACHE_KEY = 'category-list'
+    
     def get(self, category_name=None):
-        current_category = None
-        if category_name:
-            current_category = models.Category.get_by_name(category_name) 
-        self.category_list = models.Category.get_list(current_category)
-        self.current_category = current_category     
+        cached_categories = memcache.get(self.CACHE_KEY)
+        if not cached_categories:
+            cached_categories = {}
+        if not cached_categories.has_key(category_name):
+            current_category = None
+            if category_name:
+                current_category = models.Category.get_by_name(category_name) 
+            self.category_list = models.Category.get_list(current_category)
+            self.current_category = current_category
+            cached_categories[category_name] = {'category_list': self.category_list, 'current_category': current_category}
+            memcache.set(self.CACHE_KEY, cached_categories)
+        else:
+            self.category_list = cached_categories[category_name]['category_list']
+            self.current_category = cached_categories[category_name]['current_category']
         return Action.Result.DEFAULT
     
 class Reputation(Action):

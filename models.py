@@ -1,12 +1,13 @@
 from copy import deepcopy
 from django.utils.html import strip_tags, strip_entities
 from gettext import gettext as _
-from google.appengine.api import users, datastore
+from google.appengine.api import users, datastore, memcache
 from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.ext import db
 from lib import bleach
 from lib.BeautifulSoup import BeautifulSoup
 from lib.base62 import base62_encode
+import action
 import datetime
 import difflib
 import logging
@@ -220,6 +221,8 @@ class Category(db.Model):
         if self.parent_category and self.path == self.parent_category.path:
             raise BadValueError(_('Can not reference recursively.'))        
         super(Category, self).put()
+        memcache.delete(action.service.Category.CACHE_KEY)
+        
         
     def delete(self):
         children = self.__class__.all().filter('parent_category =', self).fetch(DEFAULT_FETCH_COUNT)
@@ -229,6 +232,7 @@ class Category(db.Model):
             db.run_in_transaction_options(xg_on, self.put)
         else:
             super(Category, self).delete()
+        memcache.delete(action.service.Category.CACHE_KEY)
             
     def get_path(self):
         return self.__class__.gql('WHERE name IN :1 AND is_active = True', self.path).fetch(DEFAULT_FETCH_COUNT)        
