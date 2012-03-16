@@ -80,10 +80,6 @@ body {
 	margin: 0
 }
 
-#article-btns {
-	display: none
-}
-
 #article-list,#article-list caption {
 	display: none
 }
@@ -155,6 +151,10 @@ time {
 
 #article-item,#article-reputation {
 	display: none
+}
+
+#article-reputation {
+	margin-bottom: 16px
 }
 
 #article-item-body {
@@ -314,7 +314,8 @@ time {
 }
 
 #article-btns {
-	margin: 16px 0;
+	display: none;
+	margin: 0 0 16px 0;
 	clear: both;
 	float: left;
 	width: 100%;
@@ -523,15 +524,19 @@ iframe {
 	#sidebar {
 		position: fixed;
 		left:0;
-		right: 0;
 		top: 50px;
 		z-index: 1030;
 		margin-left: 10px;
 		width: 301px;
 	}
 	
+	* html #sidebar { 
+		position: absolute;
+	}
+	
 	#content, #recent {
 	    position: relative;
+	    top: -10px;
         left: 311px;
         margin-left: 0;
 	}
