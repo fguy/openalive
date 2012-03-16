@@ -145,7 +145,7 @@ var initializeModels = function() {
 		      });
 		    },
 		    markStarred: function(name, empty) {
-		      var place = $("#category-explorer .category-link[title=" + name + "] .icon-star");
+		      var place = $("#category-explorer .category-link[title='" + name + "'] .icon-star");
 		      if(place.length > 0) {
 		        empty ? place.addClass("icon-star-empty") : place.removeClass("icon-star-empty");
 		      }
@@ -168,7 +168,7 @@ var initializeModels = function() {
 		        url: "/service/starred-category/" + encodeURI(name),
 		        cache: false,
 		        success: function() {
-		          $("#starred span:has(.category-link[title=" + name + "])").remove();
+		          $("#starred span:has(.category-link[title='" + name + "'])").remove();
 		          var needle = $.inArray(name, self.starred);
 		          needle != -1 && self.starred.splice(needle, 1);
 		          $("#starred-wrapper").toggle(self.starred.length > 0);
