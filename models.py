@@ -10,7 +10,6 @@ from lib.base62 import base62_encode
 import action
 import datetime
 import difflib
-import logging
 import md5
 import re
 
@@ -220,7 +219,7 @@ class Category(db.Model):
         self.path.append(self.name)
         if self.parent_category and self.path == self.parent_category.path:
             raise BadValueError(_('Can not reference recursively.'))
-        if not previous.parent_category or not self.parent_category:
+        if not self.parent_category or (previous and not previous.parent_category):
             memcache.delete(action.category.Top.CACHE_KEY)                
         super(Category, self).put()
         memcache.delete(action.service.Category.CACHE_KEY)
@@ -270,12 +269,14 @@ class Category(db.Model):
     def increase_article_count(self):
         self.article_count += 1
         super(self.__class__, self).put()
+        memcache.delete(action.service.Category.CACHE_KEY)
         
     def decrease_article_count(self):
         if self.article_count == 0:
             raise db.Rollback()                
         self.article_count -= 1
         super(self.__class__, self).put()
+        memcache.delete(action.service.Category.CACHE_KEY)
         
     def increase_starred_count(self):
         self.starred_count += 1

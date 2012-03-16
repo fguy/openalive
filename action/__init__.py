@@ -1,1 +1,1 @@
-__all__ = ["feed"]
+__all__ = ['feed', 'category', 'service']
