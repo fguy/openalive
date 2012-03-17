@@ -20,7 +20,7 @@ $.ajaxSetup({
 	}
 });
 
-var models;
+var service;
 var initializeModels = function() {
   var RSS_BURNER_MAP = {
       "http://openalive.appspot.com/feed/category/%ED%86%A0%EB%A1%A0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/wKwe",
@@ -55,7 +55,7 @@ var initializeModels = function() {
 		}
 	}
 	
-	models || (models = {
+	service || (service = {
 		Category : (function() {
 		  var self = {
 		    current: null,
@@ -66,11 +66,11 @@ var initializeModels = function() {
 		    	$("#category-explorer-wrapper, #loading, .btn-post-article").show();
 		    	name && $("#recent").hide();
 		      if(self.getCurrent() == name) {
-		        models.Article.loadList('category', name, callback);
+		        service.Article.loadList('category', name, callback);
 		        return;
 		      }
 		      self.current = name;
-		      models.Article.hideList();
+		      service.Article.hideList();
 		      $.getJSON("/service/category/" + encodeURI(name), function(data) {
 		        $("#container .breadcrumb li:gt(0)").remove();
 		        $("#container .breadcrumb li:eq(0) .divider").toggle(data.current_category != null);
@@ -95,16 +95,16 @@ var initializeModels = function() {
 		          }).get().join(""));
 		          data.current_category.description ? $("#article-list caption").html(data.current_category.description).show() : $("#article-list caption").hide();
 		          $(".btn-post-article").show();
-		          models.Article.loadList("category", data.current_category.name, callback);
+		          service.Article.loadList("category", data.current_category.name, callback);
 		        } else {
 		        	$("#article-list caption").empty();
 		        	$("#loading, #no-article, .btn-post-article").hide();
-		        	models.Article.hide();
+		        	service.Article.hide();
 		        }
 		      });
 		    },
 		    decorateItem: function(item, isActive, isChild) {
-		      var me = models.User.getMe();
+		      var me = service.User.getMe();
 		    	return formatString('<li{{ activeClass }}>\
 		    	          <a href="#!/{{ name }}" title="{{ name }}" class="category-link{{ childClass }}">\
 		    							{{ childIcon }}\
@@ -225,7 +225,7 @@ var initializeModels = function() {
 		  }
 		  self.loadStarred();
 	    $("#category-explorer .nav .icon-star, #starred .icon-star").live("click", function() {
-	      $(this).hasClass("icon-star-empty") ? models.Category.star($(this).parent().attr("title")) : models.Category.unstar($(this).parent().attr("title"));
+	      $(this).hasClass("icon-star-empty") ? service.Category.star($(this).parent().attr("title")) : service.Category.unstar($(this).parent().attr("title"));
 	      return false;
 	    });
 	
@@ -241,6 +241,56 @@ var initializeModels = function() {
 		})(),
 		
 		Article: (function() {
+		  var Meta = {
+		      types: [{
+		          fields: ["title", "description"],
+		          selector: "head meta[name='{{ field }}']",
+		          contentField: "content",
+		          template: '<meta name="{{ field }}" content="{{ content }}">'
+		        },{
+		          fields: ["title", "type", "url", "image", "site_name", "description"],
+		          selector: "head meta[property='og:{{ field }}']",
+		          contentField: "content",
+		          template: '<meta property="og:{{ field }}" content="{{ content }}">'
+		        },{
+		          fields: ["image", "video"],
+		          selector: "head link[rel='{{ field }}']",
+		          contentField: "href",
+		          template: '<link rel="{{ field }}_src" href="{{ content }}">'
+		        }
+		      ],
+		      add: function(data) {
+		        Meta.clear();
+		        $('<meta property="og:type" content="article">').appendTo("head");
+		        $.each(data, function(key, val) {
+		          var html = [];
+		          $(Meta.types).each(function(i, type) {
+		            if($.inArray(key, type.fields) > -1) {
+		              var needle = $(formatString(type.selector, {field: key}));
+		              if(needle.length > 0) {
+		                needle.attr(type.contentField, val);
+		              } else {
+		                html.push(formatString(type.template, {field: key, content: val}));
+		              }
+		              if(key == "video" && $("head meta[name='video_type']").length == 0) {
+		                $('<meta name="video_type" content="application/x-shockwave-flash">').appendTo("head");
+		              }
+		            }
+		          });
+		          html.length > 0 && $(html.join("")).appendTo("head");
+		        });
+		      },
+		      clear: function() {
+		        var selector = ["head meta[property='og:type']", "head meta[name='video_type']"];
+		        $(Meta.types).each(function(i, type) {
+		          $(type.fields).each(function(j, field) {
+		           selector.push(formatString(type.selector, {field: field}));
+		          });
+		        });
+		        selector.length > 0 && $(selector.join(",")).remove();
+		      }
+		  }
+		  
 		  var self = {
 		  		current: null,
 		  		currentType: {name:"", model:null, sign:""},
@@ -256,7 +306,7 @@ var initializeModels = function() {
 		      	}
 		      	
 	          self.currentType.name = type;
-	          self.currentType.model = models[type.charAt(0).toUpperCase() + type.slice(1)];
+	          self.currentType.model = service[type.charAt(0).toUpperCase() + type.slice(1)];
 	          self.currentType.sign = type == "category" ? "!" : type; 
 	           
 		      	var currentTypeValue = self.currentType.model.getCurrent();
@@ -264,7 +314,7 @@ var initializeModels = function() {
 		      	self.hide();
 		      	callback && callback();
 		      	$.getJSON(formatString("/{{ type }}/article-list/{{ name|encodeURI }}", {type: type, name: name}), {page: page}, function(data) {
-		      	  if(data.list.length == 0) { // no article in this category.
+		      	  if(!data.list || data.list.length == 0) { // no article in this category.
 		      	    $("#no-article").show().find(".current-name").text(currentTypeValue);
 		      	    $("#loading").hide();
 		      	    self.hideList();
@@ -326,10 +376,10 @@ var initializeModels = function() {
 		      		self.render();
 		      		$("#article-btns .btn-read").show();
 		      		$("#article-btns .btn-reputation, #article-btns .btn-subscribe").hide();
-		      		var me = models.User.getMe();
+		      		var me = service.User.getMe();
 		      		if(!me || data.article.author.email_hash != me.email_hash) { // don't show for mine
 			      		var reputationFound = false;
-			      		$(models.Reputation.types).each(function(i, item) {
+			      		$(service.Reputation.types).each(function(i, item) {
 			      			if(data[item + "d"]) {
 			      				reputationFound = true;
 			      				$("#btn-un" + item + "-article").show();
@@ -347,9 +397,9 @@ var initializeModels = function() {
 		      		$.scrollTo($("#article-item").position().top, 100);
 		      		$("#loading, #article-list caption").hide();
 		      		$("#comments li:not(#comment-input):not(:first)").remove();
-		      		models.Comment.resetLoadedCount();
-		      		models.Comment.renderBest(data.best_comment_list);
-		      		models.Comment.render(data.comment_list);
+		      		service.Comment.resetLoadedCount();
+		      		service.Comment.renderBest(data.best_comment_list);
+		      		service.Comment.render(data.comment_list);
 		      	});
 		      },
 		      render: function() {
@@ -357,8 +407,8 @@ var initializeModels = function() {
 		      	$("#article-item-body").html(self.current.body);
 		      	$("#article-item-author-avatar").html(formatString('<a href="/user/{{ authorId }}" class="user">{{ thumbnail }}</a>', {
 		      		authorId: self.current.author.id,
-		      		original: models.User.getAvatar(self.current.author.email_hash, null, true),
-		      		thumbnail: models.User.getAvatar(self.current.author.email_hash, 100)
+		      		original: service.User.getAvatar(self.current.author.email_hash, null, true),
+		      		thumbnail: service.User.getAvatar(self.current.author.email_hash, 100)
 		      	}));
 		      	$("#article-item-author-nickname").html(formatString('<a href="/user/{{ author.id }}" class="user"><span class="nickname">{{ author.nickname }}</span></a>', self.current));
 		      	$("#article-item-author-joined").text(prettyDate(self.current.author.joined));
@@ -374,8 +424,26 @@ var initializeModels = function() {
 	      			  tag: item.content.join(",")
 	      			});
 	      		}).get().join(""));
-	      		$(models.Reputation.types).each(function(i, item) {
-	      		  models.Reputation.renderUsers(item);
+	      		
+	      		var meta = {
+	              title: self.current.title,
+	              description: self.current.excerpt,
+	              url: formatString("{{ protocol }}//{{ host }}/{{ id }}", {
+	                protocol: location.protocol,
+	                host: location.host,
+	                id: self.current.id,
+	                page: self.getCurrentPage()
+	              })
+	      		}
+	      		if(self.current.video) {
+	      		  self.current.image || (meta.image = formatString("http://img.youtube.com/vi/{{ item.video|videoId }}/0.jpg", self.current.video));
+	      		  meta.video = self.current.video;
+	      		}
+	      		self.current.image && (meta.image = self.current.image);
+	      		Meta.add(meta);
+	      			      		
+	      		$(service.Reputation.types).each(function(i, item) {
+	      		  service.Reputation.renderUsers(item);
 	      		});
 		      },
 		      hideList: function() {
@@ -388,11 +456,12 @@ var initializeModels = function() {
 		      },
 		      hide: function() {
 		      	self.current = null;
+		      	Meta.clear();
 		      	$("#article-list tbody .active").removeClass("active");
 		      	$("#article-item, #article-reputation, .btn-read").hide();
 		      },
 		      post: function(form) {
-		        var currentCategory = models.Category.getCurrent();
+		        var currentCategory = service.Category.getCurrent();
 		        $("#loading").show();
 		        $.post("/service/article/" + currentCategory, form.serialize(), function(data) {
 		          if(self.getCurrentPage() != 1) {
@@ -493,7 +562,7 @@ var initializeModels = function() {
 		        type: self.currentType.sign,
 		        currentTypeValue: self.currentType.model.getCurrent(),
 		        page: page,
-		        avatar: models.User.getAvatar(item.author.email_hash, 16),
+		        avatar: service.User.getAvatar(item.author.email_hash, 16),
 		        hasVideo: item.video != null ? '<i class="icon-film"></i> ' : "",
 		        hasImage: item.image != null ? '<i class="icon-picture"></i> ' : "",
 		        commentCount: item.comment_count > 0 ? '<span class="badge"><i class="icon-comment icon-white"></i> ' + item.comment_count + '</span>' : ""
@@ -513,7 +582,7 @@ var initializeModels = function() {
 	    });
 	
 		  $(".btn-post-article").click(function() {
-		  	if(!models.User.getMe()) {
+		  	if(!service.User.getMe()) {
 		  		$("#nav .login-url").click();
 		  		return;
 		  	}
@@ -543,7 +612,7 @@ var initializeModels = function() {
 	          $("#article-item #article-item-" + type + "_count").text(count);
 	        }
 	        $("#article-btns .btn-reputation").hide();
-	        var me = models.User.getMe();
+	        var me = service.User.getMe();
 	    		if(isUndo) {
 	    		  var users = self.current[type + "d-users"];
 	    		  var pos = -1;
@@ -559,13 +628,13 @@ var initializeModels = function() {
 	    		  self.current[type + "d-users"].unshift(me);
 	    		  $("#btn-un" + action + "-article").show();
 	    		}
-	    		models.Reputation.renderUsers(type);
+	    		service.Reputation.renderUsers(type);
 	        $().toastmessage("showSuccessToast", gettext(action + "d."));
 	        
 	        $("#loading").hide();
 	      };
 	      $("#loading").show();
-	      models.Reputation[action]('Article', self.current.id, callback);
+	      service.Reputation[action]('Article', self.current.id, callback);
 	    });
 	    $("#btn-post-article-submit").click(function() {
 	    	$("#post-article-id").attr("disabled") ? self.post($("#post-article-form")) : self.put($("#post-article-form"));
@@ -598,7 +667,7 @@ var initializeModels = function() {
 					},
 					loadList: function() {
 						$("#loading").show();
-						var article = models.Article.getCurrent();
+						var article = service.Article.getCurrent();
 						$.getJSON("/service/comment/" + article.id, {offset: article.comment_count - self.limit - self.loadedCount}, function(data) {
 							self.render(data.comment_list, -1);
 							$("#loading").hide();
@@ -607,7 +676,7 @@ var initializeModels = function() {
 					},
 					render: function(data, position) {
 						self.loadedCount += data.length;
-						$("#comment-load-more").toggle(self.loadedCount < models.Article.getCurrent().comment_count);					
+						$("#comment-load-more").toggle(self.loadedCount < service.Article.getCurrent().comment_count);					
 						var rendered = $($(data).map(function(i, item) {
 							return self.decorateRow(item, false);
 						}).get().join(""));
@@ -647,13 +716,13 @@ var initializeModels = function() {
 								 bestSuffix: isBest ? "-best" : "",
 								 bestClass: isBest ? " comment-item-best" : "",
 								 class: item.parent_id ? " comment-item-children" : " comment-item-parent",
-								 avatar: models.User.getAvatar(item.author.email_hash, 32),
+								 avatar: service.User.getAvatar(item.author.email_hash, 32),
 								 buttons: isBest ? "" : self._getButtons(item),
 								 label: isBest ? ' <span class="label label-success">BEST</span>' : ""
 							 }));
 					},
 					_getButtons: function(item) {
-            var me = models.User.getMe();
+            var me = service.User.getMe();
             var isMine = me && me.email_hash == item.author.email_hash;  
 					  return '<span class="comment-btns">' + 
                     (isMine ? '<button class="btn-comment-delete btn" data-comment-id="' + item.id + '" title="' + gettext('Delete') + '"><i class="icon-trash"></i></button>' : "")
@@ -679,7 +748,7 @@ var initializeModels = function() {
 							return;
 						}
 						$("#loading").show();
-						var url = "/service/comment/" + models.Article.getCurrent().id;
+						var url = "/service/comment/" + service.Article.getCurrent().id;
 						self.parentId && (url += "/" + self.parentId);
 						$.post(url, {body: val}, function(data) {
 							self.render([data.comment], data.comment.parent_id ? "reply" : "last");
@@ -746,7 +815,7 @@ var initializeModels = function() {
 	      };
 	      var id = btn.data("comment-id");
 	      $("#loading").show();
-	      models.Reputation[action]('Comment', id, callback);
+	      service.Reputation[action]('Comment', id, callback);
 			});
 			
 			$("#comments .btn-comment-reply").live("click", function() {
@@ -965,7 +1034,7 @@ var initializeModels = function() {
 					return self.current;
 				},
 				select: function(name, callback) {
-				  models.Category.current = null;
+				  service.Category.current = null;
 					self.current = name;
 		    	$("#nav li.active").removeClass("active");
 		    	$("#nav li:has(a[href='/tags'])").addClass("active");					
@@ -977,7 +1046,7 @@ var initializeModels = function() {
           	label: gettext("Tags"), 
           	tag: gettext(name)
           }));
-          models.Article.loadList('tag', name, callback);
+          service.Article.loadList('tag', name, callback);
 				}	
 			}
 			$("a.tags-link").live("click", function() {
@@ -998,7 +1067,7 @@ var initializeModels = function() {
 		Subscription: (function(){
 		  var self = {
   		  subscribe: function(btn) {
-          $.post("/service/subscription/" + models.Article.getCurrent().id, function() {
+          $.post("/service/subscription/" + service.Article.getCurrent().id, function() {
             btn.hide();
             btn.parent().find("#btn-unsubscribe-article").show();
             $().toastmessage("showSuccessToast", gettext("Subscribed"));
@@ -1008,7 +1077,7 @@ var initializeModels = function() {
   		  unsubscribe: function(btn) {
           $.ajax({
             type: "DELETE",
-            url: "/service/subscription/" + models.Article.getCurrent().id,
+            url: "/service/subscription/" + service.Article.getCurrent().id,
             cache: false,
             success: function() {
               btn.hide();
@@ -1058,7 +1127,7 @@ var initializeModels = function() {
 	      });	
 			},
 			renderUsers: function(type) {
-			  var article = models.Article.getCurrent();
+			  var article = service.Article.getCurrent();
 			  var users = article[type + "d-users"];
 			  if(!users) {
 			  	return;
@@ -1071,7 +1140,7 @@ var initializeModels = function() {
 			  }
 			  wrapperDiv.show();
 	      var rendered = $(users).map(function(i, item) {
-	        return '<a href="/user/' + item.id + '" class="user">' + models.User.getAvatar(item.email_hash, 16) + '<span class="nickname">' + item.nickname + "</span></a> ";
+	        return '<a href="/user/' + item.id + '" class="user">' + service.User.getAvatar(item.email_hash, 16) + '<span class="nickname">' + item.nickname + "</span></a> ";
 	      });
 	      var output = rendered.get().join(", ");
 	      

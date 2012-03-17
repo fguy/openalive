@@ -62,11 +62,11 @@ var ArticleEditor = (function() {
   var open = function() {
   	initialized ? transferFieldValues() :init();
   	var edit = isEdit();
-    if (!edit && !models.Category.getCurrent()) {
+    if (!edit && !service.Category.getCurrent()) {
       $().toastmessage("showWarningToast", gettext("No category selected."));
       return false;
     }
-    $("#post-article-current-path").text(edit ? gettext("Home") + " / " + models.Article.getCurrent().category.path.join(" / ") : models.Category.getCurrentPath());
+    $("#post-article-current-path").text(edit ? gettext("Home") + " / " + service.Article.getCurrent().category.path.join(" / ") : service.Category.getCurrentPath());
     div.modal();
     return false;
   }

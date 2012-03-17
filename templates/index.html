@@ -1,5 +1,10 @@
 {% extends base %}
 {% load i18n %}
+{% block meta %}
+    {{ block.super }}
+	<meta property="fb:app_id" content="350467444992286" />
+	<meta property="og:site_name" content="{% trans 'Open Alive' %}"/>
+{% endblock %}
 {% block content %}
       <div class="row-fluid">
         <div id="sidebar" class="span3">

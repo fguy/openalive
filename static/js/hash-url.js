@@ -45,17 +45,17 @@ $(function() {
 					idx > -1 ? idx : hash.length).split("/");
 			
 			var callback = tokens.length > 1 && tokens[1] ? function() {
-				models.Article.show(tokens[1]);
-			} : models.Article.hide;
+				service.Article.show(tokens[1]);
+			} : service.Article.hide;
 			
 			switch (mString) {
 			case "!":
 			case "category":
-				models.Category.select(tokens[0], callback);
-				tokens.length == 1 && !tokens[0] && models.Category.showTopLevelRecent();
+				service.Category.select(tokens[0], callback);
+				tokens.length == 1 && !tokens[0] && service.Category.showTopLevelRecent();
 				break;
 			case "tag":
-				models.Tag.select(tokens[0], callback);
+				service.Tag.select(tokens[0], callback);
 				break;
 			}
 		}
