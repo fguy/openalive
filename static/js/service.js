@@ -587,7 +587,7 @@ var initializeModels = function() {
 		  }
 		  $(window).bind("resize", self.resizeRow);
 	    $("#btn-list-article").click(function() {
-	      var loc = formatString("{{ type }}/{{ value }}", {type: self.currentType.sign, value: self.currentType.model.getCurrent()});
+	      var loc = formatString("{{ type }}/{{ value|encodeURI }}", {type: self.currentType.sign, value: self.currentType.model.getCurrent()});
 	      var page = self.getCurrentPage();
 	      page > 1 && (loc += '?page=' + page);
 	      $("#article-item-body").empty(); // to stop video.
