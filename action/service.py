@@ -6,6 +6,7 @@ from lib.decorators import login_required, rss
 from lib.recaptcha.client import captcha
 import models
 import settings
+import urllib
 
 try:
     import json
@@ -78,6 +79,9 @@ class Article(Action):
             getattr(self, '%sd-users' % item['type']).append(item)
         if user:
             self.subscribed = models.Subscription.is_subscribed(self.article)
+
+        if not self.is_ajax and not self.request.headers.has_key('X-Robots-Tag'):
+            self.redirect('/#!/%s/%s' % (urllib.quote(self.article.category.name.encode('utf8')), self.article.key().id()))
         return Action.Result.DEFAULT
     
 class Comment(Action):

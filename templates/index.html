@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block meta %}
     {{ block.super }}
-	<meta property="fb:app_id" content="350467444992286" />
+	<meta property="fb:app_id" content="{{ settings.FB_APP_ID}}" />
 	<meta property="og:site_name" content="{% trans 'Open Alive' %}"/>
 {% endblock %}
 {% block content %}
@@ -41,6 +41,8 @@
           	<hr>
           </article>
           <div id="article-reputation">
+          	  <div id="fb-like"><fb:like send="true" layout="button_count" show_faces="false"></fb:like></div>
+          	  <a name="fb_share" type="button"></a>
 	          <div id="likes-wrapper"><i class="icon-heart icon-blue"></i><span id="likes"></span></div>
 	          <div id="hates-wrapper"><i class="icon-fire icon-blue"></i><span id="hates"></span></div>
 	          <ul id="best-comments"></ul>          
@@ -102,14 +104,14 @@
           <div class="pagination"><ul id="article-pagination"></ul></div>    
         </div><!--/span-->
       </div><!--/row-->
-{% include '_snippets/post-article.html' %}
+	  {% include '_snippets/post-article.html' %}
       <div id="user-info" class="modal hide fade">
-        <div id="user-info-body" class="modal-body">
-        </div>
+        <div id="user-info-body" class="modal-body"></div>
         <div class="modal-footer">
           <button class="btn" data-dismiss="modal">Close</button>
         </div>
       </div>
+      <div id="fb-root"></div>
 {% endblock %}
 
 
@@ -122,7 +124,27 @@
 {% block jslib %}
     {{ block.super }}
 	<script type="text/javascript">
-	var RECAPTCHA_PUBLIC_KEY = "6LdU1M0SAAAAAIlUgA9SIgB4mri-A_9Y6Ht7oTGA";
+	var RECAPTCHA_PUBLIC_KEY = "{{ settings.RECAPTCHA_PUBLIC_KEY }}";
+	  window.fbAsyncInit = function() {
+	    FB.init({
+	      appId      : "{{ settings.FB_APP_ID}}", // App ID
+	      channelUrl : "/static/channel.html", // Channel File
+	      status     : false, // check login status
+	      cookie     : true, // enable cookies to allow the server to access the session
+	      xfbml      : true  // parse XFBML
+	    });
+	
+	    // Additional initialization code here
+	  };
+	  
+	  // Load the SDK Asynchronously
+	  $(function() {
+	    var e = document.createElement("script");
+	    e.src = "//connect.facebook.net/en_US/all.js";
+	    e.async = true;
+	    document.getElementById("fb-root").appendChild(e);
+	  });
+	
 	</script>
 	{% js 'js/jquery.tagsinput.min.js' %}
 	{% js 'js/jquery.toastmessage.js' %}

@@ -56,7 +56,8 @@ var initializeModels = function() {
 	}
 	
 	service || (service = {
-		Category : (function() {
+		name: gettext("Open Alive"),
+		Category: (function() {
 		  var self = {
 		    current: null,
 		    starred: [],
@@ -97,6 +98,7 @@ var initializeModels = function() {
 		          $(".btn-post-article").show();
 		          service.Article.loadList("category", data.current_category.name, callback);
 		        } else {
+		        	document.title = service.name;
 		        	$("#article-list caption").empty();
 		        	$("#loading, #no-article, .btn-post-article").hide();
 		        	service.Article.hide();
@@ -248,20 +250,20 @@ var initializeModels = function() {
 		          contentField: "content",
 		          template: '<meta name="{{ field }}" content="{{ content }}">'
 		        },{
-		          fields: ["title", "type", "url", "image", "site_name", "description"],
+		          fields: ["title", "type", "url", "image", "video", "site_name", "description"],
 		          selector: "head meta[property='og:{{ field }}']",
 		          contentField: "content",
 		          template: '<meta property="og:{{ field }}" content="{{ content }}">'
 		        },{
 		          fields: ["image", "video"],
-		          selector: "head link[rel='{{ field }}']",
+		          selector: "head link[rel='{{ field }}_src']",
 		          contentField: "href",
 		          template: '<link rel="{{ field }}_src" href="{{ content }}">'
 		        }
 		      ],
 		      add: function(data) {
 		        Meta.clear();
-		        $('<meta property="og:type" content="article">').appendTo("head");
+		        $('<meta property="og:type" content="openalive:article">').appendTo("head");
 		        $.each(data, function(key, val) {
 		          var html = [];
 		          $(Meta.types).each(function(i, type) {
@@ -410,7 +412,7 @@ var initializeModels = function() {
 		      		original: service.User.getAvatar(self.current.author.email_hash, null, true),
 		      		thumbnail: service.User.getAvatar(self.current.author.email_hash, 100)
 		      	}));
-		      	$("#article-item-author-nickname").html(formatString('<a href="/user/{{ author.id }}" class="user"><span class="nickname">{{ author.nickname }}</span></a>', self.current));
+		      	$("#article-item-author-nickname").html(formatString('<a href="/user/{{ author.id }}" class="user" rel="author"><span class="nickname">{{ author.nickname }}</span></a>', self.current));
 		      	$("#article-item-author-joined").text(prettyDate(self.current.author.joined));
 		      	$("#article-item-created time").attr("datetime", self.current.created).text(prettyDate(self.current.created));
 		      	if(self.current.created != self.current.last_updated) {
@@ -425,23 +427,29 @@ var initializeModels = function() {
 	      			});
 	      		}).get().join(""));
 	      		
+	      		var staticUrl = formatString("{{ protocol }}//{{ host }}/{{ id }}", {
+              protocol: location.protocol,
+              host: location.host,
+              id: self.current.id,
+              page: self.getCurrentPage()
+            });
+            
 	      		var meta = {
 	              title: self.current.title,
 	              description: self.current.excerpt,
-	              url: formatString("{{ protocol }}//{{ host }}/{{ id }}", {
-	                protocol: location.protocol,
-	                host: location.host,
-	                id: self.current.id,
-	                page: self.getCurrentPage()
-	              })
+	              url: staticUrl
 	      		}
 	      		if(self.current.video) {
-	      		  self.current.image || (meta.image = formatString("http://img.youtube.com/vi/{{ item.video|videoId }}/0.jpg", self.current.video));
+	      		  self.current.image || (meta.image = formatString("http://img.youtube.com/vi/{{ video|videoId }}/0.jpg", self.current));
 	      		  meta.video = self.current.video;
 	      		}
 	      		self.current.image && (meta.image = self.current.image);
 	      		Meta.add(meta);
-	      			      		
+
+	      		if(typeof FB != "undefined") {
+		      		$("#fb-like").html(formatString('<fb:like send="true" href="{{ staticUrl }}" layout="button_count" show_faces="false"></fb:like>', {staticUrl: staticUrl}));
+		      		FB.XFBML.parse();
+	      		}
 	      		$(service.Reputation.types).each(function(i, item) {
 	      		  service.Reputation.renderUsers(item);
 	      		});
@@ -555,7 +563,7 @@ var initializeModels = function() {
 			          	<span class="article-excerpt">{{ excerpt }}</span>\
 			          </div>\
 		          </td>\
-		          <td class="article-user"><a href="/user/{{ author.id }}" class="user">{{ avatar }}<span class="nickname">{{ author.nickname }}</span></a></td>\
+		          <td class="article-user"><a href="/user/{{ author.id }}" class="user" rel="author">{{ avatar }}<span class="nickname">{{ author.nickname }}</span></a></td>\
 		          <td class="article-likes"><span class="like-count count">{{ like_count }}</span></td>\
 		          <td class="article-date"><time datetime="{{ created }}">{{ created|prettyDate }}</time></td>\
 		        </tr>', $.extend(true, item, {
@@ -650,9 +658,18 @@ var initializeModels = function() {
 		    $("#article-item #article-item-title").text($(this).attr("title"));
 		    return true;
 		  });
+		  
+		  if(typeof FB != "undefined") {
+			  FB.Event.subscribe("edge.create", function(href, widget) {
+			  	$("#btn-like-article").click();
+			  });
+			  
+			  FB.Event.subscribe("edge.remove", function(href, widget) {
+			  	$("#btn-unlike-article").click();
+			  });
+		  }
 		  return self;
 		})(),
-		
 		
 		Comment: (function() {
 			var self = {

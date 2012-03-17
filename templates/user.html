@@ -15,7 +15,7 @@
 	</div>
 	<dl class="span2">
 		<dt>{% trans 'Nickname' %}</dt>
-		<dd class="n"><span class="nickname">{{ user.nickname|safe }}</span> 
+		<dd class="n"><span class="nickname"{% if is_me %} rel="me"{% endif %}>{{ user.nickname|safe }}</span> 
 			<span class="user-btns">{% if is_me %}<a href="#change-user-dialog" class="btn" id="change-user" data-toggle="modal">{% trans 'Change' %}</a>{% endif %}</span></dd>
 		<dt>{% trans 'Joined' %}</dt>
 		<dd><time datetime="{{ user.joined|date:'c' }}">{{ user.joined|pretty_date }}</time></dd>

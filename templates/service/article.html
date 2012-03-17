@@ -1,0 +1,44 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ artile.title }}</title>
+	<meta property="fb:app_id" content="350467444992286" />
+	<meta property="og:site_name" content="{% trans 'Open Alive' %}"/>    
+	<meta property="og:type" content="openalive:article">
+	<meta name="title" content="{{ article.title }}">
+	<meta property="og:title" content="{{ article.title }}">
+	<meta name="description" content="{{ article.excerpt }}">
+	<meta property="og:description" content="{{ article.excerpt }}">
+	<meta property="og:url" content="{{ request.uri }}">    
+	
+	{% if article.image %}
+	<meta property="og:image" content="{{ article.image }}">
+	<link rel="image_src" href="{{ article.image }}">
+	{% endif %}
+	{% if not article.image and article.video %}
+	<meta property="og:image" content="http://img.youtube.com/vi/{{ article.video|video_id }}/0.jpg">
+	<link rel="image_src" href="http://img.youtube.com/vi/{{ article.video|video_id }}/0.jpg">
+	{% endif %}
+	{% if not article.image and not article.video %}
+	<meta property="og:image" content="{{ settings.STATIC_ROOT }}/img/article-placeholder.png">
+	<link rel="image_src" href="{{ settings.STATIC_ROOT }}/img/article-placeholder.png">
+	{% endif %}
+	{% if article.video %}
+	<meta property="og:video" content="{{ article.video }}">
+	<link rel="video_src" href="{{ article.video }}">
+	<meta name="video_type" content="application/x-shockwave-flash">
+	{% endif %}
+</head>
+<body>
+	<article>
+		<header>
+			<h1>{{ article.title }}</h1>
+			<time pubdate="pubdate" datetime="{{ article.created|date:'c' }}">{{ article.created }}</time>
+			<address class="author">By <a href="/user/{{ article.author.key.id }}" class="user" rel="author"><span class="nickname">{{ article.author.nickname }}</span></a></address>
+		</header>
+		{{ article.body|safe }}
+	</article>
+</body>
+</html>

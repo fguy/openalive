@@ -133,6 +133,7 @@ class Controller(webapp2.RequestHandler):
                     else:
                         context['login_url'] = users.create_login_url(self.request.uri)                
                 context['base'] = '_base/default.html' if not self.__action.is_ajax else '_base/ajax.html'
+                context['settings'] = settings
                 self.response.out.write(loader.get_template(template_path).render(template.context.Context(context)))
             logging.debug('Current result : %s' % result)
         else:

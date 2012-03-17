@@ -22,7 +22,6 @@ admin_console:
 handlers: 
 - url: /static
   static_dir: static
-  secure: never
 
 - url: /favicon.ico
   static_files: static/favicon.ico
