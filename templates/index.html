@@ -34,15 +34,18 @@
 	              	<div id="article-item-created"><i class="icon-pencil"></i> <time title="{% trans 'Written Date' %}"></time></div>
 	              	<div id="article-item-last-updated"><i class="icon-edit"></i> <time title="{% trans 'Last Modified' %}"></time></div>              		
               	</div>            
-              	<h2 id="article-item-title"></h2>
+              	<h2 id="article-item-title" itemprop="name"></h2>
             </header>
-          	<p id="article-item-body"></p>
+          	<p id="article-item-body" itemprop="description"></p>
           	<ul id="article-item-tags"></ul>
           	<hr>
           </article>
           <div id="article-reputation">
-          	  <div id="fb-like"><fb:like send="true" layout="button_count" show_faces="false"></fb:like></div>
-          	  <a name="fb_share" type="button"></a>
+          	  <div>
+	          	  <span id="fb-like"><fb:like send="true" layout="button_count" show_faces="false"></fb:like></span>
+	          	  <span id="g-plusone"><div class="g-plusone" data-size="medium"></div></span>
+				  <span id="twttr-share"><a href="https://twitter.com/share" class="twitter-share-button" data-via="openalive">Tweet</a></span>
+			  </div>
 	          <div id="likes-wrapper"><i class="icon-heart icon-blue"></i><span id="likes"></span></div>
 	          <div id="hates-wrapper"><i class="icon-fire icon-blue"></i><span id="hates"></span></div>
 	          <ul id="best-comments"></ul>          
@@ -123,6 +126,18 @@
 
 {% block jslib %}
     {{ block.super }}
+	{% js 'js/jquery.tagsinput.min.js' %}
+	{% js 'js/jquery.toastmessage.js' %}
+	{% js 'js/jquery.history.js' %}
+	{% js 'js/jquery.pagination.js' %}
+	{% js 'js/jquery.scrollTo-min.js' %}
+	{% js 'js/jquery.autoresize.min.js' %}
+	{% js 'tiny_mce/jquery.tinymce.js' %}
+	{% js 'js/utils.js' %}
+	{% js 'js/pretty.js' %}
+	{% js 'js/editor.js' %}
+	{% js 'js/service.js' %}
+	{% js 'js/hash-url.js' %}
 	<script type="text/javascript">
 	var RECAPTCHA_PUBLIC_KEY = "{{ settings.RECAPTCHA_PUBLIC_KEY }}";
 	  window.fbAsyncInit = function() {
@@ -146,16 +161,8 @@
 	  });
 	
 	</script>
-	{% js 'js/jquery.tagsinput.min.js' %}
-	{% js 'js/jquery.toastmessage.js' %}
-	{% js 'js/jquery.history.js' %}
-	{% js 'js/jquery.pagination.js' %}
-	{% js 'js/jquery.scrollTo-min.js' %}
-	{% js 'js/jquery.autoresize.min.js' %}
-	{% js 'tiny_mce/jquery.tinymce.js' %}
-	{% js 'js/utils.js' %}
-	{% js 'js/pretty.js' %}
-	{% js 'js/editor.js' %}
-	{% js 'js/service.js' %}
-	{% js 'js/hash-url.js' %}    
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+	<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
+	  {parsetags: 'explicit'}
+	</script>	   
 {% endblock %}

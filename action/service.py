@@ -80,7 +80,7 @@ class Article(Action):
         if user:
             self.subscribed = models.Subscription.is_subscribed(self.article)
 
-        if not self.is_ajax and not self.request.headers.has_key('X-Robots-Tag'):
+        if not self.is_ajax and not self.request.headers.has_key('X-Robots-Tag') and self.request.headers['User-Agent'].find('facebookexternalhit') == -1:
             self.redirect('/#!/%s/%s' % (urllib.quote(self.article.category.name.encode('utf8')), self.article.key().id()))
         return Action.Result.DEFAULT
     

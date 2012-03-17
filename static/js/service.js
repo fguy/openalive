@@ -446,10 +446,15 @@ var initializeModels = function() {
 	      		self.current.image && (meta.image = self.current.image);
 	      		Meta.add(meta);
 
-	      		if(typeof FB != "undefined") {
-		      		$("#fb-like").html(formatString('<fb:like send="true" href="{{ staticUrl }}" layout="button_count" show_faces="false"></fb:like>', {staticUrl: staticUrl}));
-		      		FB.XFBML.parse();
-	      		}
+	      		$("#fb-like").html(formatString('<fb:like send="true" href="{{ staticUrl }}" layout="button_count" show_faces="false"></fb:like>', {staticUrl: staticUrl}));
+	      		typeof FB != "undefined" && FB.XFBML.parse();
+
+	      		$("#g-plusone").html(formatString('<div class="g-plusone" data-size="medium" data-href="{{ staticUrl }}"></div>', {staticUrl: staticUrl}));
+	      		typeof gapi != "undefined" && gapi.plusone.go();
+	      		
+	      		$("#twttr-share").html(formatString('<a href="https://twitter.com/share" class="twitter-share-button" data-text="{{ excerpt }}" data-via="openalive">Tweet</a>', self.current));
+	      		typeof twttr != "undefined" && twttr.widgets.load();
+	      		
 	      		$(service.Reputation.types).each(function(i, item) {
 	      		  service.Reputation.renderUsers(item);
 	      		});

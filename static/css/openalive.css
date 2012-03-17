@@ -541,3 +541,7 @@ iframe {
         margin-left: 0;
 	}
 }
+
+#fb-like iframe {
+	margin-bottom: 3px;
+}
