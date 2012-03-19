@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: http://commondatastorage.googleapis.com/openalive/sitemap.xml

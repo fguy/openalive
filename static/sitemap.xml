@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+	<url>
+		<loc>http://openalive.appspot.com/</loc>
+		<changefreq>hourly</changefreq>
+		<priority>1.00</priority>
+	</url>
+	<url>
+		<loc>http://openalive.appspot.com/category/index</loc>
+		<changefreq>always</changefreq>
+		<priority>1.00</priority>
+	</url>
+	<url>
+		<loc>http://openalive.appspot.com/tags</loc>
+		<changefreq>hourly</changefreq>
+		<priority>0.80</priority>
+	</url>
+	<url>
+		<loc>http://openalive.appspot.com/images</loc>
+		<changefreq>hourly</changefreq>
+		<priority>0.80</priority>
+	</url>
+	<url>
+		<loc>http://openalive.appspot.com/videos</loc>
+		<changefreq>hourly</changefreq>
+		<priority>0.80</priority>
+	</url>
+	<url>
+		<loc>http://openalive.appspot.com/about</loc>
+		<changefreq>weekly</changefreq>
+		<priority>0.80</priority>
+	</url>
+</urlset>
