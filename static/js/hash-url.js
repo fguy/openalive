@@ -22,6 +22,8 @@ $(function() {
 		}
 	}
 	$.history.init(function(hash) {
+		// "_trackEvent" is the pageview event, 
+		_gaq.push(['_trackPageview']);
 		if (hash == "") {
 			$.history.load("!");
 			return;

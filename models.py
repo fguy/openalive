@@ -393,6 +393,12 @@ class Article(AbstractArticle):
         return [item.to_dict() for item in q.fetch(limit, offset)]
     
     @classmethod
+    def get_recent_list(cls, limit=100, offset=0):
+        q = cls.all()
+        q.order('-created')
+        return [item.to_dict() for item in q.fetch(limit, offset)]
+    
+    @classmethod
     def get_list(cls, category, limit=20, offset=0, orderby='created'):
         q = Category.all()
         for item in category.path:

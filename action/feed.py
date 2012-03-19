@@ -27,6 +27,27 @@ class Best(Action):
                       'enclosure': {'url': item['video'] if item['video'] else item['image'], 'type': 'video' if item['video'] else 'image', 'length': 10000} if item['video'] or item['image'] else None,
                      } for item in models.Article.get_best_list(period, offset=offset, limit=limit)]
             }
+        
+class Recent(Action):
+    def get(self):
+        return {
+            'feedUrl': self.request.uri,
+            'title': _('Recent Articles'),
+            'type': 'rss20',
+            'link': '%s/' % self.request.host_url,
+            'description': '',
+            'entries': [{
+                      'title':item['title'], 
+                      'link':'%s/#!/%s/%s?page=%s' % (self.request.host_url, item['category'], item['id'], 1),
+                      'comments':'%s/#!/%s/%s?page=%s#comments' % (self.request.host_url, item['category'], item['id'], 1),
+                      'contentSnippet': item['excerpt'],
+                      'content': item['excerpt'],
+                      'publishedDate':item['created'], 
+                      'author': item['author']['nickname'], 
+                      'categories': [item['category']],
+                      'enclosure': {'url': item['video'] if item['video'] else item['image'], 'type': 'video' if item['video'] else 'image', 'length': 10000} if item['video'] or item['image'] else None,
+                     } for item in models.Article.get_recent_list()]
+            }
 
 class Category(Action):
     def get(self, category_name):

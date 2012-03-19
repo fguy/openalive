@@ -19,59 +19,6 @@ body {
 	display: block;
 }
 
-#post-article {
-	z-index: 6000;
-	background-color: transparent;
-	position: fixed;
-	vertical-align: baseline;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	overflow: auto;
-	margin: 0;
-	width: 100%;
-	max-height: none;
-	border: 0
-}
-
-#post-dialog-wrapper {
-	top: 0px;
-	height: auto;
-	visibility: visible;
-	display: block;
-	position: relative;
-	width: 930px;
-	z-index: 6000;
-	margin: 20px auto auto auto;
-	background-color: #FFF;
-	padding: 0
-}
-
-#post-dialog-wrapper .modal-body {
-	max-height: none
-} 
-
-#post-article #post-dialog {
-	
-}
-
-#post-article #post-dialog #body {
-	height: 480px
-}
-
-#post-article .input-xlarge {
-	width: 785px
-}
-
-#post-article .controls {
-	margin-left: 100px
-}
-
-#post-article .control-label {
-	width: 80px
-}
-
 #category-explorer .nav-header a {
 	color: #999
 }
@@ -161,7 +108,7 @@ time {
 	min-height: 180px;
 }
 
-#article-item-body img, #article-item-body pre {
+#article-item-body img,#article-item-body pre {
 	max-width: 100%
 }
 
@@ -457,14 +404,15 @@ iframe {
 	color: #999
 }
 
-#user-changes li, #user-comments li, #user-articles li, #recent li {
+#user-changes li,#user-comments li,#user-articles li,#recent li {
 	padding: 4px;
 	vertical-align: middle;
 	clear: both;
 	border-bottom: 1px solid #eee
 }
 
-#user-changes li time,#user-comments li time,#user-articles li time, #recent li time {
+#user-changes li time,#user-comments li time,#user-articles li time,#recent li time
+	{
 	vertical-align: middle;
 	color: #999;
 	margin-left: 5px
@@ -474,34 +422,35 @@ iframe {
 	font-weight: bold
 }
 
-#user-articles li .excerpt img, #recent li p img {
+#user-articles li .excerpt img,#recent li p img {
 	max-width: 85px;
 	margin: 5px 10px 5px 0;
 	float: left;
 }
 
-#user-comments li p,#user-articles li .excerpt, #recent li p {
+#user-comments li p,#user-articles li .excerpt,#recent li p {
 	padding-top: 10px;
 	display: table;
 }
 
-#user-articles li .excerpt a, #recent li p a {
+#user-articles li .excerpt a,#recent li p a {
 	color: #333
 }
 
-#user-comments li h4,#user-articles li h4, #recent li h4 {
+#user-comments li h4,#user-articles li h4,#recent li h4 {
 	display: inline;
 	vertical-align: middle;
 }
 
-#user-changes .load-more,#user-comments .load-more, #user-articles .load-more {
+#user-changes .load-more,#user-comments .load-more,#user-articles .load-more
+	{
 	padding: 0;
 	margin: 0;
 	border: none;
 }
 
 #recent li:last-child {
-	border:none
+	border: none
 }
 
 #recent h3 {
@@ -520,28 +469,113 @@ iframe {
 	color: #666;
 }
 
-@media (min-width: 979px) {
+#post-article {
+	z-index: 6000;
+	background-color: transparent;
+	position: fixed;
+	vertical-align: baseline;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	overflow: auto;
+	margin: 0;
+	width: 100%;
+	max-height: none;
+	border: 0
+}
+
+#post-dialog-wrapper {
+	top: 0px;
+	height: auto;
+	visibility: visible;
+	display: block;
+	position: relative;
+	width: 930px;
+	z-index: 6000;
+	margin: 20px auto auto auto;
+	background-color: #FFF;
+	padding: 0
+}
+
+#post-dialog-wrapper .modal-body {
+	max-height: none
+}
+
+#post-article #post-dialog {
+	
+}
+
+#post-article #post-dialog #body {
+	height: 480px
+}
+
+#post-article .input-xlarge {
+	width: 785px
+}
+
+#post-article .controls {
+	margin-left: 100px
+}
+
+#post-article .control-label {
+	width: 80px
+}
+
+@media ( min-width : 979px) {
 	#sidebar {
 		position: fixed;
-		left:0;
+		left: 0;
 		top: 50px;
 		z-index: 1030;
 		margin-left: 10px;
 		width: 301px;
 	}
-	
-	* html #sidebar { 
+	* html #sidebar {
 		position: absolute;
 	}
-	
-	#content, #recent {
-	    position: relative;
-	    top: -10px;
-        left: 311px;
-        margin-left: 0;
+	#content,#recent {
+		position: relative;
+		top: -10px;
+		left: 311px;
+		margin-left: 0;
 	}
 }
 
 #fb-like iframe {
 	margin-bottom: 3px;
+}
+
+#cse-branding {
+	vertical-align: middle
+}
+
+#cse-branding div {
+	display: inline;
+}
+
+#cse-branding table {
+	display: inline-table;
+	vertical-align: middle
+}
+
+#cse .gsc-resultsHeader div {
+	display: inline
+}
+
+#cse .gsc-cursor-page {
+	display: inline-block;
+	margin: 0 10px;
+	font-wight: bold;
+	cursor: pointer;
+}
+
+#cse .gsc-cursor-page:hover {
+	text-decoration: underline
+}
+
+#cse .gsc-cursor {
+	margin: 0 auto;
+	text-align: center;
+	display: table;
 }

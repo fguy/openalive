@@ -13,18 +13,54 @@
         {% css 'css/bootstrap.css' %}
         {% css 'css/bootstrap-responsive.css' %}
         {% css 'css/openalive.css' %}
+        {% css 'css/cse.css' %}
     {% endblock %}
 </head>
 <body itemscope itemtype="http://schema.org/Product">
     {% include '_snippets/nav.html' %}
     <div id="loading"><i class="icon-refresh"></i> {% trans 'Loading...' %}</div>
-    <div id="container" class="container-fluid">{% block content %}{% endblock %}</div>
+    <div id="container" class="container-fluid">
+    	{% block content %}
+    	<div id="cse">Loading</div>
+    	{% endblock %}
+    </div>
+    <div id="cse-dialog" class="modal hide fade">
+      <div id="cse" class="modal-body">{% trans 'Loading...' %}</div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close</button>
+      </div>
+    </div>    
     {% include '_snippets/footer.html' %}
     {% block jslib %}
         <!-- http://code.google.com/intl/ko-KR/apis/libraries/devguide.html#jqueryUI -->
-        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="//www.google.com/jsapi"></script>
         <script type="text/javascript">
+            google.load("search", "1", {nocss: true, nooldnames : true});
             google.load("jquery", "1");
+            
+			google.setOnLoadCallback(function() { 
+				// attach "powered by Google" branding
+			   google.search.Search.getBranding(document.getElementById("cse-branding"));
+			   var searchControl = new google.search.CustomSearchControl('016919445760564507761:vaoyyr90ncq', {});
+			   searchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+			   var options = new google.search.DrawOptions();
+			   options.setSearchFormRoot("cse-search-action-form");
+			   searchControl.draw('cse', options);
+			   
+			   $("#cse-search-form").submit(function() {
+			   	var val = $("#cse-search-input").val();
+			   	if(val) {
+			   		$("#cse-dialog").modal("show");
+			   		searchControl.execute(val);		    		
+			   	}
+			   	return false;
+			   });  
+			 });
+			 
+			 var _gaq=[["_setAccount","UA-30135667-1"],["_trackPageview"]];
+			 (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
+			 g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
+			 s.parentNode.insertBefore(g,s)}(document,"script"));            
         </script>
         <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
         {% js 'js/bootstrap.min.js' %}

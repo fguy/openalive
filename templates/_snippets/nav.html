@@ -16,6 +16,11 @@
               <li{% ifequal request.path '/videos' %} class="active"{% endifequal %}><a href="/videos"><i class="icon-film icon-white"></i>{% trans 'Videos' %}</a></li>
               <li{% ifequal request.path '/about' %} class="active"{% endifequal %}><a href="/about"><i class="icon-info-sign icon-white"></i>{% trans 'About' %}</a></li>
             </ul>
+            <form id="cse-search-form" class="navbar-search pull-left">
+            	<input type="text" name="cse-search-input" id="cse-search-input" class="search-query span2" placeholder="{% trans 'Search' %}">
+            	<span id="cse-branding"></span>
+            </form>
+            <div id="cse-search-action-form" class="hide"></div>
 		    <div class="btn-toolbar pull-right">
 				{% ifequal user None %}
                     <a class="btn btn-primary login-url" href="{{login_url}}"><i class="icon-arrow-right icon-white"></i> {% trans 'Login' %}</a>
