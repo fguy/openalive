@@ -182,7 +182,7 @@ var initializeModels = function() {
 		    showTopLevelRecent: function() {
 		      var div = $("#recent").empty().show();
 		      var template = '\
-		        <div class="span4">\
+		        <div class="recent-item span3">\
 		          <h3><a href="{{ link }}">{{ title }}</a></h3>\
 		          <ul class="unstyled"></ul>\
 		        </div>\

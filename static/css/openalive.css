@@ -469,9 +469,13 @@ iframe {
 	color: #666;
 }
 
-#recent > div.span4 {
+#recent > div.span3 {
 	margin-left: 0;
 	margin-right: 20px;
+}
+
+#recent .recent-item {
+   min-width: 270px;
 }
 
 #home-content > div.row-fluid > div.span2 {
@@ -535,38 +539,6 @@ iframe {
 	width: 80px
 }
 
-@media ( min-width : 979px) {
-	#sidebar {
-		position: fixed;
-		left: 0;
-		top: 50px;
-		z-index: 1030;
-		margin-left: 10px;
-		width: 301px;
-	}
-	* html #sidebar {
-		position: absolute;
-	}
-	#content, #home-content {
-		position: relative;
-		top: -10px;
-		left: 311px;
-		margin-left: 0;
-		padding-left: 0;
-	}
-	#recent {
-	   float: left;
-	   width: 780px;
-	}
-	
-	#external-sns {
-	    float:left;
-	    width: 250px;
-	    margin: 0;
-	    padding: 0;
-    }	
-}
-
 #fb-like iframe {
 	margin-bottom: 3px;
 }
@@ -603,4 +575,42 @@ iframe {
 	margin: 0 auto;
 	text-align: center;
 	display: table;
+}
+
+@media ( min-width : 979px) {
+    #sidebar {
+        position: fixed;
+        left: 0;
+        top: 50px;
+        z-index: 1030;
+        margin-left: 10px;
+        width: 301px;
+    }
+    * html #sidebar {
+        position: absolute;
+    }
+    #content, #home-content {
+        position: relative;
+        top: -10px;
+        left: 311px;
+        margin-left: 0;
+        padding-left: 0;
+    }
+    
+    #home-content {
+        float:left;
+        min-width: 830px;
+    }
+    
+    #recent {
+       float: left;
+       width: 580px;
+    }
+    
+    #external-sns {
+        float:left;
+        width: 250px;
+        margin: 0;
+        padding: 0;
+    }   
 }
