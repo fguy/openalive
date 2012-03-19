@@ -307,6 +307,12 @@ var initializeModels = function() {
 		      		return;
 		      	}
 		      	
+	          $("head link[rel=alternate][type='application/rss+xml']").remove();
+	          $(formatString('<link rel="alternate" type="application/rss+xml" title="{{ name }} RSS" href="/feed/{{ type }}/{{ name|encodeURI }}?output=rss">', {
+	          	type: type,
+	          	name: name
+	          })).appendTo("head");
+		      	
 	          self.currentType.name = type;
 	          self.currentType.model = service[type.charAt(0).toUpperCase() + type.slice(1)];
 	          self.currentType.sign = type == "category" ? "!" : type; 

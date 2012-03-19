@@ -55,3 +55,28 @@ class Category(Action):
                       'enclosure': {'url': item['video'] if item['video'] else item['image'], 'type': 'video' if item['video'] else 'image', 'length': 10000} if item['video'] or item['image'] else None,
                      } for item in models.Article.get_list(category=category, offset=offset, limit=limit)]
             }
+
+class Tag(Action):
+    def get(self, name):
+        tag = models.Tag.get_by_name(name)
+        if not tag:
+            return None
+        link = '%s/tag/%s' % (self.request.host_url, name)
+        return {
+            'feedUrl': self.request.uri,
+            'title': name,
+            'link': link,
+            'type': 'rss20',
+            'description': ','.join(tag.content),
+            'entries': [{
+                      'title':item['title'], 
+                      'link':'%s/%s' % (link, item['id']),
+                      'comments':'%s/%s#comments' % (link, item['id']),
+                      'contentSnippet': item['excerpt'],
+                      'content': item['excerpt'],
+                      'publishedDate':item['created'], 
+                      'author': item['author']['nickname'], 
+                      'categories': [item['category']],
+                      'enclosure': {'url': item['video'] if item['video'] else item['image'], 'type': 'video' if item['video'] else 'image', 'length': 10000} if item['video'] or item['image'] else None,
+                     } for item in models.Tag.get_article_list(tag=tag)]
+            }

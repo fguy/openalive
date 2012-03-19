@@ -1,0 +1,41 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html xmlns:fb="http://ogp.me/ns/fb#">
+<head prefix="og: http://ogp.me/ns# openalive: 
+                  http://ogp.me/ns/apps/openalive#">
+	<meta charset="utf-8">
+    <title>{{ current_category.name|default:_('Open Alive') }}</title>
+	<meta property="fb:app_id" content="{{ settings.FB_APP_ID }}" />
+	<meta property="og:site_name" content="{% trans 'Open Alive' %}"/>    
+	<meta property="og:type" content="openalive:category">
+	<meta name="title" content="{{ current_category.name|default:_('Open Alive') }}">
+	<meta property="og:title" content="{{ current_category.name|default:_('Open Alive') }}">
+	<meta name="description" content="{{ current_category.description }}">
+	<meta property="og:description" content="{{ current_category.description }}">
+	<meta property="og:url" content="{{ request.uri }}">
+	<link rel="alternate" type="application/rss+xml" title="{{ current_category.name }} RSS" href="/feed/category/{{ current_category.name|urlencode }}?output=rss" />
+</head>
+<body itemscope itemtype="http://schema.org/Product">
+	<h1>{{ current_category.name|default:_('Open Alive') }}</h1>
+	<p>{{ current_category.description }}</p>
+	
+	<h2>{% trans 'Articles' %}</h2>
+	<ul class="xoxo">
+		{% for i in page_range %}
+		<li><a href="/category/article-list/{{ current_category.name|urlencode }}?page={{ i }}">{% trans 'Page' %} {{ i }}</a></li>
+		{% endfor %}
+	</ul>
+	
+	<h2>{% trans 'Subcategories' %}</h2>
+	<dl id="subcategories" class="xoxo">
+	{% for c in category_list %}
+		{% ifequal c.key current_category.key %}
+			{% for item in c.children %}
+				<dt><a href="/{{ item.name|urlencode }}">{{ item.name }}</a></dt>
+				<dd>{{ item.description }}</dd>
+			{% endfor %}
+		{% endifequal %}
+	{% endfor %}
+	</dl>
+</body>
+</html>

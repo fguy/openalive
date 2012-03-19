@@ -1,4 +1,4 @@
-from action import feed
+from action import feed, category
 from gettext import gettext as _
 from google.appengine.api import users, memcache
 from lib.controller import Action
@@ -35,8 +35,6 @@ class Article(Action):
                            ).save()
         return Action.Result.DEFAULT
         
-        
-    
     @login_required
     def put(self):
         params = json.loads(self.request.body)
@@ -80,7 +78,7 @@ class Article(Action):
         if user:
             self.subscribed = models.Subscription.is_subscribed(self.article)
 
-        if not self.is_ajax and not self.request.headers.has_key('X-Robots-Tag') and self.request.headers['User-Agent'].find('facebookexternalhit') == -1:
+        if not self.is_ajax and not self.is_crawler:
             self.redirect('/#!/%s/%s' % (urllib.quote(self.article.category.name.encode('utf8')), self.article.key().id()))
         return Action.Result.DEFAULT
     
@@ -130,25 +128,9 @@ class UserArticleList():
         self.article_list = models.User.get_article_list(self.LIST_PER_PAGE, offset, self.request.get('sort', 'created'))
         return Action.Result.DEFAULT
     
-class Category(Action):
-    CACHE_KEY = 'category-list'
+class Category(category.Index):
+    pass
     
-    def get(self, category_name=None):
-        cached_categories = memcache.get(self.CACHE_KEY)
-        if not cached_categories:
-            cached_categories = {}
-        if not cached_categories.has_key(category_name):
-            current_category = None
-            if category_name:
-                current_category = models.Category.get_by_name(category_name) 
-            self.category_list = models.Category.get_list(current_category)
-            self.current_category = current_category
-            cached_categories[category_name] = {'category_list': self.category_list, 'current_category': current_category}
-            memcache.set(self.CACHE_KEY, cached_categories)
-        else:
-            self.category_list = cached_categories[category_name]['category_list']
-            self.current_category = cached_categories[category_name]['current_category']
-        return Action.Result.DEFAULT
     
 class Reputation(Action):
     reputation = None

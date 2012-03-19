@@ -1,0 +1,33 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html xmlns:fb="http://ogp.me/ns/fb#">
+<head prefix="og: http://ogp.me/ns# openalive: 
+                  http://ogp.me/ns/apps/openalive#">
+	<meta charset="utf-8">
+    <title>{{ current_category.name }} </title>
+	<meta property="fb:app_id" content="{{ settings.FB_APP_ID }}" />
+	<meta property="og:site_name" content="{% trans 'Open Alive' %}"/>    
+	<meta property="og:type" content="openalive:article">
+	<meta name="title" content="{{ current_category.name|default:_('Open Alive') }}">
+	<meta property="og:title" content="{{ current_category.name|default:_('Open Alive') }}">
+	<meta name="description" content="{{ current_category.description }}">
+	<meta property="og:description" content="{{ current_category.description }}">
+	<meta property="og:url" content="{{ request.uri }}">
+	<link rel="alternate" type="application/rss+xml" title="{{ category.name }} RSS" href="/feed/category/{{ category.name|urlencode }}?output=rss" />
+</head>
+<body itemscope itemtype="http://schema.org/Product">
+	<h1>{{ category.name }}</h1>
+	<p>{{ category.description }}</p>
+	
+	{% for article in list %}
+	<article>
+		<header>
+			<h1 itemprop="name"><a href="/{{ article.id }}">{{ article.title }}</a></h1>
+			<time pubdate="pubdate" datetime="{{ article.created|date:'c' }}">{{ article.created }}</time>
+			<address class="author">By <a href="/user/{{ article.author.key.id }}" class="user" rel="author"><span class="nickname">{{ article.author.nickname }}</span></a></address>
+		</header>
+		<p itemprop="description">{{ article.excerpt|safe }}</p>	
+	</article>
+	{% endfor %}
+</body>
+</html>

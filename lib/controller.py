@@ -82,7 +82,7 @@ class Controller(webapp2.RequestHandler):
             logging.debug('Action is missing')
             self.error(404)
             return
-        self.__action.is_ajax = self.request.headers.has_key('X-Requested-With') and self.request.headers['X-Requested-With'] == 'XMLHttpRequest'
+        
         method = None
         try:
             method = getattr(self.__action, method_name)
@@ -254,6 +254,10 @@ class Action(object):
         self.request = request
         self.response = response
         self.__context = context if context is not None else {}
+        arguments = request.arguments()
+        self.is_ajax = 'is_ajax' in arguments or (request.headers.has_key('X-Requested-With') and request.headers['X-Requested-With'] == 'XMLHttpRequest')
+        self.is_crawler = 'is_crawler' in arguments or re.match('facebookexternalhit|googlebot|mediapartners|adsbot|alexa|msnbot', request.headers['User-Agent'].lower())
+            
             
     def __setattr__(self, attr, value, DEFAULT=[]):
         if self._is_context_key(attr) :
@@ -325,8 +329,8 @@ def print_rss(output, result, action_instance):
                                                     ) for item in result['entries']],
         )
         if output == Action.Result.RSS:
-            action_instance.response.headers['Content-type'] = 'text/xml'    
-            feed.write_xml(action_instance.response.out, 'utf-8')
+            action_instance.response.headers['Content-type'] = 'text/xml'
+            feed.write_xml(action_instance.response.out, 'UTF-8')
             return
         json_result['responseData']['xmlString'] = feed.to_xml(encoding='UTF-8')
     if output in [Action.Result.RSS_JSON, Action.Result.RSS_JSON_XML]:

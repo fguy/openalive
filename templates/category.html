@@ -1,0 +1,28 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html xmlns:fb="http://ogp.me/ns/fb#">
+<head prefix="og: http://ogp.me/ns# openalive: 
+                  http://ogp.me/ns/apps/openalive#">
+	<meta charset="utf-8">
+    <title>{% trans 'Open Alive' %}</title>
+	<meta property="fb:app_id" content="{{ settings.FB_APP_ID }}" />
+	<meta property="og:site_name" content="{% trans 'Open Alive' %}"/>    
+	<meta name="title" content="{% trans 'Open Alive' %}">
+	<meta property="og:title" content="{% trans 'Open Alive' %}">
+	<meta name="description" content="">
+	<meta property="og:description" content="">
+	<meta property="og:url" content="{{ request.uri }}">
+	<link rel="alternate" type="application/rss+xml" title="{% trans 'Open Alive' %} RSS" href="/feed/recent?output=rss" />
+</head>
+<body itemscope itemtype="http://schema.org/Product">
+	<h1>{% trans 'Open Alive' %}</h1>
+	
+	<h2>{% trans 'Categories' %}</h2>
+	<dl id="categories" class="xoxo">
+	{% for item in category_list %}
+				<dt><a href="/{{ item.name|urlencode }}">{{ item.name }}</a></dt>
+				<dd>{{ item.description }}</dd>
+	{% endfor %}
+	</dl>
+</body>
+</html>

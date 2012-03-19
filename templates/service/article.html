@@ -5,7 +5,7 @@
                   http://ogp.me/ns/apps/openalive#">
 	<meta charset="utf-8">
     <title>{{ artile.title }}</title>
-	<meta property="fb:app_id" content="350467444992286" />
+	<meta property="fb:app_id" content="{{ settings.FB_APP_ID }}" />
 	<meta property="og:site_name" content="{% trans 'Open Alive' %}"/>    
 	<meta property="og:type" content="openalive:article">
 	<meta name="title" content="{{ article.title }}">
@@ -13,8 +13,6 @@
 	<meta name="description" content="{{ article.excerpt }}">
 	<meta property="og:description" content="{{ article.excerpt }}">
 	<meta property="og:url" content="{{ request.uri }}">
-	<meta itemprop="name" content="{{ article.title }}">
-	<meta itemprop="description" content="{{ article.excerpt }}">
 	
 	{% if article.image %}
 	<meta property="og:image" content="{{ article.image }}">
