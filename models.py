@@ -130,7 +130,7 @@ class Tag(db.Model):
     def decrease(cls, tags):
         for tag in cls.get(tags):
             tag.count -= 1
-            db.run_in_transaction(tag.put)
+            db.run_in_transaction(tag.put if tag.count != 0 else tag.delete)
         
     @classmethod
     def save_all(cls, tags):
@@ -312,7 +312,13 @@ class Article(AbstractArticle):
         db.run_in_transaction_options(xg_on, self.author.decrease_article_count)
         for item in self.category.get_path():
             db.run_in_transaction_options(xg_on, item.decrease_article_count)   
-        Tag.decrease(self.tags)        
+        Tag.decrease(self.tags)
+        if self.image:
+            image = ImageArticle.gql('WHERE article = :1', self).get()
+            db.run_in_transaction_options(xg_on, image.delete)
+        if self.video:
+            video = VideoArticle.gql('WHERE article = :1', self).get()
+            db.run_in_transaction_options(xg_on, video.delete)            
         return self
     
     def save(self):
