@@ -661,7 +661,9 @@ var initializeModels = function() {
 	    });
 	
 	    $("#btn-delete-article").click(function() {
-	      self.delete();
+	    	bootbox.confirm(gettext("Are you sure?"), function(yes) {
+	    		yes && self.delete(); 
+	    	});
 	      return false;
 	    });
 		  
@@ -816,7 +818,10 @@ var initializeModels = function() {
 			});
 			
 			$("#comments .btn-comment-delete").live("click", function() {
-				self.delete($(this).data("comment-id"));
+				var id = $(this).data("comment-id");
+				bootbox.confirm(gettext("Are you sure?"), function(yes) {
+					self.delete(id);
+				});
 			});
 			
 			$("#comments .btn-reputation").live("click", function() {
