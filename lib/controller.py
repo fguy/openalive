@@ -256,7 +256,7 @@ class Action(object):
         self.__context = context if context is not None else {}
         arguments = request.arguments()
         self.is_ajax = 'is_ajax' in arguments or (request.headers.has_key('X-Requested-With') and request.headers['X-Requested-With'] == 'XMLHttpRequest')
-        self.is_crawler = 'is_crawler' in arguments or re.match('facebookexternalhit|googlebot|mediapartners|adsbot|alexa|msnbot', request.headers['User-Agent'].lower())
+        self.is_crawler = 'is_crawler' in arguments or re.search(r'facebookexternalhit|googlebot|mediapartners|adsbot|alexa|msnbot', request.headers['User-Agent'].lower())
             
             
     def __setattr__(self, attr, value, DEFAULT=[]):
