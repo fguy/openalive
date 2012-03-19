@@ -54,7 +54,10 @@ $(function() {
 			case "!":
 			case "category":
 				service.Category.select(tokens[0], callback);
-				tokens.length == 1 && !tokens[0] && service.Category.showTopLevelRecent();
+				if(tokens.length == 1 && !tokens[0]) {
+				  service.Category.showTopLevelRecent();
+				  $("#home-content").show();
+				}
 				break;
 			case "tag":
 				service.Tag.select(tokens[0], callback);

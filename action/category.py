@@ -10,6 +10,9 @@ class Index(Action):
     CACHE_KEY = 'category-list'
     
     def get(self, category_name=None):
+        if not self.is_crawler and not self.is_ajax:
+            self.redirect(('/#!/%s' % urllib.quote(category_name.encode('utf8')) if category_name else '/'))
+        
         cached_categories = memcache.get(self.CACHE_KEY)
         if not cached_categories:
             cached_categories = {}
@@ -28,8 +31,7 @@ class Index(Action):
         if self.is_crawler:
             if self.current_category:
                 self.page_range = range(1, int(floor(self.current_category.article_count / ArticleList.LIST_PER_PAGE)) + 2)
-        elif not self.is_ajax:
-            self.redirect(('/#!/%s' % urllib.quote(self.current_category.name.encode('utf8')) if self.current_category else '/'))
+            
             
         return Action.Result.DEFAULT
 
@@ -39,14 +41,16 @@ class ArticleList(Action):
     @rss(feed.Category)
     def get(self, category_name):
         page = int(self.request.get('page', 1))
+        if not self.is_crawler and not self.is_ajax:
+            self.redirect('/#!/%s?page=%d' % (urllib.quote(category_name.encode('utf8')), page))
+            
         offset = (page - 1) * self.LIST_PER_PAGE
         category = models.Category.get_by_name(category_name)
         self.list = models.Article.get_list(category, self.LIST_PER_PAGE, offset) if category else None
         self.count = category.article_count if category else 0
         if self.is_crawler:
             self.category = category
-        elif not self.is_ajax:
-            self.redirect('/#!/%s?page=%d' % (urllib.quote(category.name.encode('utf8')), page))
+            
         return Action.Result.DEFAULT
 
 class Top(Action):

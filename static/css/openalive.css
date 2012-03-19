@@ -469,6 +469,19 @@ iframe {
 	color: #666;
 }
 
+#recent > div.span4 {
+	margin-left: 0;
+	margin-right: 20px;
+}
+
+#home-content > div.row-fluid > div.span2 {
+	margin-left:0;
+}
+
+#external-sns > .fb-activity {
+	margin-bottom: 10px;
+}
+
 #post-article {
 	z-index: 6000;
 	background-color: transparent;
@@ -534,12 +547,24 @@ iframe {
 	* html #sidebar {
 		position: absolute;
 	}
-	#content,#recent {
+	#content, #home-content {
 		position: relative;
 		top: -10px;
 		left: 311px;
 		margin-left: 0;
+		padding-left: 0;
 	}
+	#recent {
+	   float: left;
+	   width: 780px;
+	}
+	
+	#external-sns {
+	    float:left;
+	    width: 250px;
+	    margin: 0;
+	    padding: 0;
+    }	
 }
 
 #fb-like iframe {

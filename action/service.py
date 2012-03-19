@@ -64,6 +64,10 @@ class Article(Action):
     def get(self, article_id):
         article_id = int(article_id)
         self.article = models.Article.get_by_id(article_id)
+        
+        if not self.is_ajax and not self.is_crawler:
+            self.redirect('/#!/%s/%d' % (urllib.quote(self.article.category.name.encode('utf8')), article_id))
+        
         if self.article:
             self.tags = models.Tag.get(self.article.tags)
             self.comment_list = models.Comment.get_list(self.article, limit=5)
@@ -78,8 +82,6 @@ class Article(Action):
         if user:
             self.subscribed = models.Subscription.is_subscribed(self.article)
 
-        if not self.is_ajax and not self.is_crawler:
-            self.redirect('/#!/%s/%s' % (urllib.quote(self.article.category.name.encode('utf8')), self.article.key().id()))
         return Action.Result.DEFAULT
     
 class Comment(Action):

@@ -24,7 +24,42 @@
 	        </nav><!--/.well -->
 	      </div>
         </div><!--/span-->
-        <div id="recent" class="span9">{% trans 'Loading...' %}</div>
+		<div id="home-content" class="span9">
+		    <div id="recent">{% trans 'Loading...' %}</div>
+            <div id="external-sns">
+                <div class="fb-activity" data-site="350467444992286" data-app-id="350467444992286" data-width="250" data-height="371" data-border-color="#eee" data-header="true" data-recommendations="true"></div>
+                <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
+                <script>
+                new TWTR.Widget({
+                  version: 2,
+                  type: 'search',
+                  search: '@openalive OR from:openalive',
+                  interval: 30000,
+                  title: "Open Alive on Twitter",
+                  subject: '',
+                  width: 250,
+                  height: 300,
+                  theme: {
+                    shell: {
+                      background: '#8ec1da',
+                      color: '#ffffff'
+                    },
+                    tweets: {
+                      background: '#ffffff',
+                      color: '#444444',
+                      links: '#1985b5'
+                    }
+                  },
+                  features: {
+                    scrollbar: false,
+                    loop: false,
+                    live: true,
+                    behavior: 'default'
+                  }
+                }).render().start();
+                </script>
+            </div>
+		</div>        
         <div id="content" class="span9">
           <article id="article-item">
             <header class="page-header">
@@ -104,7 +139,7 @@
 	        <tbody>
 	        </tbody>
           </table>
-          <div class="pagination"><ul id="article-pagination"></ul></div>    
+          <div class="pagination"><ul id="article-pagination"></ul></div>
         </div><!--/span-->
       </div><!--/row-->
 	  {% include '_snippets/post-article.html' %}
@@ -126,6 +161,7 @@
 
 {% block jslib %}
     {{ block.super }}
+    <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
 	{% js 'js/jquery.tagsinput.min.js' %}
 	{% js 'js/jquery.toastmessage.js' %}
 	{% js 'js/jquery.history.js' %}
@@ -144,7 +180,7 @@
 	    FB.init({
 	      appId      : "{{ settings.FB_APP_ID}}", // App ID
 	      channelUrl : "/static/channel.html", // Channel File
-	      status     : false, // check login status
+	      status     : true, // check login status
 	      cookie     : true, // enable cookies to allow the server to access the session
 	      xfbml      : true  // parse XFBML
 	    });

@@ -65,7 +65,7 @@ var initializeModels = function() {
 		    	$("#nav li.active").removeClass("active");
 		    	$("#nav li:has(a.home-link)").addClass("active");
 		    	$("#category-explorer-wrapper, #loading, .btn-post-article").show();
-		    	name && $("#recent").hide();
+		    	name && $("#home-content").hide();
 		      if(self.getCurrent() == name) {
 		        service.Article.loadList('category', name, callback);
 		        return;
@@ -458,7 +458,10 @@ var initializeModels = function() {
 	      		$("#g-plusone").html(formatString('<div class="g-plusone" data-size="medium" data-href="{{ staticUrl }}"></div>', {staticUrl: staticUrl}));
 	      		typeof gapi != "undefined" && gapi.plusone.go();
 	      		
-	      		$("#twttr-share").html(formatString('<a href="https://twitter.com/share" class="twitter-share-button" data-text="{{ excerpt }}" data-via="openalive">Tweet</a>', self.current));
+	      		$("#twttr-share").html(formatString('<a href="https://twitter.com/share" class="twitter-share-button" data-text="{{ excerpt }}" data-url="{{ url }}" data-via="openalive">Tweet</a>', {
+	      		  excerpt: self.current.excerpt,
+	      		  url: location.href
+	      		}));
 	      		typeof twttr != "undefined" && twttr.widgets.load();
 	      		
 	      		$(service.Reputation.types).each(function(i, item) {
@@ -1071,10 +1074,9 @@ var initializeModels = function() {
 					self.current = name;
 		    	$("#nav li.active").removeClass("active");
 		    	$("#nav li:has(a[href='/tags'])").addClass("active");					
-					$("#starred-wrapper, #category-explorer-wrapper, .btn-post-article").hide();
+					$("#home-content, #starred-wrapper, #category-explorer-wrapper, .btn-post-article").hide();
 	        $("#container .breadcrumb li:gt(0)").remove();
 	        $("#container .breadcrumb li:eq(0) .divider").show();
-	        $("#recent").hide();
           $("#container .breadcrumb").append(formatString('<li><a href="/tags" class="tags-link"><i class="icon-tags icon-blue"></i>{{ label }}</a> <span class="divider">/</span></li> <li><i class="icon-tag"></i>{{ tag }}</li>', {
           	label: gettext("Tags"), 
           	tag: gettext(name)
