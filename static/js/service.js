@@ -469,11 +469,11 @@ var initializeModels = function() {
 	      		});
 		      },
 		      hideList: function() {
-		        $("#article-list, #article-pagination, #article-list caption").hide();
+		        $("#article-list, #article-pagination-container, #article-list caption").hide();
 		      },
 		      showList: function() {
 		        $("#no-article").hide();
-		        $("#article-list, #article-pagination, #article-list caption:not(:empty)").show();
+		        $("#article-list, #article-pagination-container, #article-list caption:not(:empty)").show();
 		        self.resizeRow();
 		      },
 		      hide: function() {

@@ -24,43 +24,14 @@
 	        </nav><!--/.well -->
 	      </div>
         </div><!--/span-->
-		<div id="home-content" class="span9">
-		    <div id="recent">{% trans 'Loading...' %}</div>
-            <div id="external-sns">
-                <div class="fb-activity" data-site="350467444992286" data-app-id="350467444992286" data-width="250" data-height="371" data-border-color="#eee" data-header="true" data-recommendations="true"></div>
-                <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
-                <script>
-                new TWTR.Widget({
-                  version: 2,
-                  type: 'search',
-                  search: '@openalive OR from:openalive',
-                  interval: 30000,
-                  title: "Open Alive on Twitter",
-                  subject: '',
-                  width: 250,
-                  height: 300,
-                  theme: {
-                    shell: {
-                      background: '#8ec1da',
-                      color: '#ffffff'
-                    },
-                    tweets: {
-                      background: '#ffffff',
-                      color: '#444444',
-                      links: '#1985b5'
-                    }
-                  },
-                  features: {
-                    scrollbar: false,
-                    loop: false,
-                    live: true,
-                    behavior: 'default'
-                  }
-                }).render().start();
-                </script>
-            </div>
-		</div>        
         <div id="content" class="span9">
+	        {% if not user %}
+	        <div class="alert alert-info">
+	            <a class="close" data-dismiss="alert">×</a>
+	            <strong>Heads up!</strong> To post something, you have to <a href="{{ login_url }}">login</a>.
+	        </div>
+	        {% endif %}
+        
           <article id="article-item">
             <header class="page-header">
               	<div id="article-item-meta" class="well">
@@ -139,8 +110,45 @@
 	        <tbody>
 	        </tbody>
           </table>
-          <div class="pagination"><ul id="article-pagination"></ul></div>
+          <div class="pagination" id="article-pagination-container"><ul id="article-pagination"></ul></div>
         </div><!--/span-->
+        
+        <div id="home-content" class="span9">
+            <div id="recent">{% trans 'Loading...' %}</div>
+            <div id="external-sns">
+                <div class="fb-activity" data-site="350467444992286" data-app-id="350467444992286" data-width="250" data-height="371" data-border-color="#eee" data-header="true" data-recommendations="true"></div>
+                <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
+                <script>
+                new TWTR.Widget({
+                  version: 2,
+                  type: 'search',
+                  search: '@openalive OR from:openalive',
+                  interval: 30000,
+                  title: "Open Alive on Twitter",
+                  subject: '',
+                  width: 250,
+                  height: 300,
+                  theme: {
+                    shell: {
+                      background: '#8ec1da',
+                      color: '#ffffff'
+                    },
+                    tweets: {
+                      background: '#ffffff',
+                      color: '#444444',
+                      links: '#1985b5'
+                    }
+                  },
+                  features: {
+                    scrollbar: false,
+                    loop: false,
+                    live: true,
+                    behavior: 'default'
+                  }
+                }).render().start();
+                </script>
+            </div>
+        </div>        
       </div><!--/row-->
 	  {% include '_snippets/post-article.html' %}
       <div id="user-info" class="modal hide fade">
