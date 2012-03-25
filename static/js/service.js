@@ -195,9 +195,14 @@ var initializeModels = function() {
 		          <p><a href="{{ link }}">{{ thumbnail }}{{ contentSnippet }}</a></p>\
 		        </li>';
 		      
+		      $("#loading").show();
 		    	$.getJSON("/category/top", function(data) {
+		    		var remaining = data.list.length;
+		    		remaining === 0 && $("#loading").hide();
 		    		$(data.list).each(function(i, item) {
 		    			getRss("/feed/category/" + encodeURI(item), function(data) {
+		    				remaining--;
+		    				remaining === 0 && $("#loading").hide();
 		    				if(data.responseStatus != 200) {
 		    					return;
 		    				}
@@ -374,6 +379,8 @@ var initializeModels = function() {
 		      	$("#loading").show();
 		      	$.getJSON("/service/article/" + id, function(data) {
 		      		if(!data.article) {
+		      			bootbox.alert(gettext("Not found. It may have been deleted."));
+		      			$.history.load(location.hash.substring(1, location.hash.lastIndexOf("/")));
 		      			return;
 		      		}
 		      		self.current = data.article;
@@ -488,7 +495,7 @@ var initializeModels = function() {
 		      getFormAsJsonString: function(form) {
 		      	var json = {};
 		      	$(form.serializeArray()).each(function(i, item) {
-		      		json[item.name] = item.name == "body" && ArticleEditor.isMobile ? item.value.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>$2'); : item.value;
+		      		json[item.name] = item.name == "body" && ArticleEditor.isMobile ? item.value.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>$2') : item.value;
 		      	});
 		      	return JSON.stringify(json);
 		      },
