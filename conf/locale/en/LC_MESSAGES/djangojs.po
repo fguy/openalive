@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-13 16:06-0700\n"
+"POT-Creation-Date: 2012-03-24 00:19-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,11 +21,11 @@ msgstr ""
 msgid "No more."
 msgstr ""
 
-#: static/js/editor.js:32
+#: static/js/editor.js:33
 msgid "Add a tag"
 msgstr ""
 
-#: static/js/editor.js:37
+#: static/js/editor.js:38
 msgid "You can enter 5 tags or less."
 msgstr ""
 
@@ -57,34 +57,46 @@ msgstr ""
 msgid " years ago"
 msgstr ""
 
-#: static/js/service.js:407
+#: static/js/service.js:59
+msgid "Open Alive"
+msgstr ""
+
+#: static/js/service.js:373
+msgid "Loading..."
+msgstr ""
+
+#: static/js/service.js:512
 msgid "Posted."
 msgstr ""
 
-#: static/js/service.js:434
+#: static/js/service.js:539
 msgid "Updated."
 msgstr ""
 
-#: static/js/service.js:448
+#: static/js/service.js:553
 msgid "Deleted."
 msgstr ""
 
-#: static/js/service.js:584
+#: static/js/service.js:670
+msgid "Are you sure?"
+msgstr ""
+
+#: static/js/service.js:700
 msgid "Please comment here..."
 msgstr ""
 
-#: static/js/service.js:648
+#: static/js/service.js:766
 msgid "Delete"
 msgstr ""
 
-#: static/js/service.js:925
+#: static/js/service.js:1046
 msgid "Nickname has been changed."
 msgstr ""
 
-#: static/js/service.js:1072
+#: static/js/service.js:1192
 msgid "People who likes this"
 msgstr ""
 
-#: static/js/service.js:1072
+#: static/js/service.js:1192
 msgid "People who hates this"
 msgstr ""

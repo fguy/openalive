@@ -1,19 +1,16 @@
 var HASH_PARAMS;
+var HASH_TOKENS;
 $(function() {
 	if (location.pathname != "/") {
 		return;
 	}
 	$(".login-url").click(
 			function() {
-				// var href = $(this).attr("href");
-				// var hashPart = encodeURIComponent(location.hash);
-				// $(this).attr("href", href.indexOf("&action=") > -1 ?
-				// href.replace("&action=", hashPart + "&action=") : href + hashPart);
-				// return true;
 				localStorage && location.hash
-						&& localStorage.setItem("lastHash", location.hash.substring(1));
+						&& location.hash != "#!/" && location.hash != "#!" && localStorage.setItem("lastHash", location.hash.substring(1));
 				return true;
 			});
+	
 	if (localStorage && localStorage.hasOwnProperty("lastHash")) {
 		var lastHash = localStorage.getItem("lastHash");
 		if (lastHash) {
@@ -21,6 +18,7 @@ $(function() {
 			$.history.load(lastHash);
 		}
 	}
+	
 	$.history.init(function(hash) {
 		// "_trackEvent" is the pageview event, 
 		_gaq.push(['_trackPageview']);
@@ -43,24 +41,24 @@ $(function() {
 		if (m) {
 			var mString = m[0];
 			initializeModels();
-			var tokens = hash.substring(mString.length + 1,
+			var HASH_TOKENS = hash.substring(mString.length + 1,
 					idx > -1 ? idx : hash.length).split("/");
 			
-			var callback = tokens.length > 1 && tokens[1] ? function() {
-				service.Article.show(tokens[1]);
+			var callback = HASH_TOKENS.length > 1 && HASH_TOKENS[1] ? function() {
+				service.Article.show(HASH_TOKENS[1]);
 			} : service.Article.hide;
 			
 			switch (mString) {
 			case "!":
 			case "category":
-				service.Category.select(tokens[0], callback);
-				if(tokens.length == 1 && !tokens[0]) {
+				service.Category.select(HASH_TOKENS[0], callback);
+				if(HASH_TOKENS.length == 1 && !HASH_TOKENS[0]) {
 				  service.Category.showTopLevelRecent();
 				  $("#home-content").show();
 				}
 				break;
 			case "tag":
-				service.Tag.select(tokens[0], callback);
+				service.Tag.select(HASH_TOKENS[0], callback);
 				break;
 			}
 		}

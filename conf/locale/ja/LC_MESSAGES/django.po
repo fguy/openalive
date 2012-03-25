@@ -2,20 +2,20 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-13 16:06-0700\n"
+"POT-Creation-Date: 2012-03-24 00:19-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: models.py:208
 msgid "Category name must be unique"
@@ -25,15 +25,15 @@ msgstr "カテゴリ名は一意である必要があります"
 msgid "Can not reference recursively."
 msgstr "再帰的に参照することはできません。"
 
-#: models.py:445
+#: models.py:465
 msgid "Can not delete if the comment has replies."
 msgstr "コメントは返信がある場合は削除することはできません。"
 
-#: models.py:509
+#: models.py:529
 msgid "Can not give a reputation to your's."
 msgstr "あなたの年代に名声を与えることはできません。"
 
-#: models.py:511
+#: models.py:531
 #, python-format
 msgid "You already gave a %s."
 msgstr "あなたは既に％sを与えた。"
@@ -43,25 +43,30 @@ msgstr "あなたは既に％sを与えた。"
 msgid "%s Best Articles"
 msgstr "記事を投稿する"
 
-#: action/service.py:21
+#: action/feed.py:35
+#, fuzzy
+msgid "Recent Articles"
+msgstr "記事を投稿する"
+
+#: action/service.py:22
 #, python-format
 msgid "Captcha code mismatch: %s"
 msgstr ""
 
-#: action/service.py:46
+#: action/service.py:45
 msgid "Only the author can edit this article."
 msgstr "唯一の著者はこの記事を編集することができます。"
 
-#: action/service.py:61
+#: action/service.py:60
 msgid "Only the author can delete this article."
 msgstr "唯一の著者はこの記事を削除することができます。"
 
-#: action/service.py:105
+#: action/service.py:109
 #, fuzzy
 msgid "Only the author can delete this comment."
 msgstr "唯一の著者はこの記事を削除することができます。"
 
-#: action/service.py:149 action/service.py:170
+#: action/service.py:148 action/service.py:169
 #, fuzzy
 msgid "You did not give an reputation for this."
 msgstr "あなたの年代に名声を与えることはできません。"
@@ -78,7 +83,24 @@ msgstr "指定しないでください。"
 msgid "Korean"
 msgstr "韓国語"
 
-#: templates/images.html:19 templates/index.html:43 templates/user.html:34
+#: templates/about.html:5 templates/about.html.py:26 templates/category.html:7
+#: templates/category.html.py:9 templates/category.html:10
+#: templates/category.html.py:11 templates/category.html:15
+#: templates/category.html.py:18 templates/index.html:6
+#: templates/_snippets/nav.html:10 templates/category/articlelist.html:9
+#: templates/category/articlelist.html:11
+#: templates/category/articlelist.html:12 templates/service/article.html:9
+#: templates/service/category.html:7 templates/service/category.html.py:9
+#: templates/service/category.html:11 templates/service/category.html.py:12
+#: templates/service/category.html:19
+msgid "Open Alive"
+msgstr "アライブ開く"
+
+#: templates/category.html:20
+msgid "Categories"
+msgstr "カテゴリー"
+
+#: templates/images.html:19 templates/index.html:59 templates/user.html:34
 #: templates/user.html.py:37 templates/user.html:40 templates/videos.html:34
 #, fuzzy
 msgid "loading..."
@@ -97,107 +119,120 @@ msgstr "画像がありませんまだ投稿されていません"
 msgid "Image items will be show up when a user post an article with image."
 msgstr "ユーザーはイメージを使用して記事を投稿時に画像項目が表示されます。"
 
-#: templates/index.html:7 templates/_snippets/nav.html:13
+#: templates/index.html:12 templates/_snippets/nav.html:13
 msgid "Home"
 msgstr "ホーム"
 
-#: templates/index.html:11
+#: templates/index.html:16
 msgid "Starred Categories"
 msgstr "主演カ​​テゴリー"
 
-#: templates/index.html:16
+#: templates/index.html:21
 #, fuzzy
 msgid "Category Explorer"
 msgstr "カテゴリ"
 
-#: templates/index.html:18 templates/_base/admin.html:13
-#: templates/_base/default.html:17
+#: templates/index.html:23 templates/index.html.py:118
+#: templates/_base/admin.html:13 templates/_base/default.html:21
+#: templates/_base/default.html.py:28
 msgid "Loading..."
 msgstr "読み込み中..."
 
-#: templates/index.html:29
+#: templates/index.html:31
+#, python-format
+msgid ""
+"<strong>Heads up!</strong> To post something, you have to <a href="
+"\"%(login_url)s\" class=\"login-url\">login</a>"
+msgstr ""
+
+#: templates/index.html:40
 msgid "Written Date"
 msgstr "書かれた日付"
 
-#: templates/index.html:30
+#: templates/index.html:41
 msgid "Last Modified"
 msgstr "最終更新日"
 
-#: templates/index.html:43
+#: templates/index.html:59
 msgid "Show Previous"
 msgstr "前を表示"
 
-#: templates/index.html:51
+#: templates/index.html:61
+#, fuzzy
+msgid "Write a comment"
+msgstr "コメント"
+
+#: templates/index.html:67
 msgid "List"
 msgstr "リスト"
 
-#: templates/index.html:53
+#: templates/index.html:69
 msgid "Like"
 msgstr "のような"
 
-#: templates/index.html:54
+#: templates/index.html:70
 msgid "Unlike"
 msgstr "とは異なり、"
 
-#: templates/index.html:55
+#: templates/index.html:71
 msgid "Hate"
 msgstr "嫌い"
 
-#: templates/index.html:56
+#: templates/index.html:72
 msgid "Unhate"
 msgstr "Unhate"
 
-#: templates/index.html:57
+#: templates/index.html:73
 msgid "Follow"
 msgstr "従う"
 
-#: templates/index.html:58
+#: templates/index.html:74
 #, fuzzy
 msgid "Unfollow"
 msgstr "従う"
 
-#: templates/index.html:63
+#: templates/index.html:79
 msgid "Edit"
 msgstr "編集"
 
-#: templates/index.html:64
+#: templates/index.html:80
 msgid "Delete"
 msgstr "削除する"
 
-#: templates/index.html:65 templates/index.html.py:75
+#: templates/index.html:81 templates/index.html.py:91
 msgid "New Post"
 msgstr "新しいポスト"
 
-#: templates/index.html:71
+#: templates/index.html:87
 #, python-format
 msgid "Nothing in %(holder)s yet."
 msgstr ""
 
-#: templates/index.html:72
+#: templates/index.html:88
 msgid "Be a first person"
 msgstr "最初の人である"
 
-#: templates/index.html:78
+#: templates/index.html:94
 msgid "Login to Post"
 msgstr "投稿するには、ログインしてください"
 
-#: templates/index.html:87
+#: templates/index.html:103
 msgid "Category"
 msgstr "カテゴリ"
 
-#: templates/index.html:88 templates/_snippets/post-article.html:14
+#: templates/index.html:104 templates/_snippets/post-article.html:14
 msgid "Title"
 msgstr "タイトル"
 
-#: templates/index.html:89
+#: templates/index.html:105
 msgid "Author"
 msgstr "作成者"
 
-#: templates/index.html:90
+#: templates/index.html:106
 msgid "Liked"
 msgstr "と言ってい"
 
-#: templates/index.html:91
+#: templates/index.html:107
 msgid "Date"
 msgstr "日付"
 
@@ -220,13 +255,13 @@ msgstr "ニックネームの変更"
 
 #: templates/user.html:14
 msgid ""
-"To create or modify your avatar, please do it on <a "
-"href=\"http://www.gravatar.com\" "
-"target=\"_blank\">http://www.gravatar.com</a> with your associated email "
-"account."
+"To create or modify your avatar, please do it on <a href=\"http://www."
+"gravatar.com\" target=\"_blank\">http://www.gravatar.com</a> with your "
+"associated email account."
 msgstr ""
-"あなたのアバターを作成または変更するには、それを行ってください<a href=\"http://www.gravatar.com\" "
-"target=\"_blank\">http://www.gravatar.com</a>て、関連する電子メールアカウントを使用して。"
+"あなたのアバターを作成または変更するには、それを行ってください<a href="
+"\"http://www.gravatar.com\" target=\"_blank\">http://www.gravatar.com</a>て、"
+"関連する電子メールアカウントを使用して。"
 
 #: templates/user.html:17 templates/user.html.py:53
 msgid "Nickname"
@@ -286,11 +321,8 @@ msgstr "いいえビデオはまだ投稿されていません"
 #: templates/videos.html:41
 msgid ""
 "Items will be show up when a user post an article containing youtube video."
-msgstr "ユーザーがYouTubeのビデオを含む記事を投稿するときに項目が表示されます。"
-
-#: templates/_snippets/nav.html:10
-msgid "Open Alive"
-msgstr "アライブ開く"
+msgstr ""
+"ユーザーがYouTubeのビデオを含む記事を投稿するときに項目が表示されます。"
 
 #: templates/_snippets/nav.html:14 templates/_snippets/post-article.html:26
 msgid "Tags"
@@ -308,15 +340,19 @@ msgstr "ビデオ"
 msgid "About"
 msgstr "約"
 
-#: templates/_snippets/nav.html:21
+#: templates/_snippets/nav.html:20
+msgid "Search"
+msgstr ""
+
+#: templates/_snippets/nav.html:26
 msgid "Login"
 msgstr "ログイン"
 
-#: templates/_snippets/nav.html:27
+#: templates/_snippets/nav.html:32
 msgid "My Profile"
 msgstr "マイプロフィール"
 
-#: templates/_snippets/nav.html:29
+#: templates/_snippets/nav.html:34
 msgid "Logout"
 msgstr "ログアウト"
 
@@ -336,7 +372,9 @@ msgstr "ボディ"
 msgid ""
 "Hit ENTER to add tag. Please do not tag different variations of the same "
 "name."
-msgstr "タグを追加するには、Enterキーを押す。同じ名前のさまざまなバリエーションをタグ付けしないでください。"
+msgstr ""
+"タグを追加するには、Enterキーを押す。同じ名前のさまざまなバリエーションをタグ"
+"付けしないでください。"
 
 #: templates/_snippets/post-article.html:33
 msgid "Captcha"
@@ -354,6 +392,20 @@ msgstr "POST"
 msgid "Cancel"
 msgstr "キャンセル"
 
+#: templates/service/category.html:22
+#, fuzzy
+msgid "Articles"
+msgstr "記事を投稿する"
+
+#: templates/service/category.html:25
+msgid "Page"
+msgstr ""
+
+#: templates/service/category.html:29
+#, fuzzy
+msgid "Subcategories"
+msgstr "カテゴリー"
+
 #~ msgid "Got %(like_count)s likes."
 #~ msgstr "％（like_count）■好きを得た。"
 
@@ -362,6 +414,3 @@ msgstr "キャンセル"
 
 #~ msgid "Signature"
 #~ msgstr "署名"
-
-#~ msgid "Categories"
-#~ msgstr "カテゴリー"

@@ -64,7 +64,7 @@ var initializeModels = function() {
 		    select: function(name, callback) {
 		    	$("#nav li.active").removeClass("active");
 		    	$("#nav li:has(a.home-link)").addClass("active");
-		    	$("#category-explorer-wrapper, #loading, .btn-post-article").show();
+		    	$("#content, #category-explorer-wrapper, #loading, .btn-post-article").show();
 		    	name && $("#home-content").hide();
 		      if(self.getCurrent() == name) {
 		        service.Article.loadList('category', name, callback);
@@ -94,7 +94,7 @@ var initializeModels = function() {
 		            	divider: i != lastPos ? '<span class="divider">/</span>' : ''
 		            }); 
 		          }).get().join(""));
-		          data.current_category.description ? $("#article-list caption").html(data.current_category.description).show() : $("#article-list caption").hide();
+		          data.current_category.description ? $("#article-list caption").html(data.current_category.description).show() : $("#article-list caption").empty().hide();
 		          $(".btn-post-article").show();
 		          service.Article.loadList("category", data.current_category.name, callback);
 		        } else {
@@ -180,6 +180,7 @@ var initializeModels = function() {
 		      });
 		    },
 		    showTopLevelRecent: function() {
+		    	$("#content").hide();
 		      var div = $("#recent").empty().show();
 		      var template = '\
 		        <div class="recent-item span3">\
@@ -215,6 +216,7 @@ var initializeModels = function() {
   		              }
 		    				  }
 		    				  return formatString(rowTemplate, $.extend(item, {
+		    				  	title: item.title.length > 20 ? (item.title.substring(0, 20) + "...") : item.title,
 		    				    thumbnail: thumbnail ? formatString('<img src="{{ thumbnail }}">', {thumbnail: thumbnail}) : "",
 		    				    pubDate: ISODateString(new Date(Date.parse(item.publishedDate)))
 		    				  }));
@@ -360,6 +362,7 @@ var initializeModels = function() {
 		      },
 		      highlightActiveRow: function(id) {
 		      	id || self.current && (id = self.current.id);
+		      	id || HASH_TOKENS && (id = HASH_TOKENS[1]);
 		      	if(id) {
   		      	$("#article-list tr.active").removeClass("active");
   		      	$(formatString("#article-list tr:has(a[href*='/{{ id }}?'])", {id: id})).addClass("active");
@@ -402,7 +405,7 @@ var initializeModels = function() {
 		      		}
 		      		
 		      		$("#article-item, #article-reputation").show();
-		      		$.scrollTo($("#article-item").position().top, 100);
+		      		$.scrollTo($("#article-item").position().top - 40, 100);
 		      		$("#loading, #article-list caption").hide();
 		      		$("#comments li:not(#comment-input):not(:first)").remove();
 		      		service.Comment.resetLoadedCount();
@@ -462,7 +465,7 @@ var initializeModels = function() {
 	      		  excerpt: self.current.excerpt,
 	      		  url: location.href
 	      		}));
-	      		typeof twttr != "undefined" && twttr.widgets.load();
+	      		typeof twttr != "undefined" && twttr.widgets && twttr.widgets.load();
 	      		
 	      		$(service.Reputation.types).each(function(i, item) {
 	      		  service.Reputation.renderUsers(item);
@@ -482,10 +485,17 @@ var initializeModels = function() {
 		      	$("#article-list tbody .active").removeClass("active");
 		      	$("#article-item, #article-reputation, .btn-read").hide();
 		      },
+		      getFormAsJsonString: function(form) {
+		      	var json = {};
+		      	$(form.serializeArray()).each(function(i, item) {
+		      		json[item.name] = item.name == "body" && ArticleEditor.isMobile ? item.value.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>$2'); : item.value;
+		      	});
+		      	return JSON.stringify(json);
+		      },
 		      post: function(form) {
 		        var currentCategory = service.Category.getCurrent();
 		        $("#loading").show();
-		        $.post("/service/article/" + currentCategory, form.serialize(), function(data) {
+		        $.post("/service/article/" + currentCategory, self.getFormAsJsonString(form), function(data) {
 		          if(self.getCurrentPage() != 1) {
 		            $.history.load("!/" + currentCategory + "/?page=1");
 		          }
@@ -512,15 +522,11 @@ var initializeModels = function() {
 		        }, "json");
 		      },
 		      put: function(form, callback) {
-		      	var json = {};
-		      	$(form.serializeArray()).each(function(i, item) {
-		      		json[item.name] = item.value;
-		      	});
 		      	$("#loading").show();
 			      $.ajax({
 			        type: "PUT",
 			        url: "/service/article",
-			        data: JSON.stringify(json),
+			        data: self.getFormAsJsonString(form),
 			        cache: false,
 			        success: function(data) {
 			          self.current = data.article;
@@ -702,9 +708,11 @@ var initializeModels = function() {
 						$("#loading").show();
 						var article = service.Article.getCurrent();
 						$.getJSON("/service/comment/" + article.id, {offset: article.comment_count - self.limit - self.loadedCount}, function(data) {
+							var topId = $("#comments .comment-item:eq(0)").attr("id");
 							self.render(data.comment_list, -1);
 							$("#loading").hide();
 							$("#btn-comment-load").button("complete");
+							topId && $.scrollTo($("#" + topId).position().top, 500);
 						});
 					},
 					render: function(data, position) {
@@ -1076,7 +1084,7 @@ var initializeModels = function() {
 		    	$("#nav li:has(a[href='/tags'])").addClass("active");					
 					$("#home-content, #starred-wrapper, #category-explorer-wrapper, .btn-post-article").hide();
 	        $("#container .breadcrumb li:gt(0)").remove();
-	        $("#container .breadcrumb li:eq(0) .divider").show();
+	        $("#content, #container .breadcrumb li:eq(0) .divider").show();
           $("#container .breadcrumb").append(formatString('<li><a href="/tags" class="tags-link"><i class="icon-tags icon-blue"></i>{{ label }}</a> <span class="divider">/</span></li> <li><i class="icon-tag"></i>{{ tag }}</li>', {
           	label: gettext("Tags"), 
           	tag: gettext(name)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-13 16:06-0700\n"
+"POT-Creation-Date: 2012-03-24 00:19-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,15 +25,15 @@ msgstr ""
 msgid "Can not reference recursively."
 msgstr ""
 
-#: models.py:445
+#: models.py:465
 msgid "Can not delete if the comment has replies."
 msgstr ""
 
-#: models.py:509
+#: models.py:529
 msgid "Can not give a reputation to your's."
 msgstr ""
 
-#: models.py:511
+#: models.py:531
 #, python-format
 msgid "You already gave a %s."
 msgstr ""
@@ -43,24 +43,29 @@ msgstr ""
 msgid "%s Best Articles"
 msgstr "Post an Article"
 
-#: action/service.py:21
+#: action/feed.py:35
+#, fuzzy
+msgid "Recent Articles"
+msgstr "Post an Article"
+
+#: action/service.py:22
 #, python-format
 msgid "Captcha code mismatch: %s"
 msgstr ""
 
-#: action/service.py:46
+#: action/service.py:45
 msgid "Only the author can edit this article."
 msgstr ""
 
-#: action/service.py:61
+#: action/service.py:60
 msgid "Only the author can delete this article."
 msgstr ""
 
-#: action/service.py:105
+#: action/service.py:109
 msgid "Only the author can delete this comment."
 msgstr ""
 
-#: action/service.py:149 action/service.py:170
+#: action/service.py:148 action/service.py:169
 msgid "You did not give an reputation for this."
 msgstr ""
 
@@ -76,7 +81,24 @@ msgstr "Do not specify."
 msgid "Korean"
 msgstr "Korean"
 
-#: templates/images.html:19 templates/index.html:43 templates/user.html:34
+#: templates/about.html:5 templates/about.html.py:26 templates/category.html:7
+#: templates/category.html.py:9 templates/category.html:10
+#: templates/category.html.py:11 templates/category.html:15
+#: templates/category.html.py:18 templates/index.html:6
+#: templates/_snippets/nav.html:10 templates/category/articlelist.html:9
+#: templates/category/articlelist.html:11
+#: templates/category/articlelist.html:12 templates/service/article.html:9
+#: templates/service/category.html:7 templates/service/category.html.py:9
+#: templates/service/category.html:11 templates/service/category.html.py:12
+#: templates/service/category.html:19
+msgid "Open Alive"
+msgstr "Open Alive"
+
+#: templates/category.html:20
+msgid "Categories"
+msgstr ""
+
+#: templates/images.html:19 templates/index.html:59 templates/user.html:34
 #: templates/user.html.py:37 templates/user.html:40 templates/videos.html:34
 #, fuzzy
 msgid "loading..."
@@ -95,105 +117,117 @@ msgstr ""
 msgid "Image items will be show up when a user post an article with image."
 msgstr ""
 
-#: templates/index.html:7 templates/_snippets/nav.html:13
+#: templates/index.html:12 templates/_snippets/nav.html:13
 msgid "Home"
 msgstr "Home"
 
-#: templates/index.html:11
+#: templates/index.html:16
 msgid "Starred Categories"
 msgstr ""
 
-#: templates/index.html:16
+#: templates/index.html:21
 msgid "Category Explorer"
 msgstr ""
 
-#: templates/index.html:18 templates/_base/admin.html:13
-#: templates/_base/default.html:17
+#: templates/index.html:23 templates/index.html.py:118
+#: templates/_base/admin.html:13 templates/_base/default.html:21
+#: templates/_base/default.html.py:28
 msgid "Loading..."
 msgstr "Loading..."
 
-#: templates/index.html:29
+#: templates/index.html:31
+#, python-format
+msgid ""
+"<strong>Heads up!</strong> To post something, you have to <a href="
+"\"%(login_url)s\" class=\"login-url\">login</a>"
+msgstr ""
+
+#: templates/index.html:40
 msgid "Written Date"
 msgstr ""
 
-#: templates/index.html:30
+#: templates/index.html:41
 msgid "Last Modified"
 msgstr ""
 
-#: templates/index.html:43
+#: templates/index.html:59
 msgid "Show Previous"
 msgstr ""
 
-#: templates/index.html:51
+#: templates/index.html:61
+msgid "Write a comment"
+msgstr ""
+
+#: templates/index.html:67
 msgid "List"
 msgstr ""
 
-#: templates/index.html:53
+#: templates/index.html:69
 msgid "Like"
 msgstr ""
 
-#: templates/index.html:54
+#: templates/index.html:70
 msgid "Unlike"
 msgstr ""
 
-#: templates/index.html:55
+#: templates/index.html:71
 msgid "Hate"
 msgstr ""
 
-#: templates/index.html:56
+#: templates/index.html:72
 msgid "Unhate"
 msgstr ""
 
-#: templates/index.html:57
+#: templates/index.html:73
 msgid "Follow"
 msgstr ""
 
-#: templates/index.html:58
+#: templates/index.html:74
 msgid "Unfollow"
 msgstr ""
 
-#: templates/index.html:63
+#: templates/index.html:79
 msgid "Edit"
 msgstr ""
 
-#: templates/index.html:64
+#: templates/index.html:80
 msgid "Delete"
 msgstr ""
 
-#: templates/index.html:65 templates/index.html.py:75
+#: templates/index.html:81 templates/index.html.py:91
 msgid "New Post"
 msgstr ""
 
-#: templates/index.html:71
+#: templates/index.html:87
 #, python-format
 msgid "Nothing in %(holder)s yet."
 msgstr ""
 
-#: templates/index.html:72
+#: templates/index.html:88
 msgid "Be a first person"
 msgstr ""
 
-#: templates/index.html:78
+#: templates/index.html:94
 msgid "Login to Post"
 msgstr ""
 
-#: templates/index.html:87
+#: templates/index.html:103
 msgid "Category"
 msgstr ""
 
-#: templates/index.html:88 templates/_snippets/post-article.html:14
+#: templates/index.html:104 templates/_snippets/post-article.html:14
 msgid "Title"
 msgstr "Title"
 
-#: templates/index.html:89
+#: templates/index.html:105
 msgid "Author"
 msgstr ""
 
-#: templates/index.html:90
+#: templates/index.html:106
 msgid "Liked"
 msgstr ""
 
-#: templates/index.html:91
+#: templates/index.html:107
 msgid "Date"
 msgstr ""
 
@@ -281,10 +315,6 @@ msgid ""
 "Items will be show up when a user post an article containing youtube video."
 msgstr ""
 
-#: templates/_snippets/nav.html:10
-msgid "Open Alive"
-msgstr "Open Alive"
-
 #: templates/_snippets/nav.html:14 templates/_snippets/post-article.html:26
 msgid "Tags"
 msgstr "Tags"
@@ -301,15 +331,19 @@ msgstr "Videos"
 msgid "About"
 msgstr "About"
 
-#: templates/_snippets/nav.html:21
+#: templates/_snippets/nav.html:20
+msgid "Search"
+msgstr ""
+
+#: templates/_snippets/nav.html:26
 msgid "Login"
 msgstr "Login"
 
-#: templates/_snippets/nav.html:27
+#: templates/_snippets/nav.html:32
 msgid "My Profile"
 msgstr ""
 
-#: templates/_snippets/nav.html:29
+#: templates/_snippets/nav.html:34
 msgid "Logout"
 msgstr "Logout"
 
@@ -348,3 +382,16 @@ msgstr "POST"
 #: templates/_snippets/post-article.html:44
 msgid "Cancel"
 msgstr "Cancel"
+
+#: templates/service/category.html:22
+#, fuzzy
+msgid "Articles"
+msgstr "Post an Article"
+
+#: templates/service/category.html:25
+msgid "Page"
+msgstr ""
+
+#: templates/service/category.html:29
+msgid "Subcategories"
+msgstr ""

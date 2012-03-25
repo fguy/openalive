@@ -2,20 +2,20 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-13 16:06-0700\n"
+"POT-Creation-Date: 2012-03-24 00:19-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: models.py:208
 msgid "Category name must be unique"
@@ -25,15 +25,15 @@ msgstr "분류명은 유일해야 합니다."
 msgid "Can not reference recursively."
 msgstr "재귀적으로 참조할 수 없습니다."
 
-#: models.py:445
+#: models.py:465
 msgid "Can not delete if the comment has replies."
 msgstr "댓글은 답글이 있는 경우 삭제할 수 없습니다."
 
-#: models.py:509
+#: models.py:529
 msgid "Can not give a reputation to your's."
 msgstr "자기가 쓴 글을 스스로 평가할 수 없습니다."
 
-#: models.py:511
+#: models.py:531
 #, python-format
 msgid "You already gave a %s."
 msgstr "이미 %s 했습니다."
@@ -43,25 +43,30 @@ msgstr "이미 %s 했습니다."
 msgid "%s Best Articles"
 msgstr "의 인기글"
 
-#: action/service.py:21
+#: action/feed.py:35
+#, fuzzy
+msgid "Recent Articles"
+msgstr "의 인기글"
+
+#: action/service.py:22
 #, python-format
 msgid "Captcha code mismatch: %s"
 msgstr "보안문자가 일치하지 않습니다: %s"
 
-#: action/service.py:46
+#: action/service.py:45
 msgid "Only the author can edit this article."
 msgstr "글쓴이만 편집할 수 있습니다."
 
-#: action/service.py:61
+#: action/service.py:60
 msgid "Only the author can delete this article."
 msgstr "글쓴이만 삭제할 수 있습니다."
 
-#: action/service.py:105
+#: action/service.py:109
 #, fuzzy
 msgid "Only the author can delete this comment."
 msgstr "글쓴이만 삭제할 수 있습니다."
 
-#: action/service.py:149 action/service.py:170
+#: action/service.py:148 action/service.py:169
 #, fuzzy
 msgid "You did not give an reputation for this."
 msgstr "자기가 쓴 글을 스스로 평가할 수 없습니다."
@@ -78,7 +83,24 @@ msgstr "지정하지 마십시오."
 msgid "Korean"
 msgstr "한국어"
 
-#: templates/images.html:19 templates/index.html:43 templates/user.html:34
+#: templates/about.html:5 templates/about.html.py:26 templates/category.html:7
+#: templates/category.html.py:9 templates/category.html:10
+#: templates/category.html.py:11 templates/category.html:15
+#: templates/category.html.py:18 templates/index.html:6
+#: templates/_snippets/nav.html:10 templates/category/articlelist.html:9
+#: templates/category/articlelist.html:11
+#: templates/category/articlelist.html:12 templates/service/article.html:9
+#: templates/service/category.html:7 templates/service/category.html.py:9
+#: templates/service/category.html:11 templates/service/category.html.py:12
+#: templates/service/category.html:19
+msgid "Open Alive"
+msgstr "개생"
+
+#: templates/category.html:20
+msgid "Categories"
+msgstr "분류 목록"
+
+#: templates/images.html:19 templates/index.html:59 templates/user.html:34
 #: templates/user.html.py:37 templates/user.html:40 templates/videos.html:34
 #, fuzzy
 msgid "loading..."
@@ -97,107 +119,122 @@ msgstr "아직 이미지를 담은 글이 게시되지 않았습니다."
 msgid "Image items will be show up when a user post an article with image."
 msgstr "사용자가 이미지를 첨부한 글을 게시하면 이 곳에 나타납니다."
 
-#: templates/index.html:7 templates/_snippets/nav.html:13
+#: templates/index.html:12 templates/_snippets/nav.html:13
 msgid "Home"
 msgstr "홈"
 
-#: templates/index.html:11
+#: templates/index.html:16
 msgid "Starred Categories"
 msgstr "즐겨찾기"
 
-#: templates/index.html:16
+#: templates/index.html:21
 #, fuzzy
 msgid "Category Explorer"
 msgstr "분류"
 
-#: templates/index.html:18 templates/_base/admin.html:13
-#: templates/_base/default.html:17
+#: templates/index.html:23 templates/index.html.py:118
+#: templates/_base/admin.html:13 templates/_base/default.html:21
+#: templates/_base/default.html.py:28
 msgid "Loading..."
 msgstr "로드 중 ..."
 
-#: templates/index.html:29
+#: templates/index.html:31
+#, python-format
+msgid ""
+"<strong>Heads up!</strong> To post something, you have to <a href="
+"\"%(login_url)s\" class=\"login-url\">login</a>"
+msgstr ""
+"<strong>안내!</strong> 글을 쓰거나 댓글을 달려면 <a href=\"%(login_url)s\" "
+"class=\"login-url\">로그인</a>하셔야 합니다."
+
+#: templates/index.html:40
 msgid "Written Date"
 msgstr "작성된 날짜"
 
-#: templates/index.html:30
+#: templates/index.html:41
 msgid "Last Modified"
 msgstr "최종 수정"
 
-#: templates/index.html:43
+#: templates/index.html:59
 msgid "Show Previous"
 msgstr "더 보기"
 
-#: templates/index.html:51
+#: templates/index.html:61
+#, fuzzy
+msgid "Write a comment"
+msgstr "댓글 쓰기"
+
+#: templates/index.html:67
 msgid "List"
 msgstr "목록"
 
-#: templates/index.html:53
+#: templates/index.html:69
 msgid "Like"
 msgstr "좋아요"
 
-#: templates/index.html:54
+#: templates/index.html:70
 msgid "Unlike"
 msgstr "좋아요 취소"
 
-#: templates/index.html:55
+#: templates/index.html:71
 msgid "Hate"
 msgstr "싫어요"
 
-#: templates/index.html:56
+#: templates/index.html:72
 msgid "Unhate"
 msgstr "싫어요 취소"
 
-#: templates/index.html:57
+#: templates/index.html:73
 msgid "Follow"
 msgstr "지켜보기"
 
-#: templates/index.html:58
+#: templates/index.html:74
 #, fuzzy
 msgid "Unfollow"
 msgstr "지켜보기 해제"
 
-#: templates/index.html:63
+#: templates/index.html:79
 msgid "Edit"
 msgstr "편집"
 
-#: templates/index.html:64
+#: templates/index.html:80
 msgid "Delete"
 msgstr "삭제"
 
-#: templates/index.html:65 templates/index.html.py:75
+#: templates/index.html:81 templates/index.html.py:91
 msgid "New Post"
 msgstr "새 게시물 작성"
 
-#: templates/index.html:71
+#: templates/index.html:87
 #, python-format
 msgid "Nothing in %(holder)s yet."
 msgstr "아직 %(holder)s에는 아무 것도 없습니다."
 
-#: templates/index.html:72
+#: templates/index.html:88
 msgid "Be a first person"
 msgstr "첫 게시자가 되세요."
 
-#: templates/index.html:78
+#: templates/index.html:94
 msgid "Login to Post"
 msgstr "글을 작성하려면 로그인"
 
-#: templates/index.html:87
+#: templates/index.html:103
 msgid "Category"
 msgstr "분류"
 
-#: templates/index.html:88 templates/_snippets/post-article.html:14
+#: templates/index.html:104 templates/_snippets/post-article.html:14
 msgid "Title"
 msgstr "제목"
 
-#: templates/index.html:89
+#: templates/index.html:105
 msgid "Author"
 msgstr "작성자"
 
-#: templates/index.html:90
+#: templates/index.html:106
 msgid "Liked"
 msgstr "추천"
 
-#: templates/index.html:91
+#: templates/index.html:107
 msgid "Date"
 msgstr "날짜"
 
@@ -220,13 +257,13 @@ msgstr "별명 변경"
 
 #: templates/user.html:14
 msgid ""
-"To create or modify your avatar, please do it on <a "
-"href=\"http://www.gravatar.com\" "
-"target=\"_blank\">http://www.gravatar.com</a> with your associated email "
-"account."
+"To create or modify your avatar, please do it on <a href=\"http://www."
+"gravatar.com\" target=\"_blank\">http://www.gravatar.com</a> with your "
+"associated email account."
 msgstr ""
 "자신의 아바타를 만들거나 수정하려면 <a href=\"http://www.gravatar.com\" "
-"target=\"_blank\">http://www.gravatar.com</a>에서 자신의 이메일 계정과 연동되게끔 설정하면 됩니다."
+"target=\"_blank\">http://www.gravatar.com</a>에서 자신의 이메일 계정과 연동되"
+"게끔 설정하면 됩니다."
 
 #: templates/user.html:17 templates/user.html.py:53
 msgid "Nickname"
@@ -258,14 +295,18 @@ msgstr "개의 댓글 작성"
 msgid ""
 "Got <span class=\"badge\"><i class=\"icon-heart icon-white\"></i> "
 "%(like_count)s</span> likes."
-msgstr "<span class=\"badge\"><i class=\"icon-heart icon-white\"></i> %(like_count)s</span> 명이 \"좋아요\"."
+msgstr ""
+"<span class=\"badge\"><i class=\"icon-heart icon-white\"></i> "
+"%(like_count)s</span> 명이 \"좋아요\"."
 
 #: templates/user.html:28
 #, python-format
 msgid ""
 "Got <span class=\"badge\"><i class=\"icon-fire icon-white\"></i> "
 "%(hate_count)s</span> hates."
-msgstr "<span class=\"badge\"><i class=\"icon-fire icon-white\"></i> %(hate_count)s</span> 명이 \"싫어요\"."
+msgstr ""
+"<span class=\"badge\"><i class=\"icon-fire icon-white\"></i> %(hate_count)s</"
+"span> 명이 \"싫어요\"."
 
 #: templates/user.html:46
 msgid "New Nickname"
@@ -286,11 +327,8 @@ msgstr "아직 게시된 동영상이 없습니다."
 #: templates/videos.html:41
 msgid ""
 "Items will be show up when a user post an article containing youtube video."
-msgstr "사용자가 YouTube에 비디오를 포함하는 문서를 게시할 때 항목이 표시됩니다."
-
-#: templates/_snippets/nav.html:10
-msgid "Open Alive"
-msgstr "개생"
+msgstr ""
+"사용자가 YouTube에 비디오를 포함하는 문서를 게시할 때 항목이 표시됩니다."
 
 #: templates/_snippets/nav.html:14 templates/_snippets/post-article.html:26
 msgid "Tags"
@@ -308,15 +346,19 @@ msgstr "동영상"
 msgid "About"
 msgstr "소개"
 
-#: templates/_snippets/nav.html:21
+#: templates/_snippets/nav.html:20
+msgid "Search"
+msgstr "검색"
+
+#: templates/_snippets/nav.html:26
 msgid "Login"
 msgstr "로그인"
 
-#: templates/_snippets/nav.html:27
+#: templates/_snippets/nav.html:32
 msgid "My Profile"
 msgstr "내 프로필"
 
-#: templates/_snippets/nav.html:29
+#: templates/_snippets/nav.html:34
 msgid "Logout"
 msgstr "로그아웃"
 
@@ -336,7 +378,9 @@ msgstr "내용"
 msgid ""
 "Hit ENTER to add tag. Please do not tag different variations of the same "
 "name."
-msgstr "태그를 추가하려면 Enter를 누르십시오. 비슷한 이름의 태그를 여러개 추가하진 마십시오."
+msgstr ""
+"태그를 추가하려면 Enter를 누르십시오. 비슷한 이름의 태그를 여러개 추가하진 마"
+"십시오."
 
 #: templates/_snippets/post-article.html:33
 msgid "Captcha"
@@ -354,6 +398,20 @@ msgstr "게시"
 msgid "Cancel"
 msgstr "취소"
 
+#: templates/service/category.html:22
+#, fuzzy
+msgid "Articles"
+msgstr "개의 글 게시"
+
+#: templates/service/category.html:25
+msgid "Page"
+msgstr "페이지"
+
+#: templates/service/category.html:29
+#, fuzzy
+msgid "Subcategories"
+msgstr "분류 목록"
+
 #~ msgid "Got %(like_count)s likes."
 #~ msgstr "%(like_count)s회의 '좋아요' 받음."
 
@@ -362,6 +420,3 @@ msgstr "취소"
 
 #~ msgid "Signature"
 #~ msgstr "서명"
-
-#~ msgid "Categories"
-#~ msgstr "분류 목록"

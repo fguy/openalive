@@ -28,7 +28,7 @@
 	        {% if not user %}
 	        <div class="alert alert-info">
 	            <a class="close" data-dismiss="alert">×</a>
-	            <strong>Heads up!</strong> To post something, you have to <a href="{{ login_url }}">login</a>.
+	            {% blocktrans %}<strong>Heads up!</strong> To post something, you have to <a href="{{ login_url }}" class="login-url">login</a>{% endblocktrans %}.
 	        </div>
 	        {% endif %}
         
@@ -113,40 +113,42 @@
           <div class="pagination" id="article-pagination-container"><ul id="article-pagination"></ul></div>
         </div><!--/span-->
         
-        <div id="home-content" class="span9">
-            <div id="recent">{% trans 'Loading...' %}</div>
-            <div id="external-sns">
-                <div class="fb-activity" data-site="350467444992286" data-app-id="350467444992286" data-width="250" data-height="371" data-border-color="#eee" data-header="true" data-recommendations="true"></div>
-                <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
-                <script>
-                new TWTR.Widget({
-                  version: 2,
-                  type: 'search',
-                  search: '@openalive OR from:openalive',
-                  interval: 30000,
-                  title: "Open Alive on Twitter",
-                  subject: '',
-                  width: 250,
-                  height: 300,
-                  theme: {
-                    shell: {
-                      background: '#8ec1da',
-                      color: '#ffffff'
-                    },
-                    tweets: {
-                      background: '#ffffff',
-                      color: '#444444',
-                      links: '#1985b5'
-                    }
-                  },
-                  features: {
-                    scrollbar: false,
-                    loop: false,
-                    live: true,
-                    behavior: 'default'
-                  }
-                }).render().start();
-                </script>
+        <div id="home-content" class="container-fluid">
+        	<div class="row-fluid">
+	            <div id="recent" class="span6">{% trans 'Loading...' %}</div>
+	            <div id="external-sns" class="span3">
+	                <div class="fb-activity" data-site="350467444992286" data-app-id="350467444992286" data-width="250" data-height="371" data-border-color="#eee" data-header="true" data-recommendations="true"></div>
+	                <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
+	                <script>
+	                new TWTR.Widget({
+	                  version: 2,
+	                  type: 'search',
+	                  search: '@openalive OR from:openalive',
+	                  interval: 30000,
+	                  title: "",
+	                  subject: '',
+	                  width: 250,
+	                  height: 300,
+	                  theme: {
+	                    shell: {
+	                      background: '#8ec1da',
+	                      color: '#ffffff'
+	                    },
+	                    tweets: {
+	                      background: '#ffffff',
+	                      color: '#444444',
+	                      links: '#1985b5'
+	                    }
+	                  },
+	                  features: {
+	                    scrollbar: false,
+	                    loop: false,
+	                    live: true,
+	                    behavior: 'default'
+	                  }
+	                }).render().start();
+	                </script>
+	            </div>
             </div>
         </div>        
       </div><!--/row-->

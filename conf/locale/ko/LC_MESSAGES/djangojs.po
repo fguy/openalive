@@ -2,30 +2,30 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-13 16:06-0700\n"
+"POT-Creation-Date: 2012-03-24 00:20-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: static/js/btn-load-more.js:8
 msgid "No more."
 msgstr "마지막입니다."
 
-#: static/js/editor.js:32
+#: static/js/editor.js:33
 msgid "Add a tag"
 msgstr "태그 추가"
 
-#: static/js/editor.js:37
+#: static/js/editor.js:38
 msgid "You can enter 5 tags or less."
 msgstr "5개 이하의 태그만 입력하실 수 있습니다."
 
@@ -59,41 +59,50 @@ msgstr "주 전"
 msgid " years ago"
 msgstr "년 전"
 
-#: static/js/service.js:407
+#: static/js/service.js:59
+msgid "Open Alive"
+msgstr "개생"
+
+#: static/js/service.js:373
+msgid "Loading..."
+msgstr "로드 중 ..."
+
+#: static/js/service.js:512
 msgid "Posted."
 msgstr "게시되었습니다."
 
-#: static/js/service.js:434
+#: static/js/service.js:539
 msgid "Updated."
 msgstr "수정되었습니다."
 
-#: static/js/service.js:448
+#: static/js/service.js:553
 msgid "Deleted."
 msgstr "삭제되었습니다."
 
-#: static/js/service.js:584
+#: static/js/service.js:670
+msgid "Are you sure?"
+msgstr "정말입니까?"
+
+#: static/js/service.js:700
 msgid "Please comment here..."
 msgstr "댓글을 작성해주세요 ..."
 
-#: static/js/service.js:648
+#: static/js/service.js:766
 #, fuzzy
 msgid "Delete"
 msgstr "삭제되었습니다."
 
-#: static/js/service.js:925
+#: static/js/service.js:1046
 msgid "Nickname has been changed."
 msgstr "별명이 변경되었습니다."
 
-#: static/js/service.js:1072
+#: static/js/service.js:1192
 msgid "People who likes this"
 msgstr "\"좋아요\"한 사람"
 
-#: static/js/service.js:1072
+#: static/js/service.js:1192
 msgid "People who hates this"
 msgstr "\"싫어요\"한 사람"
 
-#~ msgid "Loading..."
-#~ msgstr "로드 중 ..."
-
-#~ msgid "No category selected."
-#~ msgstr "분류를 지정하지 않았습니다."
+msgid "No category selected."
+msgstr "분류를 지정하지 않았습니다."

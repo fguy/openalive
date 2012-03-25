@@ -91,6 +91,7 @@ var ArticleEditor = (function() {
   this.close = close;
   this.open = open;
   this.init = init;
+  this.isMobile = mobile;
   return this;
 })();
 
