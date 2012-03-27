@@ -416,6 +416,10 @@ iframe {
 	margin: 4px 0
 }
 
+.thumbnails .thumbnail .image-zoom img {
+	max-width: 100%;
+}
+
 .thumbnails .thumbnail time {
 	color: #999
 }

@@ -60,13 +60,13 @@ class Controller(webapp2.RequestHandler):
             if not action_module :
                 action_module = 'index'
             
-            self._current_request_args = {}
             path_len = len(path)
             if path_len > 1:
                 action_instance = ''.join([x.title() for x in path[1].split('-')])
                 self._current_request_args = [urllib.unquote_plus(item).decode('utf-8') for item in path[2:]]
             else:
                 action_instance = 'Index'
+                self._current_request_args = []
             del path
         
         logging.debug('Current action module : %s, class : %s' % (action_module, action_instance))         
@@ -107,9 +107,7 @@ class Controller(webapp2.RequestHandler):
             if message:
                 self.response.write(status)
             return
-        
-        self.__action.lang = self.request.lang
-        
+                
         output = self.request.get('output')
         
         if output == Action.Result.JSON or (output != Action.Result.HTML and result == Action.Result.DEFAULT and self.__action.is_ajax) or result is Action.Result.JSON:

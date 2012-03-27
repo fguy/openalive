@@ -6,7 +6,7 @@
     	{% for item in list %}
     	<li class="span2">
     		<div class="thumbnail">
-    			<a href="{{ item.image }}" class="image-zoom"><img src="{{ item.image|thumbnail }}" alt="{{ item.title }}" longdesc="/#!/{{ item.category }}/{{ item.id }}"></a>
+    			<a href="{{ item.image }}" class="image-zoom"><img src="{{ item.image|thumbnail }}" alt="{{ item.title }}" longdesc="/#!/{{ item.category }}/{{ item.id }}" onerror="this.src=this.parentNode.href"></a>
     			<div class="caption">
     				<h5><a href="/#!/{{ item.category }}/{{ item.id }}" class="article-item" title="{{ item.title }}">{{ item.title }}</a> <span class="comment-count">{% if item.comment_count > 0 %}<span class="badge"><i class="icon-comment icon-white"></i> {{ item.comment_count }}</span>{% endif %}</span></h5>
     				<time datetime="{{ item.last_updated|date:'c' }}Z"><i class="icon-time"></i> {{ item.last_updated|pretty_date }}</time>
@@ -41,7 +41,7 @@
 	<script type="text/javascript">
 	var ROW_TEMPLATE = '<li class="span2">\
 		<div class="thumbnail">\
-			<a href="{% templatetag openvariable %} image }}" class="image-zoom"><img src="{% templatetag openvariable %} image|thumbnail }}" alt="{% templatetag openvariable %} title }}" longdesc="/#!/{% templatetag openvariable %} category }}/{% templatetag openvariable %} id }}"></a>\
+			<a href="{% templatetag openvariable %} image }}" class="image-zoom"><img src="{% templatetag openvariable %} image|thumbnail }}" alt="{% templatetag openvariable %} title }}" longdesc="/#!/{% templatetag openvariable %} category }}/{% templatetag openvariable %} id }}" onerror="this.src=this.parentNode.href"></a>\
 			<div class="caption">\
 				<h5><a href="/#!/{% templatetag openvariable %} category }}/{% templatetag openvariable %} id }}" class="article-item" title="{% templatetag openvariable %} title }}">{% templatetag openvariable %} title }}</a> <span class="comment-count">{% templatetag openvariable %} commentCount }}</span></h5>\
 				<time datetime="{% templatetag openvariable %} last_updated }}"><i class="icon-time"></i> {% templatetag openvariable %} last_updated|prettyDate }}</time>\

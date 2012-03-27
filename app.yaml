@@ -9,15 +9,15 @@ libraries:
   version: "latest"
   
 builtins:
-- remote_api: on
-- appstats: on
 - deferred: on
-- admin_redirect: on
 
 admin_console:
   pages:
   - name: Category Admin
     url: /admin/category
+
+inbound_services:
+- xmpp_message
 
 handlers: 
 - url: /static

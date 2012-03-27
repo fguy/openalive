@@ -222,7 +222,7 @@ var initializeModels = function() {
 		    				  }
 		    				  return formatString(rowTemplate, $.extend(item, {
 		    				  	title: item.title.length > 20 ? (item.title.substring(0, 20) + "...") : item.title,
-		    				    thumbnail: thumbnail ? formatString('<img src="{{ thumbnail }}">', {thumbnail: thumbnail}) : "",
+		    				    thumbnail: thumbnail ? formatString('<img src="{{ thumbnail }}" onerror="this.style.display=\'none\'">', {thumbnail: thumbnail}) : "",
 		    				    pubDate: ISODateString(new Date(Date.parse(item.publishedDate)))
 		    				  }));
 		    				}).get().join(""));

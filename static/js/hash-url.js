@@ -41,7 +41,7 @@ $(function() {
 		if (m) {
 			var mString = m[0];
 			initializeModels();
-			var HASH_TOKENS = hash.substring(mString.length + 1,
+			HASH_TOKENS = hash.substring(mString.length + 1,
 					idx > -1 ? idx : hash.length).split("/");
 			
 			var callback = HASH_TOKENS.length > 1 && HASH_TOKENS[1] ? function() {
