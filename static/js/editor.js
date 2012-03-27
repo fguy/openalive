@@ -62,6 +62,7 @@ var ArticleEditor = (function() {
   var open = function() {
   	initialized ? transferFieldValues() :init();
   	var edit = isEdit();
+  	$("#post-article-captcha-control-group").toggle(!edit);
     if (!edit && !service.Category.getCurrent()) {
       $().toastmessage("showWarningToast", gettext("No category selected."));
       return false;

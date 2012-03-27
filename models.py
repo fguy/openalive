@@ -334,7 +334,7 @@ class Article(AbstractArticle):
         soup = BeautifulSoup(self.body)
         img = soup.find('img')
         
-        if img and hasattr(img, 'src') and re.search('tiny_mce/plugins/emoticons', img['src'].lower()) is None:
+        if img and hasattr(img, 'src') and re.search('tiny_mce/plugins/emotions', img['src'].lower()) is None:
             self.image = img['src']
             has_image = True
         

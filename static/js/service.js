@@ -533,7 +533,7 @@ var initializeModels = function() {
 			      $.ajax({
 			        type: "PUT",
 			        url: "/service/article",
-			        data: JSON.stringify(self.getFormAsJson(form)),
+			        data: encodeURIComponent(JSON.stringify(self.getFormAsJson(form))),
 			        cache: false,
 			        success: function(data) {
 			          self.current = data.article;

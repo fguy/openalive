@@ -37,8 +37,10 @@ class Article(Action):
         
     @login_required
     def put(self):
-        params = json.loads(self.request.body)
-        self._captcha_validation(params['recaptcha_challenge_field'], params['recaptcha_response_field'])
+        unqouted = urllib.unquote_plus(self.request.body).decode('utf8')
+        if unqouted[-1:] != '}':
+            unqouted = unqouted[:-1]
+        params = json.loads(unqouted)
         article_id = int(params['id'])
         article = models.Article.get_by_id(article_id)
         if article.author.user != users.get_current_user():
