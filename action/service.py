@@ -1,8 +1,8 @@
-from action import feed, category
+from action import category
 from gettext import gettext as _
-from google.appengine.api import users, memcache
-from lib.controller import Action
-from lib.decorators import login_required, rss
+from google.appengine.api import users
+from lib.controller import Action, Notification
+from lib.decorators import login_required
 from lib.recaptcha.client import captcha
 import models
 import settings
@@ -51,6 +51,13 @@ class Article(Action):
         article.save()
         self.article = article
         self.tags = models.Tag.get(article.tags)
+        
+        subscribers = models.Subscription.get_user_list(article)
+        author_email = article.author.user.email()
+        if author_email in subscribers:
+            subscribers.remove(author_email)
+        if subscribers:
+            Notification.send(subscribers, subject='%s has been updated "%s".' % (article.author.nickname, article.title), body='%s has been updated "%s".\r\n\r\n%s/%s' % (article.author.nickname, article.title, self.request.host_url, article_id))
         return Action.Result.DEFAULT
 
     @login_required

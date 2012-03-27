@@ -1,4 +1,4 @@
-from google.appengine.api import users
+from google.appengine.api import users, xmpp, mail, app_identity
 from django.conf import settings
 from django.utils import translation
 from django import template
@@ -11,6 +11,7 @@ import datetime
 import logging
 import os
 import re
+import threading
 import sys
 import urllib
 import urlparse
@@ -310,6 +311,24 @@ class Action(object):
         RSS_JSON_XML = 'rss_json_xml'
         JSON = 'json'
 
+
+class Notification(threading.Thread):
+    SENDER = '%s@appspot.com' % app_identity.get_application_id()
+    
+    def __init__(self, email, subject, body):
+        super(self.__class__, self).__init__()
+        self.email = email
+        self.subject = subject
+        self.body = body
+        
+    def run(self):
+        if not xmpp.send_message(self.email, self.body) == xmpp.NO_ERROR:
+            mail.send_mail(sender=self.__class__.SENDER, to=self.email, subject=self.subject, body=self.body)
+            
+    @classmethod
+    def send(cls, email, subject, body):
+        Notification(email=email, subject=subject, body=body).start()
+        
 def print_rss(output, result, action_instance):
     json_result = {'responseData': {}, 'responseDetails': None, 'responseStatus': 200}
     if output in [Action.Result.RSS, Action.Result.RSS_JSON_XML, Action.Result.RSS_XML]:
