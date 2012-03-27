@@ -350,7 +350,7 @@ class Article(AbstractArticle):
         is_insert = not self.is_saved()
         
         excerpt = strip_tags(self.body).strip()
-        self.excerpt = '%s...' % excerpt[:253] if len(excerpt) > 253 else excerpt        
+        self.excerpt = '%s...' % excerpt[:253] if len(excerpt) > 253 else excerpt
         
         diff = None
         if not is_insert:
@@ -358,8 +358,9 @@ class Article(AbstractArticle):
             Tag.decrease(previous.tags)
             if previous.body != self.body:
                 diff = DIFFER.make_table(previous.body, self.body)
-        db.run_in_transaction_options(xg_on, super(Article, self).put)
+        db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
         if is_insert:
+            db.run_in_transaction_options(xg_on, Subscription(article=self, user=self.author).put)
             db.run_in_transaction_options(xg_on, self.author.increase_article_count)
             for item in self.category.get_path():
                 db.run_in_transaction_options(xg_on, item.increase_article_count)
@@ -387,13 +388,13 @@ class Article(AbstractArticle):
         q = cls.all()
         delta = None
         if period == 'weekly':
-            delta = datetime.timedelta(weeks = 1)
+            delta = datetime.timedelta(weeks=1)
         elif period == 'monthly':
-            delta = datetime.timedelta(days = 30)
+            delta = datetime.timedelta(days=30)
         elif period == 'quaterly':
-            delta = datetime.timedelta(days = 90)
+            delta = datetime.timedelta(days=90)
         else:
-            delta = datetime.timedelta(days = 1)
+            delta = datetime.timedelta(days=1)
         q.filter('created > ', datetime.datetime.now() - delta)
         q.order('-like_count')
         return [item.to_dict() for item in q.fetch(limit, offset)]
@@ -468,14 +469,15 @@ class Comment(AbstractArticle):
         db.run_in_transaction_options(xg_on, self.author.decrease_comment_count)
     
     def save(self):
-        self.body = bleach.linkify(bleach.clean(self.body).replace('\n','<br>\n'), parse_email=True, target='_blank')
+        self.body = bleach.linkify(bleach.clean(self.body).replace('\n', '<br>\n'), parse_email=True, target='_blank')
         
         is_insert = not self.is_saved()
-                     
+        
         db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
         if is_insert:
-            self.sort_key = ('%s%32s' % (self.parent_comment.sort_key, base62_encode(self.key().id()))).replace(' ','0') if self.parent_comment else '%s' % base62_encode(self.key().id())
+            self.sort_key = ('%s%32s' % (self.parent_comment.sort_key, base62_encode(self.key().id()))).replace(' ', '0') if self.parent_comment else '%s' % base62_encode(self.key().id())
             db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
+            db.run_in_transaction_options(xg_on, Subscription(article=self.article, user=self.author).put)
             db.run_in_transaction_options(xg_on, self.article.increase_comment_count)
             db.run_in_transaction_options(xg_on, self.author.increase_comment_count)
         return self
@@ -607,3 +609,6 @@ class Subscription(db.Model):
             return None
         return cls.gql('WHERE article=:1 AND user=:2', article, user).get()
     
+    @classmethod
+    def get_user_list(cls, article):
+        return [item.user.user.email() for item in cls.gql('WHERE article = :1', article).fetch(DEFAULT_FETCH_COUNT)]
