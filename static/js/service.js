@@ -492,17 +492,17 @@ var initializeModels = function() {
 		      	$("#article-list tbody .active").removeClass("active");
 		      	$("#article-item, #article-reputation, .btn-read").hide();
 		      },
-		      getFormAsJsonString: function(form) {
+		      getFormAsJson: function(form) {
 		      	var json = {};
 		      	$(form.serializeArray()).each(function(i, item) {
 		      		json[item.name] = item.name == "body" && ArticleEditor.isMobile ? item.value.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>$2') : item.value;
 		      	});
-		      	return JSON.stringify(json);
+		      	return json;
 		      },
 		      post: function(form) {
 		        var currentCategory = service.Category.getCurrent();
 		        $("#loading").show();
-		        $.post("/service/article/" + currentCategory, self.getFormAsJsonString(form), function(data) {
+		        $.post("/service/article/" + encodeURI(currentCategory), self.getFormAsJson(form), function(data) {
 		          if(self.getCurrentPage() != 1) {
 		            $.history.load("!/" + currentCategory + "/?page=1");
 		          }
@@ -533,7 +533,7 @@ var initializeModels = function() {
 			      $.ajax({
 			        type: "PUT",
 			        url: "/service/article",
-			        data: self.getFormAsJsonString(form),
+			        data: JSON.stringify(self.getFormAsJson(form)),
 			        cache: false,
 			        success: function(data) {
 			          self.current = data.article;
