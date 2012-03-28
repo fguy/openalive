@@ -377,6 +377,7 @@ var initializeModels = function() {
 		      	self.highlightActiveRow(id);
 		      	$("#article-item-body").html('<div class="loading"><i class="icon-clock">' + gettext("Loading...") + "</div>");
 		      	$("#loading").show();
+		      	$("#comments li:not(#comment-input):not(:first)").remove();
 		      	$.getJSON("/service/article/" + id, function(data) {
 		      		if(!data.article) {
 		      			bootbox.alert(gettext("Not found. It may have been deleted."));
@@ -414,7 +415,6 @@ var initializeModels = function() {
 		      		$("#article-item, #article-reputation").show();
 		      		$.scrollTo($("#article-item").position().top - 40, 100);
 		      		$("#loading, #article-list caption").hide();
-		      		$("#comments li:not(#comment-input):not(:first)").remove();
 		      		service.Comment.resetLoadedCount();
 		      		service.Comment.renderBest(data.best_comment_list);
 		      		service.Comment.render(data.comment_list);
@@ -600,7 +600,7 @@ var initializeModels = function() {
 		        avatar: service.User.getAvatar(item.author.email_hash, 16),
 		        hasVideo: item.video != null ? '<i class="icon-film"></i> ' : "",
 		        hasImage: item.image != null ? '<i class="icon-picture"></i> ' : "",
-		        commentCount: item.comment_count > 0 ? '<span class="badge"><i class="icon-comment icon-white"></i> ' + item.comment_count + '</span>' : ""
+		        commentCount: item.comment_count > 0 ? formatString(service.Comment.COUNT_TEMPLATE, {count: item.comment_count})  : ""
 		        }));
 		      },
 		      resizeRow: function() {
@@ -700,8 +700,9 @@ var initializeModels = function() {
 		  return self;
 		})(),
 		
-		Comment: (function() {
+		Comment: (function() {		  
 			var self = {
+			    COUNT_TEMPLATE: '<span class="badge"><i class="icon-comment icon-white"></i> {{ count }}</span>',
 					parentId: null,
 					didClass: "btn-info",
 					activeReplyClass: "btn-inverse",
@@ -786,7 +787,7 @@ var initializeModels = function() {
 		        if(countDiv.length > 0) {
 		        	var m = countDiv.text().match(/[0-9]+/);
 		          var count = (m ? parseInt(m[0]) : 0) + amount;
-		          countDiv.text("(" + count + ")");
+		          countDiv.html(formatString(self.COUNT_TEMPLATE, {count: count}));
 		          $("#article-item #article-item-comment_count").text(count);
 		        }
 					},
