@@ -360,7 +360,6 @@ class Article(AbstractArticle):
                 diff = DIFFER.make_table(previous.body, self.body)
         db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
         if is_insert:
-            db.run_in_transaction_options(xg_on, Subscription(article=self, user=self.author).put)
             db.run_in_transaction_options(xg_on, self.author.increase_article_count)
             for item in self.category.get_path():
                 db.run_in_transaction_options(xg_on, item.increase_article_count)
@@ -380,6 +379,9 @@ class Article(AbstractArticle):
             found = VideoArticle.gql('WHERE article = :1', self).get()
             if found != None:
                 found.delete()
+                
+        if is_insert:
+            Subscription.get_or_insert('%s-%s' % (self.key().id(), self.author.key()), article=self, user=self.author)
 
         return self
     
@@ -477,9 +479,9 @@ class Comment(AbstractArticle):
         if is_insert:
             self.sort_key = ('%s%32s' % (self.parent_comment.sort_key, base62_encode(self.key().id()))).replace(' ', '0') if self.parent_comment else '%s' % base62_encode(self.key().id())
             db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
-            db.run_in_transaction_options(xg_on, Subscription(article=self.article, user=self.author).put)
             db.run_in_transaction_options(xg_on, self.article.increase_comment_count)
             db.run_in_transaction_options(xg_on, self.author.increase_comment_count)
+            Subscription.get_or_insert('%s-%s' % (self.article.key().id(), self.author.key()), article=self.article, user=self.author)
         return self
     
     @classmethod
@@ -534,6 +536,9 @@ class Reputation(db.Model):
         db.run_in_transaction_options(xg_on, super(self.__class__, self).put)
         db.run_in_transaction_options(xg_on, getattr(obj, 'increase_' + self.reputation + '_count'))
         db.run_in_transaction_options(xg_on, getattr(obj.author, 'increase_' + self.reputation + '_count'))
+        if self.obj_class == 'article':
+            Subscription.get_or_insert('%s-%s' % (self.obj_id, self.user.key()), article=obj, user=self.user)        
+        return obj
         
     def delete(self):
         obj = db.get(datastore.Key.from_path(self.obj_class, self.obj_id))

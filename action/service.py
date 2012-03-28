@@ -59,7 +59,7 @@ class Article(Action):
         if author_email in subscribers:
             subscribers.remove(author_email)
         if subscribers:
-            Notification.send(subscribers, subject='%s has been updated "%s".' % (article.author.nickname, article.title), body='%s has been updated "%s".\r\n\r\n%s/%s' % (article.author.nickname, article.title, self.request.host_url, article_id))
+            Notification.send(subscribers, subject='"%s" has been updated.' % article.title, body='"%s" has been updated by %s.\r\n\r\n%s/%s' % (article.author.nickname, article.title, self.request.host_url, article_id))
         return Action.Result.DEFAULT
 
     @login_required
@@ -68,6 +68,14 @@ class Article(Action):
         if article.author.user != users.get_current_user():
             raise users.NotAllowedError(_('Only the author can delete this article.'))
         article.delete()
+        
+        subscribers = models.Subscription.get_user_list(article)
+        author_email = article.author.user.email()
+        if author_email in subscribers:
+            subscribers.remove(author_email)
+        if subscribers:
+            Notification.send(subscribers, subject='"%s" has been deleted.' % article.title, body='"%s" has been deleted by %s .\r\n\r\n%s/%s' % (article.title, article.author.nickname, self.request.host_url, article_id))
+        
         return Action.Result.DEFAULT
     
     def get(self, article_id):
@@ -109,6 +117,14 @@ class Comment(Action):
         if comment_id is not None:
             comment.parent_comment = models.Comment.get_by_id(int(comment_id))
         self.comment = comment.save().to_dict()
+        
+        subscribers = models.Subscription.get_user_list(comment.article)
+        author_email = comment.author.user.email()
+        if author_email in subscribers:
+            subscribers.remove(author_email)
+        if subscribers:
+            Notification.send(subscribers, subject='%s wrote a comment to "%s".' % (comment.author.nickname, comment.article.title), body='%s wrote a comment to "%s".\r\n\r\n\t%s\r\n\r\n%s/%s#comment-%s' % (comment.author.nickname, comment.article.title, comment.body, self.request.host_url, article_id, comment.key().id()))
+        
         return Action.Result.DEFAULT
     
     @login_required
@@ -147,7 +163,14 @@ class Reputation(Action):
     reputation = None
     @login_required
     def post(self, obj_class, obj_id):
-        models.Reputation(keys_name = '%s-%s' % (obj_class, obj_id), obj_class=obj_class, obj_id=int(obj_id), user=models.User.get_current(), reputation=self.reputation).put()
+        user = models.User.get_current()
+        obj = models.Reputation(key_name = '%s-%s' % (obj_class, obj_id), obj_class=obj_class, obj_id=int(obj_id), user=user, reputation=self.reputation).put()
+        
+        if obj_class == 'article':
+            Notification.send(obj.author, subject='%s %ss your post.' % (user.nickname, self.reputation), body='%s %ss your post "%s".\r\n\r\n%s/%s' % (user.nickname, self.reputation, obj.title, self.request.host_url, obj_id))
+        elif obj_class == 'comment':
+            Notification.send(obj.author, subject='%s %ss your comment.' % (user.nickname, self.reputation), body='%s %ss your comment.\r\n\r\n\t%s\r\n%s/%s#comment-%s' % (user.nickname, self.reputation, obj.body, self.request.host_url, obj.article.key().id(), obj_id))
+        
         return Action.Result.DEFAULT
     
     @login_required
@@ -167,7 +190,11 @@ class Subscription(Action):
     @login_required
     def post(self, article_id):
         article = models.Article.get_by_id(int(article_id))
-        models.Subscription(keys_name = article_id, article=article, user=models.User.get_current()).put()
+        user = models.User.get_current()
+        models.Subscription.get_or_insert('%s-%s' % (article_id, user.key()), article=article, user=user)
+        
+        Notification.send(article.author, subject='%s is watching your post.' % user.nickname, body='%s is watching your post "%s".\r\n\r\n%s/%s' % (user.nickname, article.title, self.request.host_url, article_id))
+        
         return Action.Result.DEFAULT
     
     @login_required
