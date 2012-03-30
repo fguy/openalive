@@ -377,7 +377,7 @@ var initializeModels = function() {
 		      	self.highlightActiveRow(id);
 		      	$("#article-item-body").html('<div class="loading"><i class="icon-clock">' + gettext("Loading...") + "</div>");
 		      	$("#loading").show();
-		      	$("#comments li:not(#comment-input):not(:first)").remove();
+		      	$("#article-reputation, #article-item-tags").hide();
 		      	$.getJSON("/service/article/" + id, function(data) {
 		      		if(!data.article) {
 		      			bootbox.alert(gettext("Not found. It may have been deleted."));
@@ -415,6 +415,7 @@ var initializeModels = function() {
 		      		$("#article-item, #article-reputation").show();
 		      		$.scrollTo($("#article-item").position().top - 40, 100);
 		      		$("#loading, #article-list caption").hide();
+		      		$("#comments li:not(#comment-input):not(:first)").remove();
 		      		service.Comment.resetLoadedCount();
 		      		service.Comment.renderBest(data.best_comment_list);
 		      		service.Comment.render(data.comment_list);
@@ -441,7 +442,7 @@ var initializeModels = function() {
 	      			  primaryTag: item.content[0],
 	      			  tag: item.content.join(",")
 	      			});
-	      		}).get().join(""));
+	      		}).get().join("")).show();
 	      		
 	      		var staticUrl = formatString("{{ protocol }}//{{ host }}/{{ id }}", {
               protocol: location.protocol,
