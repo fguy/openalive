@@ -615,6 +615,7 @@ var initializeModels = function() {
 	      page > 1 && (loc += '?page=' + page);
 	      $("#article-item-body").empty(); // to stop video.
 	      $.history.load(loc);
+	      $.scrollTo($("#article-list").position().top, 100);
 	    });
 	
 		  $(".btn-post-article").click(function() {
