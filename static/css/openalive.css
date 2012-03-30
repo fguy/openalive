@@ -120,6 +120,10 @@ time {
 	min-height: 180px;
 }
 
+#article-item-body blockquote {
+	font-size: 13px
+}
+
 #article-item-body img,#article-item-body pre {
 	max-width: 100%
 }
@@ -452,9 +456,11 @@ iframe {
 #user-comments li p,#user-articles li .excerpt {
 	display: table;
 }
+
 #user-comments li p,#user-articles li .excerpt,#recent li p {
 	padding-top: 10px;
 }
+
 #recent li p {
 	over-flow: hidden;
 }

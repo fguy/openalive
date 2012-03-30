@@ -22,7 +22,7 @@ TEMPLATE_DIRS = (os.path.abspath('%s/../templates' % os.path.dirname(os.path.rea
 TEMPLATE_SUFFIX = '.html'
 LANG_MAP = {'ko' : ['ko-kr'], 'en' : ['en_US', 'en_GB'], 'ja' : [], 'fr' : [], 'es' : [], 'it' : [], 'ru' : [], 'th' : [], 'zh' : [], 'zh-CN' : [], 'zh-TW'  : []}
 LANG_COOKIE_NAME = 'django_language'
-NON_AJAX_CONTEXT_KEYS = ['is_ajax', 'lang', 'request', 'response']
+NON_AJAX_CONTEXT_KEYS = ['is_ajax', 'is_crawler', 'lang', 'request', 'response', 'app']
 
 class Controller(webapp2.RequestHandler):
     url_mapping = []
@@ -248,7 +248,7 @@ class Action(object):
         """Trigger method after execute request"""
         pass    
             
-    def __init__(self, request, response, context = None):
+    def __init__(self, request, response, context=None):
         """Initializes this with the given Request and Response."""
         self.request = request
         self.response = response
@@ -294,6 +294,7 @@ class Action(object):
     def _get_context(self):
         self.__context['request'] = self.request
         self.__context['response'] = self.response
+        self.__context['app'] = app_identity
         return self.__context 
             
     class Result(object):
@@ -326,7 +327,7 @@ class Notification(threading.Thread):
     @classmethod
     def send(cls, email, subject, body):
         Notification(email=email, subject=subject, body=body).start()
-        
+
 def print_rss(output, result, action_instance):
     json_result = {'responseData': {}, 'responseDetails': None, 'responseStatus': 200}
     if output in [Action.Result.RSS, Action.Result.RSS_JSON_XML, Action.Result.RSS_XML]:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-24 00:19-0700\n"
+"POT-Creation-Date: 2012-03-29 21:53-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,15 +25,15 @@ msgstr "분류명은 유일해야 합니다."
 msgid "Can not reference recursively."
 msgstr "재귀적으로 참조할 수 없습니다."
 
-#: models.py:465
+#: models.py:468
 msgid "Can not delete if the comment has replies."
 msgstr "댓글은 답글이 있는 경우 삭제할 수 없습니다."
 
-#: models.py:529
+#: models.py:533
 msgid "Can not give a reputation to your's."
 msgstr "자기가 쓴 글을 스스로 평가할 수 없습니다."
 
-#: models.py:531
+#: models.py:535
 #, python-format
 msgid "You already gave a %s."
 msgstr "이미 %s 했습니다."
@@ -53,20 +53,20 @@ msgstr "의 인기글"
 msgid "Captcha code mismatch: %s"
 msgstr "보안문자가 일치하지 않습니다: %s"
 
-#: action/service.py:45
+#: action/service.py:47
 msgid "Only the author can edit this article."
 msgstr "글쓴이만 편집할 수 있습니다."
 
-#: action/service.py:60
+#: action/service.py:69
 msgid "Only the author can delete this article."
 msgstr "글쓴이만 삭제할 수 있습니다."
 
-#: action/service.py:109
+#: action/service.py:134
 #, fuzzy
 msgid "Only the author can delete this comment."
 msgstr "글쓴이만 삭제할 수 있습니다."
 
-#: action/service.py:148 action/service.py:169
+#: action/service.py:180 action/service.py:205
 #, fuzzy
 msgid "You did not give an reputation for this."
 msgstr "자기가 쓴 글을 스스로 평가할 수 없습니다."
@@ -83,7 +83,7 @@ msgstr "지정하지 마십시오."
 msgid "Korean"
 msgstr "한국어"
 
-#: templates/about.html:5 templates/about.html.py:26 templates/category.html:7
+#: templates/about.html:5 templates/about.html.py:28 templates/category.html:7
 #: templates/category.html.py:9 templates/category.html:10
 #: templates/category.html.py:11 templates/category.html:15
 #: templates/category.html.py:18 templates/index.html:6
@@ -100,7 +100,7 @@ msgstr "개생"
 msgid "Categories"
 msgstr "분류 목록"
 
-#: templates/images.html:19 templates/index.html:59 templates/user.html:34
+#: templates/images.html:19 templates/index.html:64 templates/user.html:34
 #: templates/user.html.py:37 templates/user.html:40 templates/videos.html:34
 #, fuzzy
 msgid "loading..."
@@ -132,13 +132,19 @@ msgstr "즐겨찾기"
 msgid "Category Explorer"
 msgstr "분류"
 
-#: templates/index.html:23 templates/index.html.py:118
+#: templates/index.html:23 templates/index.html.py:123
 #: templates/_base/admin.html:13 templates/_base/default.html:21
 #: templates/_base/default.html.py:28
 msgid "Loading..."
 msgstr "로드 중 ..."
 
-#: templates/index.html:31
+#: templates/index.html:28
+msgid ""
+"Add following address to your Google Talk(Chat) contact if you want to "
+"receive notifications when you got update on your/followed articles."
+msgstr "본인/관심 글에 대해 알림을 받고 싶다면 Google Talk 또는 Google Chat에 다음 주소를 추가하십시오."
+
+#: templates/index.html:36
 #, python-format
 msgid ""
 "<strong>Heads up!</strong> To post something, you have to <a href="
@@ -147,94 +153,94 @@ msgstr ""
 "<strong>안내!</strong> 글을 쓰거나 댓글을 달려면 <a href=\"%(login_url)s\" "
 "class=\"login-url\">로그인</a>하셔야 합니다."
 
-#: templates/index.html:40
+#: templates/index.html:45
 msgid "Written Date"
 msgstr "작성된 날짜"
 
-#: templates/index.html:41
+#: templates/index.html:46
 msgid "Last Modified"
 msgstr "최종 수정"
 
-#: templates/index.html:59
+#: templates/index.html:64
 msgid "Show Previous"
 msgstr "더 보기"
 
-#: templates/index.html:61
+#: templates/index.html:66
 #, fuzzy
 msgid "Write a comment"
 msgstr "댓글 쓰기"
 
-#: templates/index.html:67
+#: templates/index.html:72
 msgid "List"
 msgstr "목록"
 
-#: templates/index.html:69
+#: templates/index.html:74
 msgid "Like"
 msgstr "좋아요"
 
-#: templates/index.html:70
+#: templates/index.html:75
 msgid "Unlike"
 msgstr "좋아요 취소"
 
-#: templates/index.html:71
+#: templates/index.html:76
 msgid "Hate"
 msgstr "싫어요"
 
-#: templates/index.html:72
+#: templates/index.html:77
 msgid "Unhate"
 msgstr "싫어요 취소"
 
-#: templates/index.html:73
+#: templates/index.html:78
 msgid "Follow"
 msgstr "지켜보기"
 
-#: templates/index.html:74
+#: templates/index.html:79
 #, fuzzy
 msgid "Unfollow"
 msgstr "지켜보기 해제"
 
-#: templates/index.html:79
+#: templates/index.html:84
 msgid "Edit"
 msgstr "편집"
 
-#: templates/index.html:80
+#: templates/index.html:85
 msgid "Delete"
 msgstr "삭제"
 
-#: templates/index.html:81 templates/index.html.py:91
+#: templates/index.html:86 templates/index.html.py:96
 msgid "New Post"
 msgstr "새 게시물 작성"
 
-#: templates/index.html:87
+#: templates/index.html:92
 #, python-format
 msgid "Nothing in %(holder)s yet."
 msgstr "아직 %(holder)s에는 아무 것도 없습니다."
 
-#: templates/index.html:88
+#: templates/index.html:93
 msgid "Be a first person"
 msgstr "첫 게시자가 되세요."
 
-#: templates/index.html:94
+#: templates/index.html:99
 msgid "Login to Post"
 msgstr "글을 작성하려면 로그인"
 
-#: templates/index.html:103
+#: templates/index.html:108
 msgid "Category"
 msgstr "분류"
 
-#: templates/index.html:104 templates/_snippets/post-article.html:14
+#: templates/index.html:109 templates/_snippets/post-article.html:14
 msgid "Title"
 msgstr "제목"
 
-#: templates/index.html:105
+#: templates/index.html:110
 msgid "Author"
 msgstr "작성자"
 
-#: templates/index.html:106
+#: templates/index.html:111
 msgid "Liked"
 msgstr "추천"
 
-#: templates/index.html:107
+#: templates/index.html:112
 msgid "Date"
 msgstr "날짜"
 

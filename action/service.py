@@ -166,10 +166,10 @@ class Reputation(Action):
         user = models.User.get_current()
         obj = models.Reputation(key_name = '%s-%s' % (obj_class, obj_id), obj_class=obj_class, obj_id=int(obj_id), user=user, reputation=self.reputation).put()
         
-        if obj_class == 'article':
-            Notification.send(obj.author, subject='%s %ss your post.' % (user.nickname, self.reputation), body='%s %ss your post "%s".\r\n\r\n%s/%s' % (user.nickname, self.reputation, obj.title, self.request.host_url, obj_id))
-        elif obj_class == 'comment':
-            Notification.send(obj.author, subject='%s %ss your comment.' % (user.nickname, self.reputation), body='%s %ss your comment.\r\n\r\n\t%s\r\n%s/%s#comment-%s' % (user.nickname, self.reputation, obj.body, self.request.host_url, obj.article.key().id(), obj_id))
+        if obj_class == u'Article':
+            Notification.send(obj.author.user.email(), subject='%s %ss your post.' % (user.nickname, self.reputation), body='%s %ss your post "%s".\r\n\r\n%s/%s' % (user.nickname, self.reputation, obj.title, self.request.host_url, obj_id))
+        elif obj_class == u'Comment':
+            Notification.send(obj.author.user.email(), subject='%s %ss your comment.' % (user.nickname, self.reputation), body='%s %ss your comment.\r\n\r\n\t%s\r\n%s/%s#comment-%s' % (user.nickname, self.reputation, obj.body, self.request.host_url, obj.article.key().id(), obj_id))
         
         return Action.Result.DEFAULT
     
@@ -193,7 +193,7 @@ class Subscription(Action):
         user = models.User.get_current()
         models.Subscription.get_or_insert('%s-%s' % (article_id, user.key()), article=article, user=user)
         
-        Notification.send(article.author, subject='%s is watching your post.' % user.nickname, body='%s is watching your post "%s".\r\n\r\n%s/%s' % (user.nickname, article.title, self.request.host_url, article_id))
+        Notification.send(article.author.user.email(), subject='%s is watching your post.' % user.nickname, body='%s is watching your post "%s".\r\n\r\n%s/%s' % (user.nickname, article.title, self.request.host_url, article_id))
         
         return Action.Result.DEFAULT
     

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-24 00:19-0700\n"
+"POT-Creation-Date: 2012-03-29 21:53-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,15 +25,15 @@ msgstr "类别名称必须是唯一的"
 msgid "Can not reference recursively."
 msgstr "不能递归引用。"
 
-#: models.py:465
+#: models.py:468
 msgid "Can not delete if the comment has replies."
 msgstr "不能删除，如果评论有回复。"
 
-#: models.py:529
+#: models.py:533
 msgid "Can not give a reputation to your's."
 msgstr "不能给你的声誉。"
 
-#: models.py:531
+#: models.py:535
 #, python-format
 msgid "You already gave a %s."
 msgstr "你已经给了％s。"
@@ -53,20 +53,20 @@ msgstr "发表文章"
 msgid "Captcha code mismatch: %s"
 msgstr ""
 
-#: action/service.py:45
+#: action/service.py:47
 msgid "Only the author can edit this article."
 msgstr "只有作者可以编辑这篇文章。"
 
-#: action/service.py:60
+#: action/service.py:69
 msgid "Only the author can delete this article."
 msgstr "只有作者可以删除这篇文章。"
 
-#: action/service.py:109
+#: action/service.py:134
 #, fuzzy
 msgid "Only the author can delete this comment."
 msgstr "只有作者可以删除这篇文章。"
 
-#: action/service.py:148 action/service.py:169
+#: action/service.py:180 action/service.py:205
 #, fuzzy
 msgid "You did not give an reputation for this."
 msgstr "不能给你的声誉。"
@@ -83,7 +83,7 @@ msgstr "不指定。"
 msgid "Korean"
 msgstr "韩国"
 
-#: templates/about.html:5 templates/about.html.py:26 templates/category.html:7
+#: templates/about.html:5 templates/about.html.py:28 templates/category.html:7
 #: templates/category.html.py:9 templates/category.html:10
 #: templates/category.html.py:11 templates/category.html:15
 #: templates/category.html.py:18 templates/index.html:6
@@ -100,7 +100,7 @@ msgstr "打开活"
 msgid "Categories"
 msgstr "分类"
 
-#: templates/images.html:19 templates/index.html:59 templates/user.html:34
+#: templates/images.html:19 templates/index.html:64 templates/user.html:34
 #: templates/user.html.py:37 templates/user.html:40 templates/videos.html:34
 #, fuzzy
 msgid "loading..."
@@ -132,107 +132,113 @@ msgstr "五星分类"
 msgid "Category Explorer"
 msgstr "类别"
 
-#: templates/index.html:23 templates/index.html.py:118
+#: templates/index.html:23 templates/index.html.py:123
 #: templates/_base/admin.html:13 templates/_base/default.html:21
 #: templates/_base/default.html.py:28
 msgid "Loading..."
 msgstr "载入中..."
 
-#: templates/index.html:31
+#: templates/index.html:28
+msgid ""
+"Add following address to your Google Talk(Chat) contact if you want to "
+"receive notifications when you got update on your/followed articles."
+msgstr ""
+
+#: templates/index.html:36
 #, python-format
 msgid ""
 "<strong>Heads up!</strong> To post something, you have to <a href="
 "\"%(login_url)s\" class=\"login-url\">login</a>"
 msgstr ""
 
-#: templates/index.html:40
+#: templates/index.html:45
 msgid "Written Date"
 msgstr "写日期"
 
-#: templates/index.html:41
+#: templates/index.html:46
 msgid "Last Modified"
 msgstr "上次修改"
 
-#: templates/index.html:59
+#: templates/index.html:64
 msgid "Show Previous"
 msgstr "显示前"
 
-#: templates/index.html:61
+#: templates/index.html:66
 #, fuzzy
 msgid "Write a comment"
 msgstr "评论"
 
-#: templates/index.html:67
+#: templates/index.html:72
 msgid "List"
 msgstr "表"
 
-#: templates/index.html:69
+#: templates/index.html:74
 msgid "Like"
 msgstr "喜欢"
 
-#: templates/index.html:70
+#: templates/index.html:75
 msgid "Unlike"
 msgstr "不像"
 
-#: templates/index.html:71
+#: templates/index.html:76
 msgid "Hate"
 msgstr "恨"
 
-#: templates/index.html:72
+#: templates/index.html:77
 msgid "Unhate"
 msgstr "Unhate"
 
-#: templates/index.html:73
+#: templates/index.html:78
 msgid "Follow"
 msgstr "遵循"
 
-#: templates/index.html:74
+#: templates/index.html:79
 #, fuzzy
 msgid "Unfollow"
 msgstr "遵循"
 
-#: templates/index.html:79
+#: templates/index.html:84
 msgid "Edit"
 msgstr "编辑"
 
-#: templates/index.html:80
+#: templates/index.html:85
 msgid "Delete"
 msgstr "删除"
 
-#: templates/index.html:81 templates/index.html.py:91
+#: templates/index.html:86 templates/index.html.py:96
 msgid "New Post"
 msgstr "发新话题"
 
-#: templates/index.html:87
+#: templates/index.html:92
 #, python-format
 msgid "Nothing in %(holder)s yet."
 msgstr ""
 
-#: templates/index.html:88
+#: templates/index.html:93
 msgid "Be a first person"
 msgstr "是第一人"
 
-#: templates/index.html:94
+#: templates/index.html:99
 msgid "Login to Post"
 msgstr "登录后发表"
 
-#: templates/index.html:103
+#: templates/index.html:108
 msgid "Category"
 msgstr "类别"
 
-#: templates/index.html:104 templates/_snippets/post-article.html:14
+#: templates/index.html:109 templates/_snippets/post-article.html:14
 msgid "Title"
 msgstr "标题"
 
-#: templates/index.html:105
+#: templates/index.html:110
 msgid "Author"
 msgstr "作者"
 
-#: templates/index.html:106
+#: templates/index.html:111
 msgid "Liked"
 msgstr "喜欢"
 
-#: templates/index.html:107
+#: templates/index.html:112
 msgid "Date"
 msgstr "日期"
 

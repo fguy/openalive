@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-24 00:19-0700\n"
+"POT-Creation-Date: 2012-03-29 21:53-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,15 +25,15 @@ msgstr "カテゴリ名は一意である必要があります"
 msgid "Can not reference recursively."
 msgstr "再帰的に参照することはできません。"
 
-#: models.py:465
+#: models.py:468
 msgid "Can not delete if the comment has replies."
 msgstr "コメントは返信がある場合は削除することはできません。"
 
-#: models.py:529
+#: models.py:533
 msgid "Can not give a reputation to your's."
 msgstr "あなたの年代に名声を与えることはできません。"
 
-#: models.py:531
+#: models.py:535
 #, python-format
 msgid "You already gave a %s."
 msgstr "あなたは既に％sを与えた。"
@@ -53,20 +53,20 @@ msgstr "記事を投稿する"
 msgid "Captcha code mismatch: %s"
 msgstr ""
 
-#: action/service.py:45
+#: action/service.py:47
 msgid "Only the author can edit this article."
 msgstr "唯一の著者はこの記事を編集することができます。"
 
-#: action/service.py:60
+#: action/service.py:69
 msgid "Only the author can delete this article."
 msgstr "唯一の著者はこの記事を削除することができます。"
 
-#: action/service.py:109
+#: action/service.py:134
 #, fuzzy
 msgid "Only the author can delete this comment."
 msgstr "唯一の著者はこの記事を削除することができます。"
 
-#: action/service.py:148 action/service.py:169
+#: action/service.py:180 action/service.py:205
 #, fuzzy
 msgid "You did not give an reputation for this."
 msgstr "あなたの年代に名声を与えることはできません。"
@@ -83,7 +83,7 @@ msgstr "指定しないでください。"
 msgid "Korean"
 msgstr "韓国語"
 
-#: templates/about.html:5 templates/about.html.py:26 templates/category.html:7
+#: templates/about.html:5 templates/about.html.py:28 templates/category.html:7
 #: templates/category.html.py:9 templates/category.html:10
 #: templates/category.html.py:11 templates/category.html:15
 #: templates/category.html.py:18 templates/index.html:6
@@ -100,7 +100,7 @@ msgstr "アライブ開く"
 msgid "Categories"
 msgstr "カテゴリー"
 
-#: templates/images.html:19 templates/index.html:59 templates/user.html:34
+#: templates/images.html:19 templates/index.html:64 templates/user.html:34
 #: templates/user.html.py:37 templates/user.html:40 templates/videos.html:34
 #, fuzzy
 msgid "loading..."
@@ -132,107 +132,113 @@ msgstr "主演カ​​テゴリー"
 msgid "Category Explorer"
 msgstr "カテゴリ"
 
-#: templates/index.html:23 templates/index.html.py:118
+#: templates/index.html:23 templates/index.html.py:123
 #: templates/_base/admin.html:13 templates/_base/default.html:21
 #: templates/_base/default.html.py:28
 msgid "Loading..."
 msgstr "読み込み中..."
 
-#: templates/index.html:31
+#: templates/index.html:28
+msgid ""
+"Add following address to your Google Talk(Chat) contact if you want to "
+"receive notifications when you got update on your/followed articles."
+msgstr ""
+
+#: templates/index.html:36
 #, python-format
 msgid ""
 "<strong>Heads up!</strong> To post something, you have to <a href="
 "\"%(login_url)s\" class=\"login-url\">login</a>"
 msgstr ""
 
-#: templates/index.html:40
+#: templates/index.html:45
 msgid "Written Date"
 msgstr "書かれた日付"
 
-#: templates/index.html:41
+#: templates/index.html:46
 msgid "Last Modified"
 msgstr "最終更新日"
 
-#: templates/index.html:59
+#: templates/index.html:64
 msgid "Show Previous"
 msgstr "前を表示"
 
-#: templates/index.html:61
+#: templates/index.html:66
 #, fuzzy
 msgid "Write a comment"
 msgstr "コメント"
 
-#: templates/index.html:67
+#: templates/index.html:72
 msgid "List"
 msgstr "リスト"
 
-#: templates/index.html:69
+#: templates/index.html:74
 msgid "Like"
 msgstr "のような"
 
-#: templates/index.html:70
+#: templates/index.html:75
 msgid "Unlike"
 msgstr "とは異なり、"
 
-#: templates/index.html:71
+#: templates/index.html:76
 msgid "Hate"
 msgstr "嫌い"
 
-#: templates/index.html:72
+#: templates/index.html:77
 msgid "Unhate"
 msgstr "Unhate"
 
-#: templates/index.html:73
+#: templates/index.html:78
 msgid "Follow"
 msgstr "従う"
 
-#: templates/index.html:74
+#: templates/index.html:79
 #, fuzzy
 msgid "Unfollow"
 msgstr "従う"
 
-#: templates/index.html:79
+#: templates/index.html:84
 msgid "Edit"
 msgstr "編集"
 
-#: templates/index.html:80
+#: templates/index.html:85
 msgid "Delete"
 msgstr "削除する"
 
-#: templates/index.html:81 templates/index.html.py:91
+#: templates/index.html:86 templates/index.html.py:96
 msgid "New Post"
 msgstr "新しいポスト"
 
-#: templates/index.html:87
+#: templates/index.html:92
 #, python-format
 msgid "Nothing in %(holder)s yet."
 msgstr ""
 
-#: templates/index.html:88
+#: templates/index.html:93
 msgid "Be a first person"
 msgstr "最初の人である"
 
-#: templates/index.html:94
+#: templates/index.html:99
 msgid "Login to Post"
 msgstr "投稿するには、ログインしてください"
 
-#: templates/index.html:103
+#: templates/index.html:108
 msgid "Category"
 msgstr "カテゴリ"
 
-#: templates/index.html:104 templates/_snippets/post-article.html:14
+#: templates/index.html:109 templates/_snippets/post-article.html:14
 msgid "Title"
 msgstr "タイトル"
 
-#: templates/index.html:105
+#: templates/index.html:110
 msgid "Author"
 msgstr "作成者"
 
-#: templates/index.html:106
+#: templates/index.html:111
 msgid "Liked"
 msgstr "と言ってい"
 
-#: templates/index.html:107
+#: templates/index.html:112
 msgid "Date"
 msgstr "日付"
 

@@ -977,7 +977,7 @@ var initializeModels = function() {
                 </div>\
                 <p class="excerpt"><a href="/#!/{{ category }}/{{ id }}" class="title">{{ thumbnail }}{{ excerpt }}</a></p>\
               </li>', $.extend(true, item, {
-                thumbnail: thumbnail ? formatString('<img src="{{ thumbnail }}">', {thumbnail: thumbnail}) : "" 
+                thumbnail: thumbnail ? formatString('<img src="{{ thumbnail }}" onerror="this.style.display=\'none\'">', {thumbnail: thumbnail}) : "" 
               }));
 			      case "comment":
 			        return formatString('<li>\

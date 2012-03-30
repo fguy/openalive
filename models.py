@@ -323,7 +323,7 @@ class Article(AbstractArticle):
     
     def save(self):
         self.title = bleach.clean(self.title)
-        self.body = bleach.clean(self.body, tags=['p', 'span', 'div', 'strong', 'b', 'em', 'i', 'blockquote', 'sub', 'sup', 'img', 'iframe', 'br'], attributes=['style', 'title', 'src', 'frameborder', 'width', 'height', 'alt'], styles=['width', 'height', 'font-size', 'font-family', 'text-decoration', 'color', 'background-color', 'text-align', 'padding-left'])
+        self.body = bleach.clean(self.body, tags=['a', 'p', 'span', 'div', 'strong', 'b', 'em', 'i', 'blockquote', 'sub', 'sup', 'img', 'iframe', 'br'], attributes=['style', 'title', 'src', 'frameborder', 'width', 'height', 'alt', 'href', 'target'], styles=['width', 'height', 'font-size', 'font-family', 'text-decoration', 'color', 'background-color', 'text-align', 'padding-left'])
         self.last_updated = datetime.datetime.now()
 
         has_image = False

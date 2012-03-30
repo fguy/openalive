@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-24 00:20-0700\n"
+"POT-Creation-Date: 2012-03-29 21:53-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr "태그 추가"
 msgid "You can enter 5 tags or less."
 msgstr "5개 이하의 태그만 입력하실 수 있습니다."
 
-#: static/js/editor.js:67
+#: static/js/editor.js:68
 msgid "Home"
 msgstr "홈"
 
@@ -41,9 +41,21 @@ msgstr "이전"
 msgid "Next"
 msgstr "다음"
 
+msgid "Yesterday"
+msgstr "어제"
+
 #: static/js/pretty.js:24
 msgid " minutes ago"
 msgstr "분 전"
+
+msgid "About 1 minute ago"
+msgstr "약 1분 전"
+
+msgid "Just now"
+msgstr "방금"
+
+msgid " seconds ago"
+msgstr "초 전"
 
 #: static/js/pretty.js:25
 #, fuzzy
@@ -63,44 +75,48 @@ msgstr "년 전"
 msgid "Open Alive"
 msgstr "개생"
 
-#: static/js/service.js:373
+#: static/js/service.js:378
 msgid "Loading..."
 msgstr "로드 중 ..."
 
-#: static/js/service.js:512
+#: static/js/service.js:383
+msgid "Not found. It may have been deleted."
+msgstr ""
+
+#: static/js/service.js:526
 msgid "Posted."
 msgstr "게시되었습니다."
 
-#: static/js/service.js:539
+#: static/js/service.js:549
 msgid "Updated."
 msgstr "수정되었습니다."
 
-#: static/js/service.js:553
+#: static/js/service.js:563
 msgid "Deleted."
 msgstr "삭제되었습니다."
 
-#: static/js/service.js:670
+#: static/js/service.js:680
 msgid "Are you sure?"
 msgstr "정말입니까?"
 
-#: static/js/service.js:700
+#: static/js/service.js:711
 msgid "Please comment here..."
 msgstr "댓글을 작성해주세요 ..."
 
-#: static/js/service.js:766
+#: static/js/service.js:777
 #, fuzzy
 msgid "Delete"
 msgstr "삭제되었습니다."
 
-#: static/js/service.js:1046
+#: static/js/service.js:1057
 msgid "Nickname has been changed."
 msgstr "별명이 변경되었습니다."
 
-#: static/js/service.js:1192
+#: static/js/service.js:1203
 msgid "People who likes this"
 msgstr "\"좋아요\"한 사람"
 
-#: static/js/service.js:1192
+#: static/js/service.js:1203
 msgid "People who hates this"
 msgstr "\"싫어요\"한 사람"
 

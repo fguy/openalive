@@ -23,6 +23,11 @@
 	          <ul class="nav nav-list"><li class="loading"><i class="icon-time"></i> {% trans 'Loading...' %}</li></ul>
 	        </nav><!--/.well -->
 	      </div>
+	      <div id="notification-info" class="alert alert-block">
+            <a class="close" data-dismiss="alert">×</a>
+	        {% trans 'Add following address to your Google Talk(Chat) contact if you want to receive notifications when you got update on your/followed articles.' %}<br><br>
+	        <p><a href="gtalk:chat?jid={{ app.get_application_id }}@appspot.com"><code><i class="icon-leaf"></i>{{ app.get_application_id }}@appspot.com</code></a></p> 
+	      </div>
         </div><!--/span-->
         <div id="content" class="span9">
 	        {% if not user %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-24 00:20-0700\n"
+"POT-Creation-Date: 2012-03-29 21:53-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr "タグを追加する"
 msgid "You can enter 5 tags or less."
 msgstr "あなたは、5タグ以下を入力することができます。"
 
-#: static/js/editor.js:67
+#: static/js/editor.js:68
 msgid "Home"
 msgstr "ホーム"
 
@@ -63,44 +63,48 @@ msgstr "週間前"
 msgid "Open Alive"
 msgstr ""
 
-#: static/js/service.js:373
+#: static/js/service.js:378
 msgid "Loading..."
 msgstr "読み込み中..."
 
-#: static/js/service.js:512
+#: static/js/service.js:383
+msgid "Not found. It may have been deleted."
+msgstr ""
+
+#: static/js/service.js:526
 msgid "Posted."
 msgstr "投稿しました。"
 
-#: static/js/service.js:539
+#: static/js/service.js:549
 msgid "Updated."
 msgstr "更新されます。"
 
-#: static/js/service.js:553
+#: static/js/service.js:563
 msgid "Deleted."
 msgstr "削除されます。"
 
-#: static/js/service.js:670
+#: static/js/service.js:680
 msgid "Are you sure?"
 msgstr ""
 
-#: static/js/service.js:700
+#: static/js/service.js:711
 msgid "Please comment here..."
 msgstr "ここにコメントしてください..."
 
-#: static/js/service.js:766
+#: static/js/service.js:777
 #, fuzzy
 msgid "Delete"
 msgstr "削除されます。"
 
-#: static/js/service.js:1046
+#: static/js/service.js:1057
 msgid "Nickname has been changed."
 msgstr "ニックネームが変更されました。"
 
-#: static/js/service.js:1192
+#: static/js/service.js:1203
 msgid "People who likes this"
 msgstr "これを好む人々"
 
-#: static/js/service.js:1192
+#: static/js/service.js:1203
 msgid "People who hates this"
 msgstr "これを嫌う人"
 
