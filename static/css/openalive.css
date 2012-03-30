@@ -627,5 +627,9 @@ iframe {
 	display: inline-block
 }
 
+#notification-info code {
+	white-space: nowrap
+}
+
 @media ( min-width : 979px) {
 }
