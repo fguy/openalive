@@ -546,7 +546,7 @@ class Reputation(db.Model):
             return
         db.run_in_transaction_options(xg_on, super(self.__class__, self).delete)
         db.run_in_transaction_options(xg_on, getattr(obj, 'decrease_' + self.reputation + '_count'))
-        db.run_in_transaction_options(xg_on, getattr(obj.author, 'increase_' + self.reputation + '_count'))
+        db.run_in_transaction_options(xg_on, getattr(obj.author, 'decrease_' + self.reputation + '_count'))
     
     @classmethod
     def get_list(cls, obj_id, limit=None, offset=0, reputation=None):
