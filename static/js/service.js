@@ -24,9 +24,11 @@ var service;
 var initializeModels = function() {
   var RSS_BURNER_MAP = {
       "http://openalive.appspot.com/feed/category/%ED%86%A0%EB%A1%A0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/wKwe",
-      "http://openalive.appspot.com/feed/category/%EC%A7%88%EB%AC%B8%EA%B3%BC%20%EB%8B%B5%EB%B3%80?limit=5&output=rss": "http://feeds.feedburner.com/appspot/vooV", 
       "http://openalive.appspot.com/feed/category/%EC%A0%95%EB%B3%B4?limit=5&output=rss": "http://feeds.feedburner.com/appspot/TQcZ",
-      "http://openalive.appspot.com/feed/category/%EC%9D%B4%EC%95%BC%EA%B8%B0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/iVmL"      
+      "http://openalive.appspot.com/feed/category/%EC%9D%B4%EC%95%BC%EA%B8%B0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/iVmL",
+      "http://op.enalive.com/feed/category/%ED%86%A0%EB%A1%A0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/wKwe",
+      "http://op.enalive.com/feed/category/%EC%A0%95%EB%B3%B4?limit=5&output=rss": "http://feeds.feedburner.com/appspot/TQcZ",
+      "http://op.enalive.com/feed/category/%EC%9D%B4%EC%95%BC%EA%B8%B0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/iVmL"              
   }
 	var getRss = function(uri, callback) {
 	  $("#loading").show();
@@ -179,7 +181,7 @@ var initializeModels = function() {
 		        dataType: "json"
 		      });
 		    },
-		    showTopLevelRecent: function() {
+		    showTopFeed: function() {
 		    	$("#content").hide();
 		      var div = $("#recent").empty().show();
 		      var template = '\
@@ -197,9 +199,10 @@ var initializeModels = function() {
 		      
 		      $("#loading").show();
 		    	$.getJSON("/category/top", function(data) {
-		    		var remaining = data.list.length;
+		    	  var categoryList = data.list.concat(self.starred);
+		    		var remaining = categoryList.length;
 		    		remaining === 0 && $("#loading").hide();
-		    		$(data.list).each(function(i, item) {
+		    		$(categoryList).each(function(i, item) {
 		    			getRss("/feed/category/" + encodeURI(item), function(data) {
 		    				remaining--;
 		    				remaining === 0 && $("#loading").hide();

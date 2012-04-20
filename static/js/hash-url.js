@@ -53,7 +53,7 @@ $(function() {
 			case "category":
 				service.Category.select(HASH_TOKENS[0], callback);
 				if(HASH_TOKENS.length == 1 && !HASH_TOKENS[0]) {
-				  service.Category.showTopLevelRecent();
+				  service.Category.showTopFeed();
 				  $("#home-content").show();
 				}
 				break;
