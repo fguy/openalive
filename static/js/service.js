@@ -181,7 +181,7 @@ var initializeModels = function() {
 		        dataType: "json"
 		      });
 		    },
-		    showTopFeed: function() {
+		    showTopFeeds: function() {
 		    	$("#content").hide();
 		      var div = $("#recent").empty().show();
 		      var template = '\
@@ -210,26 +210,28 @@ var initializeModels = function() {
 		    					return;
 		    				}
 		    				var feed = data.responseData.feed;
-		    				var xml = $.parseXML(data.responseData.xmlString);
-		    				var panel = $(formatString(template, feed));
-		    				$("ul", panel).html($(feed.entries).map(function(i, item) {
-		    				  var enclosure = $(formatString("item:has(link:contains({{ link }})) enclosure", item), xml); // enclosure doesn't supported by google feed api.
-		    				  var thumbnail;
-		    				  if(enclosure.length > 0) {
-  		    				  var typeString = enclosure.attr("type").toLowerCase();
-  		              if(typeString.indexOf("image") == 0) {
-  		                thumbnail = getImageShackThumbnail(enclosure.attr("url"));
-  		              } else if(typeString.indexOf("video") == 0) {
-  		                thumbnail = formatString("http://img.youtube.com/vi/{{ videoId }}/1.jpg", {videoId: getYoutubeVideoId(enclosure.attr("url"))});
-  		              }
-		    				  }
-		    				  return formatString(rowTemplate, $.extend(item, {
-		    				  	title: item.title.length > 20 ? (item.title.substring(0, 20) + "...") : item.title,
-		    				    thumbnail: thumbnail ? formatString('<img src="{{ thumbnail }}" onerror="this.style.display=\'none\'">', {thumbnail: thumbnail}) : "",
-		    				    pubDate: ISODateString(new Date(Date.parse(item.publishedDate)))
-		    				  }));
-		    				}).get().join(""));
-		    				div.append(panel);
+		    				if(feed.entries.length > 0) {
+  		    				var xml = $.parseXML(data.responseData.xmlString);
+  		    				var panel = $(formatString(template, feed));
+  		    				$("ul", panel).html($(feed.entries).map(function(i, item) {
+  		    				  var enclosure = $(formatString("item:has(link:contains({{ link }})) enclosure", item), xml); // enclosure doesn't supported by google feed api.
+  		    				  var thumbnail;
+  		    				  if(enclosure.length > 0) {
+    		    				  var typeString = enclosure.attr("type").toLowerCase();
+    		              if(typeString.indexOf("image") == 0) {
+    		                thumbnail = getImageShackThumbnail(enclosure.attr("url"));
+    		              } else if(typeString.indexOf("video") == 0) {
+    		                thumbnail = formatString("http://img.youtube.com/vi/{{ videoId }}/1.jpg", {videoId: getYoutubeVideoId(enclosure.attr("url"))});
+    		              }
+  		    				  }
+  		    				  return formatString(rowTemplate, $.extend(item, {
+  		    				  	title: item.title.length > 20 ? (item.title.substring(0, 20) + "...") : item.title,
+  		    				    thumbnail: thumbnail ? formatString('<img src="{{ thumbnail }}" onerror="this.style.display=\'none\'">', {thumbnail: thumbnail}) : "",
+  		    				    pubDate: ISODateString(new Date(Date.parse(item.publishedDate)))
+  		    				  }));
+  		    				}).get().join(""));
+  		    				div.append(panel);
+		    				}
 		    			});
 		    		});
 		    	});
@@ -707,7 +709,7 @@ var initializeModels = function() {
 		
 		Comment: (function() {		  
 			var self = {
-			    COUNT_TEMPLATE: '<span class="badge"><i class="icon-comment icon-white"></i> {{ count }}</span>',
+			    COUNT_TEMPLATE: '<span class="badge">{{ count }}</span>',
 					parentId: null,
 					didClass: "btn-info",
 					activeReplyClass: "btn-inverse",
@@ -977,7 +979,7 @@ var initializeModels = function() {
                 <div>\
 			            <span class="category label label-info">{{ category }}</span>\
                   <h4><a href="/#!/{{ category }}/{{ id }}" class="title">{{ title }}</a></h4>\
-                  <span class="comment-count badge">{{ comment_count }}</span>\
+                  ' + (item.comment_count > 0 ? '<span class="comment-count badge">{{ comment_count }}</span>' : "") + '\
                   <span class="posted"><time datetime="{{ created }}">{{ created|prettyDate }}</time></span>\
                 </div>\
                 <p class="excerpt"><a href="/#!/{{ category }}/{{ id }}" class="title">{{ thumbnail }}{{ excerpt }}</a></p>\
