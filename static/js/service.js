@@ -475,7 +475,7 @@ var initializeModels = function() {
 	      		typeof gapi != "undefined" && gapi.plusone.go();
 	      		
 	      		$("#twttr-share").html(formatString('<a href="https://twitter.com/share" class="twitter-share-button" data-text="{{ excerpt }}" data-url="{{ url }}" data-via="openalive">Tweet</a>', {
-	      		  excerpt: self.current.excerpt,
+	      		  excerpt: self.current.excerpt.replace(/\s+/g," ").replace(/"/g,"&quot;").substring(0, 120),
 	      		  url: location.href
 	      		}));
 	      		typeof twttr != "undefined" && twttr.widgets && twttr.widgets.load();
