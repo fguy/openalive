@@ -57,8 +57,8 @@
 	          	  <span id="g-plusone"><div class="g-plusone" data-size="medium"></div></span>
 				  <span id="twttr-share"><a href="https://twitter.com/share" class="twitter-share-button" data-via="openalive">Tweet</a></span>
 			  </div>
-	          <div id="likes-wrapper"><i class="icon-heart icon-blue"></i><span id="likes"></span></div>
-	          <div id="hates-wrapper"><i class="icon-fire icon-blue"></i><span id="hates"></span></div>
+	          <div id="likes-wrapper"><i class="icon-thumbs-up"></i><span id="likes"></span></div>
+	          <div id="hates-wrapper"><i class="icon-thumbs-down"></i><span id="hates"></span></div>
 	          <ul id="best-comments"></ul>          
 	          <ul id="comments">
 	          	<li id="comment-load-more" class="load-more"><button id="btn-comment-load" class="btn btn-full" data-loading-text="{% trans 'loading...' %}" data-complete-text="{% trans 'Show Previous' %}">{% trans 'Show Previous' %}</button></li>
@@ -71,10 +71,10 @@
           	<div id="btn-group-misc-article">
           		<button id="btn-list-article" class="btn btn-read"><i class="icon-list"></i> {% trans 'List' %}</button>
           		{% if user %}
-          		<button id="btn-like-article" class="btn btn-reputation btn-read"><i class="icon-heart"></i> {% trans 'Like' %}</button>
-          		<button id="btn-unlike-article" class="btn btn-reputation btn-info btn-read"><i class="icon-heart icon-white"></i> {% trans 'Unlike' %}</button>
-          		<button id="btn-hate-article" class="btn btn-reputation btn-read"><i class="icon-fire"></i> {% trans 'Hate' %}</button>
-          		<button id="btn-unhate-article" class="btn btn-reputation btn-info btn-read"><i class="icon-fire icon-white"></i> {% trans 'Unhate' %}</button>          		
+          		<button id="btn-like-article" class="btn btn-reputation btn-read"><i class="icon-thumbs-up"></i> {% trans 'Like' %}</button>
+          		<button id="btn-unlike-article" class="btn btn-reputation btn-info btn-read"><i class="icon-thumbs-up icon-white"></i> {% trans 'Unlike' %}</button>
+          		<button id="btn-hate-article" class="btn btn-reputation btn-read"><i class="icon-thumbs-down"></i> {% trans 'Hate' %}</button>
+          		<button id="btn-unhate-article" class="btn btn-reputation btn-info btn-read"><i class="icon-thumbs-down icon-white"></i> {% trans 'Unhate' %}</button>          		
           		<button id="btn-subscribe-article" class="btn btn-subscribe btn-read"><i class="icon-eye-open"></i> {% trans 'Follow' %}</button>
           		<button id="btn-unsubscribe-article" class="btn btn-subscribe btn-info btn-read"><i class="icon-eye-close"></i> {% trans 'Unfollow' %}</button>
           		{% endif %}

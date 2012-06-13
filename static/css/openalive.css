@@ -461,6 +461,10 @@ iframe {
 	padding-top: 10px;
 }
 
+#recent {
+	margin-left: 20px
+}
+
 #recent li p {
 	over-flow: hidden;
 }

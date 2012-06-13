@@ -24,8 +24,8 @@
 			<ul class="unstyled">
 				<li><span class="badge"><i class="icon-pencil icon-white"></i> {{ user.article_count }}</span> {% trans 'articles' %}.</li>
 				<li><span class="badge"><i class="icon-comment icon-white"></i>  {{ user.comment_count }}</span> {% trans 'comments' %}.</li>
-				<li>{% blocktrans with user.like_count as like_count %}Got <span class="badge"><i class="icon-heart icon-white"></i> {{ like_count }}</span> likes.{% endblocktrans %}</li>
-				<li>{% blocktrans with user.hate_count as hate_count %}Got <span class="badge"><i class="icon-fire icon-white"></i> {{ hate_count }}</span> hates.{% endblocktrans %}</li>
+				<li>{% blocktrans with user.like_count as like_count %}Got <span class="badge"><i class="icon-thumbs-up icon-white"></i> {{ like_count }}</span> likes.{% endblocktrans %}</li>
+				<li>{% blocktrans with user.hate_count as hate_count %}Got <span class="badge"><i class="icon-thumbs-down icon-white"></i> {{ hate_count }}</span> hates.{% endblocktrans %}</li>
 			</ul>
 		</dd>
 	</dl>

@@ -14,7 +14,7 @@ function prettyDate(time) {
   if (day_diff < 0) {
     return gettext("Few seconds ago");
   }
-  if (isNaN(day_diff) || day_diff >= 31) {
+  if (isNaN(day_diff)) {
     return time;
   }
 

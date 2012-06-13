@@ -783,8 +783,8 @@ var initializeModels = function() {
 					  return '<span class="comment-btns">' + 
                     (isMine ? '<button class="btn-comment-delete btn" data-comment-id="' + item.id + '" title="' + gettext('Delete') + '"><i class="icon-trash"></i></button>' : "")
                       + '\
-                        <button class="btn-comment-like btn btn-reputation' + (item.liked ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Like') + '"' + (!me || isMine || item.hated ? ' disabled="disabled"' : "") + '><i class="icon-heart"></i> <span class="like-count count">' + item.like_count + '</span></button>\
-                        <button class="btn-comment-hate btn btn-reputation' + (item.hated ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Hate') + '"' + (!me || isMine || item.liked ? ' disabled="disabled"' : "") + '><i class="icon-fire"></i> <span class="hate-count count">' + item.hate_count + '</span></button>\
+                        <button class="btn-comment-like btn btn-reputation' + (item.liked ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Like') + '"' + (!me || isMine || item.hated ? ' disabled="disabled"' : "") + '><i class="icon-thumbs-up"></i> <span class="like-count count">' + item.like_count + '</span></button>\
+                        <button class="btn-comment-hate btn btn-reputation' + (item.hated ? " " + self.didClass : "") + '" data-comment-id="' + item.id + '" title="' + gettext('Hate') + '"' + (!me || isMine || item.liked ? ' disabled="disabled"' : "") + '><i class="icon-thumbs-down"></i> <span class="hate-count count">' + item.hate_count + '</span></button>\
                         ' + 
                     (item.parent_id || !me ? "" : ' <button class="btn-comment-reply btn" data-comment-id="' + item.id + '" title="' + gettext('Reply') + '"><i class="icon-comment"></i></button>') +
                   '</span>';
@@ -997,8 +997,8 @@ var initializeModels = function() {
                 </div>\
                 <p class="body">{{ body }}</p>\
               </li>', $.extend(true, item, {
-              	likeCount: item.like_count > 0 ? '<span class="like-count badge"><i class="icon-heart icon-white"></i> ' + item.like_count + '</span>' : "",
-              	hateCount: item.hate_count > 0 ? '<span class="hate-count badge"><i class="icon-fire icon-white"></i> ' + item.hate_count + '</span>' : ""
+              	likeCount: item.like_count > 0 ? '<span class="like-count badge"><i class="icon-thumbs-up icon-white"></i> ' + item.like_count + '</span>' : "",
+              	hateCount: item.hate_count > 0 ? '<span class="hate-count badge"><i class="icon-thumbs-down icon-white"></i> ' + item.hate_count + '</span>' : ""
               }));
 			      case "change":
 			        return formatString('<li>\
