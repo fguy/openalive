@@ -7,10 +7,6 @@ body {
 	width: 100%
 }
 
-.icon-blue {
-	background-image: url("../img/glyphicons-halflings-blue.png");
-}
-
 .category-explorer-nav {
 	padding: 9px 0;
 }
@@ -244,7 +240,7 @@ time {
 	left: 50%;
 	width: 140px;
 	margin-left: -70px;
-	z-index: 6000;
+	z-index: 2000;
 	background-color: #F9EDBE;
 	border-color: #F0C36D;
 	border-style: solid;
@@ -533,7 +529,7 @@ iframe {
 }
 
 #post-article {
-	z-index: 6000;
+	z-index: 1999;
 	background-color: transparent;
 	position: fixed;
 	vertical-align: baseline;
@@ -555,7 +551,7 @@ iframe {
 	display: block;
 	position: relative;
 	width: 930px;
-	z-index: 6000;
+	z-index: 1999;
 	margin: 20px auto auto auto;
 	background-color: #FFF;
 	padding: 0
@@ -636,4 +632,8 @@ iframe {
 }
 
 @media ( min-width : 979px) {
+}
+
+body .redactor_toolbar li a.redactor_btn_youtube {
+	background-position: -225px;
 }

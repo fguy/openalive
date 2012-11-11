@@ -28,7 +28,7 @@
         <path>${GOOGLE_APP_ENGINE}/lib/simplejson</path>
         <path>${GOOGLE_APP_ENGINE}/lib/sqlcmd</path>
         <path>${GOOGLE_APP_ENGINE}/lib/webapp2</path>
-        <path>${GOOGLE_APP_ENGINE}/lib/webob</path>
+        <path>${GOOGLE_APP_ENGINE}/lib/webob_1_1_1</path>
         <path>${GOOGLE_APP_ENGINE}/lib/yaml/lib</path>
     </pydev_pathproperty>
     <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">

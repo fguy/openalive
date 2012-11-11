@@ -1,6 +1,8 @@
 from google.appengine.api import urlfetch
 from lib.controller import Action
 from lib.poster.encode import multipart_encode, MultipartParam
+from xml.dom import minidom
+import json
 import settings
 
 class Index(Action):
@@ -24,4 +26,4 @@ class Index(Action):
             method=urlfetch.POST,
             headers=headers)
         file_vars.file.close()
-        self.response.out.write(result.content)
+        self.response.out.write(json.dumps({'filelink': minidom.parseString(result.content).getElementsByTagName('image_link')[0].firstChild.nodeValue}))

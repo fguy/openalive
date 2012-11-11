@@ -15,7 +15,7 @@ except ImportError:
     
 class Article(Action):
     def _captcha_validation(self, challenge, response):
-        if settings.DEV:
+        if users.is_current_user_admin() or settings.DEV:
             return True
         captcha_result = captcha.submit(challenge, response, settings.RECAPTCHA_PRIVATE_KEY, self.request.remote_addr)
         if not captcha_result.is_valid:
@@ -65,7 +65,7 @@ class Article(Action):
     @login_required
     def delete(self, article_id):
         article = models.Article.get_by_id(int(article_id))
-        if article.author.user != users.get_current_user():
+        if article.author.user != users.get_current_user() and not users.is_current_user_admin():
             raise users.NotAllowedError(_('Only the author can delete this article.'))
         article.delete()
         

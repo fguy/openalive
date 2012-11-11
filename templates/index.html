@@ -172,6 +172,7 @@
 	{{ block.super }}
     {% css 'css/jquery.tagsinput.css' %}
     {% css 'css/jquery.toastmessage.css' %}
+    {% css 'css/redactor.css' %}
 {% endblock %}
 
 {% block jslib %}
@@ -183,7 +184,11 @@
 	{% js 'js/jquery.pagination.js' %}
 	{% js 'js/jquery.scrollTo-min.js' %}
 	{% js 'js/jquery.autoresize.min.js' %}
-	{% js 'tiny_mce/jquery.tinymce.js' %}
+	{% if request.lang == 'ko' or request.lang == 'en' or request.lang == 'es' or request.lang == 'ja' or request.lang == 'fr' %}
+		{% js 'js/redactor/lang/'|add:request.lang|add:'.js' %}
+	{% endif %}
+	{% js 'js/redactor.min.js' %}
+	{% js 'js/redactor/plugins/fullscreen.js' %}
 	{% js 'js/utils.js' %}
 	{% js 'js/pretty.js' %}
 	{% js 'js/editor.js' %}
@@ -215,5 +220,5 @@
 	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 	<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
 	  {parsetags: 'explicit'}
-	</script>	   
+	</script>
 {% endblock %}

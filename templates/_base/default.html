@@ -1,17 +1,15 @@
 {% load i18n %}<!DOCTYPE html>
-<!-- Update your html tag to include the itemscope and itemtype attributes -->
-<html>
 <html lang="{{ request.lang }}" xmlns:fb="http://ogp.me/ns/fb#">
 <head prefix="og: http://ogp.me/ns# openalive: 
                   http://ogp.me/ns/apps/openalive#">
     <meta charset="utf-8">
     <title>{{title|default:"Open Alive" }}</title>
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
     <link rel="shortcut icon" href="/favicon.ico">
+	<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/base/jquery-ui.css" rel="stylesheet">
+	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">    
     {% block css %}
-        {% css 'css/bootstrap.css' %}
-        {% css 'css/bootstrap-responsive.css' %}
         {% css 'css/openalive.css' %}
         {% css 'css/cse.css' %}
     {% endblock %}
@@ -62,9 +60,10 @@
 			 g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
 			 s.parentNode.insertBefore(g,s)}(document,"script"));            
         </script>
-        {% js 'js/bootstrap.min.js' %}
+		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
         {% js 'js/bootbox.min.js' %}
-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.0/mustache.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="/i18n/js"></script>
     {% endblock %}
 </body>

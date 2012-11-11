@@ -2,7 +2,6 @@ from gettext import gettext as _
 from django import template
 from datetime import datetime
 from lib.youtube import get_video_id
-import time
 import types
 import settings
 

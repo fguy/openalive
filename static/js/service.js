@@ -25,10 +25,7 @@ var initializeModels = function() {
   var RSS_BURNER_MAP = {
       "http://openalive.appspot.com/feed/category/%ED%86%A0%EB%A1%A0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/wKwe",
       "http://openalive.appspot.com/feed/category/%EC%A0%95%EB%B3%B4?limit=5&output=rss": "http://feeds.feedburner.com/appspot/TQcZ",
-      "http://openalive.appspot.com/feed/category/%EC%9D%B4%EC%95%BC%EA%B8%B0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/iVmL",
-      "http://op.enalive.com/feed/category/%ED%86%A0%EB%A1%A0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/wKwe",
-      "http://op.enalive.com/feed/category/%EC%A0%95%EB%B3%B4?limit=5&output=rss": "http://feeds.feedburner.com/appspot/TQcZ",
-      "http://op.enalive.com/feed/category/%EC%9D%B4%EC%95%BC%EA%B8%B0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/iVmL"              
+      "http://openalive.appspot.com/feed/category/%EC%9D%B4%EC%95%BC%EA%B8%B0?limit=5&output=rss": "http://feeds.feedburner.com/appspot/iVmL"              
   }
 	var getRss = function(uri, callback) {
 	  $("#loading").show();
