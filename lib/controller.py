@@ -295,7 +295,13 @@ class Action(object):
         self.__context['request'] = self.request
         self.__context['response'] = self.response
         self.__context['app'] = app_identity
-        return self.__context 
+        return self.__context
+    
+    def get_json_payload(self):
+        unqouted = urllib.unquote_plus(self.request.body).decode('utf8')
+        if unqouted[-1:] != '}':
+            unqouted = unqouted[:-1]
+        return json.loads(unqouted)    
             
     class Result(object):
         DEFAULT = ''

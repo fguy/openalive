@@ -7,11 +7,6 @@ from lib.recaptcha.client import captcha
 import models
 import settings
 import urllib
-
-try:
-    import json
-except ImportError:
-    import simplejson as json
     
 class Article(Action):
     def _captcha_validation(self, challenge, response):
@@ -37,10 +32,7 @@ class Article(Action):
         
     @login_required
     def put(self):
-        unqouted = urllib.unquote_plus(self.request.body).decode('utf8')
-        if unqouted[-1:] != '}':
-            unqouted = unqouted[:-1]
-        params = json.loads(unqouted)
+        params = self.get_json_payload()
         article_id = int(params['id'])
         article = models.Article.get_by_id(article_id)
         if article.author.user != users.get_current_user():
@@ -83,6 +75,9 @@ class Article(Action):
         self.article = models.Article.get_by_id(article_id)
         
         if not self.is_ajax and not self.is_crawler:
+            if not self.article:
+                self.response.set_status(404)
+                return
             self.redirect('/#!/%s/%d' % (urllib.quote(self.article.category.name.encode('utf8')), article_id))
         
         if self.article:

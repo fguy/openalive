@@ -1053,7 +1053,7 @@ var initializeModels = function() {
         $.ajax({
           type: "PUT",
           url: "/user/me",
-          data: JSON.stringify(json),
+          data: encodeURIComponent(JSON.stringify(json)),
           cache: false,
           success: function(data) {
             self.changed(data.user);

@@ -29,7 +29,7 @@ class User(db.Model):
     email_hash = db.StringProperty()
     
     def nickname_exists(self, nickname):
-        return User.gql('WHERE user != :1 AND nickname = :2', self, nickname).get() != None
+        return User.gql('WHERE user != :1 AND nickname = :2', self.user, nickname).get() != None
     
     def change_nickname(self, nickname):
         db.run_in_transaction_options(xg_on, UserNicknameHistory(user=self, nickname=bleach.clean(self.nickname)).put)

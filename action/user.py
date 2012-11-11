@@ -2,10 +2,6 @@ from google.appengine.api import users
 from lib.controller import Action
 from lib.decorators import login_required
 from models import User, UserNicknameHistory
-try: 
-    import json
-except ImportError:
-    import simplejson as json
 
 class Index(Action):
     def get(self, user_id=None):
@@ -19,7 +15,7 @@ class Index(Action):
     
     @login_required
     def put(self):
-        params = json.loads(self.request.body)
+        params = self.get_json_payload()
         me = User.get_current()
         self.user = me
         if me.nickname == params['nickname']:
