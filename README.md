@@ -1,3 +1,3 @@
 Open Alive
 ============
-* Service url: http://op.enalive.com
+* Service url: http://openalive.appspot.com

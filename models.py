@@ -309,16 +309,16 @@ class Article(AbstractArticle):
     def delete(self):
         db.run_in_transaction_options(xg_on, super(self.__class__, self).delete)
         [db.run_in_transaction_options(xg_on, item.delete) for item in ArticleHistory.gql('WHERE article = :1', self).fetch(DEFAULT_FETCH_COUNT)]
+        [db.run_in_transaction_options(xg_on, item.delete_item_only) for item in Comment.gql('WHERE article = :1', self).fetch(DEFAULT_FETCH_COUNT)]
         db.run_in_transaction_options(xg_on, self.author.decrease_article_count)
-        for item in self.category.get_path():
-            db.run_in_transaction_options(xg_on, item.decrease_article_count)   
+        [db.run_in_transaction_options(xg_on, item.decrease_article_count) for item in self.category.get_path()]
         Tag.decrease(self.tags)
         if self.image:
             image = ImageArticle.gql('WHERE article = :1', self).get()
             db.run_in_transaction_options(xg_on, image.delete)
         if self.video:
             video = VideoArticle.gql('WHERE article = :1', self).get()
-            db.run_in_transaction_options(xg_on, video.delete)            
+            db.run_in_transaction_options(xg_on, video.delete)
         return self
     
     def save(self):
@@ -469,6 +469,9 @@ class Comment(AbstractArticle):
         db.run_in_transaction_options(xg_on, super(self.__class__, self).delete)
         db.run_in_transaction_options(xg_on, self.article.decrease_comment_count)
         db.run_in_transaction_options(xg_on, self.author.decrease_comment_count)
+        
+    def delete_item_only(self):
+        super(self.__class__, self).delete()
     
     def save(self):
         self.body = bleach.linkify(bleach.clean(self.body).replace('\n', '<br>\n'), parse_email=True, target='_blank')

@@ -159,7 +159,7 @@ class Reputation(Action):
     @login_required
     def post(self, obj_class, obj_id):
         user = models.User.get_current()
-        obj = models.Reputation(key_name = '%s-%s' % (obj_class, obj_id), obj_class=obj_class, obj_id=int(obj_id), user=user, reputation=self.reputation).put()
+        obj = models.Reputation(key_name = '%s-%s-%s' % (obj_class, obj_id, user.user.email), obj_class=obj_class, obj_id=int(obj_id), user=user, reputation=self.reputation).put()
         
         if obj_class == u'Article':
             Notification.send(obj.author.user.email(), subject='%s %ss your post.' % (user.nickname, self.reputation), body='%s %ss your post "%s".\r\n\r\n%s/%s' % (user.nickname, self.reputation, obj.title, self.request.host_url, obj_id))
