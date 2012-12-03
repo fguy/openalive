@@ -471,6 +471,7 @@ class Comment(AbstractArticle):
         db.run_in_transaction_options(xg_on, self.author.decrease_comment_count)
         
     def delete_item_only(self):
+        self.author.decrease_comment_count()
         super(self.__class__, self).delete()
     
     def save(self):

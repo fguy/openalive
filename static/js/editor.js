@@ -65,16 +65,16 @@ var ArticleEditor = (function() {
       var v = this.stripTags($('#redactor_insert_video_area').val());
 
       if(v.indexOf("http://www.youtube.com/") !== 0) {
-        booxbox.alert("Not supported URL.");
+        bootbox.alert("Not supported URL.");
         this.modalClose();
         return;
       }
-      if (v.match(/watch\?v=(.*)/)) {
+      if (v.match(/watch\?(.*?)v=/)) {
         v = 'http://www.youtube.com/embed/' + v.match(/v=(.*)/)[0].split('=')[1].split("&")[0];
       } else if(v.match(/v\/(.*)/)) {
         v = 'http://www.youtube.com/embed/' + v.match(/v\/(.*)/)[0].split('=')[1].split("&")[0];
       } else {
-        booxbox.alert("Invalid URL.");
+        bootbox.alert("Invalid URL.");
         this.modalClose();
         return;
       }

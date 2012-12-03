@@ -123,7 +123,7 @@
 	            <div id="recent" class="span6">{% trans 'Loading...' %}</div>
 	            <div id="external-sns" class="span3">
 	                <div class="fb-activity" data-site="350467444992286" data-app-id="350467444992286" data-width="250" data-height="371" data-border-color="#eee" data-header="true" data-recommendations="true"></div>
-	                <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
+	                <script charset="utf-8" src="//widgets.twimg.com/j/2/widget.js"></script>
 	                <script>
 	                new TWTR.Widget({
 	                  version: 2,
@@ -177,7 +177,7 @@
 
 {% block jslib %}
     {{ block.super }}
-    <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+    <script type="text/javascript" src="//www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
 	{% js 'js/jquery.tagsinput.min.js' %}
 	{% js 'js/jquery.toastmessage.js' %}
 	{% js 'js/jquery.history.js' %}
